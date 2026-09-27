@@ -1,5 +1,16 @@
 """Pins the publication-lanes section of diffusion_fixed.ipynb; the notebook is only read.
 
+The pinned structure has three parts, contiguous and in this order. SECTION is the
+eleven-cell value-flow and publication-lanes block; it is located by its unique
+``vf-demo-00-section`` anchor and pinned as a contiguous, in-order run, because it sits in
+the middle of the notebook and later sections are inserted after it. PRE_TAIL is the
+read-only collection, artifact-pack and combinations-table block, whose cell ids and sources
+are owned by the three structure_audit modules that publish them. TAIL is the notebook's
+actual final block — the optional external-reference section, the synthetic scenario
+demonstration and the original Colab appendix — which is intentional published content and
+is pinned at the notebook end. PRE_TAIL begins immediately after SECTION and TAIL
+immediately after PRE_TAIL.
+
 The value-flow and publication-lanes code cells run unmodified, in notebook order, in one
 namespace inside one fresh isolated interpreter (sys.executable -I -B) whose working
 directory is the repository root. Only the acceptance-visible structure is pinned: cell
@@ -19,11 +30,23 @@ from structure_audit.alignment_publication import CARRIED_FIELDS
 
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK = ROOT / "diffusion_fixed.ipynb"
-TAIL = (("vf-demo-00-section", "markdown"), ("vf-demo-01-load", "code"), ("vf-demo-02-transfer", "code"),
-        ("vf-demo-03-assert", "code"), ("pub-lanes-00-section", "markdown"),
-        ("pub-lanes-01-inputs", "code"), ("pub-lanes-02-envelopes", "code"),
-        ("pub-lanes-03-handoffs", "code"), ("pub-lanes-04-ledger-section", "markdown"),
-        ("pub-lanes-04-ledger", "code"), ("pub-lanes-05-checks", "code"))
+SECTION = (("vf-demo-00-section", "markdown"), ("vf-demo-01-load", "code"), ("vf-demo-02-transfer", "code"),
+           ("vf-demo-03-assert", "code"), ("pub-lanes-00-section", "markdown"),
+           ("pub-lanes-01-inputs", "code"), ("pub-lanes-02-envelopes", "code"),
+           ("pub-lanes-03-handoffs", "code"), ("pub-lanes-04-ledger-section", "markdown"),
+           ("pub-lanes-04-ledger", "code"), ("pub-lanes-05-checks", "code"))
+SECTION_ANCHOR = SECTION[0][0]
+PRE_TAIL = (("artifact-inventory-00-section", "markdown"), ("artifact-inventory-01-collect", "code"),
+            ("artifact-inventory-02-select", "code"), ("artifact-pack-00-section", "markdown"),
+            ("artifact-pack-01-render", "code"), ("combinations-table-00-section", "markdown"),
+            ("combinations-table-00-input-unavailable", "markdown"),
+            ("combinations-table-01-render", "code"))
+TAIL = (("vf-external-reference-section", "markdown"), ("vf-external-reference-demo", "code"),
+        ("synthetic-demo-scope", "markdown"), ("synthetic-demo-run", "code"),
+        ("synthetic-demo-declarations", "code"), ("synthetic-demo-priority-disclaimer", "markdown"),
+        ("synthetic-demo-priority", "code"), ("synthetic-demo-comparison", "code"),
+        ("synthetic-demo-conclusion-nonclaim", "markdown"), ("synthetic-demo-conclusion", "code"),
+        ("DKQXlWEjIOsf", "markdown"))
 EXECUTED_PREFIXES = ("vf-demo-", "pub-lanes-")
 CHECKS = ["repeated serialization", "reload and reserialize", "handoff linkage",
           "distinct status categories", "blocked and unavailable states", "no absolute runtime path"]
@@ -60,6 +83,15 @@ def cell_id(cell):
 
 def source_of(cell):
     return "".join(cell["source"])
+
+
+def anchor_indices(cells, target_id):
+    """Every index carrying target_id; the tests assert it is unique before slicing."""
+    return [index for index, cell in enumerate(cells) if cell_id(cell) == target_id]
+
+
+def identity_of(cell):
+    return (cell_id(cell), cell["cell_type"])
 
 
 def executed_cells():
@@ -107,12 +139,47 @@ def absolute_path_literals(source):
 
 
 class NotebookTailStructure(unittest.TestCase):
-    def test_notebook_tail_has_the_eleven_section_cells_in_order(self):
-        tail = notebook_cells()[-len(TAIL):]
-        self.assertEqual([cell_id(c) for c in tail], [expected for expected, _ in TAIL])
+    def section_start(self, cells):
+        """Index of SECTION's first cell, asserting the anchor identifies exactly one cell."""
+        starts = anchor_indices(cells, SECTION_ANCHOR)
+        self.assertEqual(len(starts), 1, f"{SECTION_ANCHOR} is not a unique anchor: {starts}")
+        return starts[0]
 
-    def test_section_cells_keep_their_types_and_carry_no_outputs(self):
-        for cell, (expected_id, expected_type) in zip(notebook_cells()[-len(TAIL):], TAIL):
+    def test_every_notebook_cell_id_is_present_and_unique(self):
+        ids = [cell_id(c) for c in notebook_cells()]
+        self.assertNotIn(None, ids, "a notebook cell carries no metadata id")
+        duplicates = sorted({cid for cid in ids if ids.count(cid) > 1})
+        self.assertEqual(duplicates, [], "duplicate notebook cell ids")
+
+    def test_the_section_block_is_anchored_contiguous_and_in_order(self):
+        cells = notebook_cells()
+        start = self.section_start(cells)
+        block = cells[start:start + len(SECTION)]
+        self.assertEqual([identity_of(c) for c in block], list(SECTION),
+                         "the publication-lanes block changed at its anchor")
+
+    def test_the_read_only_block_sits_between_the_section_and_the_tail(self):
+        cells = notebook_cells()
+        start = self.section_start(cells) + len(SECTION)
+        block = cells[start:start + len(PRE_TAIL)]
+        self.assertEqual([identity_of(c) for c in block], list(PRE_TAIL),
+                         "the read-only collection, pack and table block changed")
+
+    def test_the_notebook_ends_with_the_pinned_publication_tail(self):
+        cells = notebook_cells()
+        self.assertEqual([identity_of(c) for c in cells[-len(TAIL):]], list(TAIL),
+                         "the notebook's final cells are no longer the pinned publication tail")
+        self.assertEqual(self.section_start(cells) + len(SECTION) + len(PRE_TAIL),
+                         len(cells) - len(TAIL),
+                         "the three pinned blocks are no longer contiguous in order")
+
+    def test_pinned_cells_keep_their_types_and_carry_no_outputs(self):
+        cells = notebook_cells()
+        start = self.section_start(cells)
+        pinned = (list(zip(cells[start:start + len(SECTION)], SECTION))
+                  + list(zip(cells[start + len(SECTION):], PRE_TAIL))
+                  + list(zip(cells[-len(TAIL):], TAIL)))
+        for cell, (expected_id, expected_type) in pinned:
             with self.subTest(cell=expected_id):
                 self.assertEqual(cell["cell_type"], expected_type, f"{expected_id}: cell type changed")
                 self.assertIsNone(cell.get("execution_count"), f"{expected_id}: execution_count is not null")
