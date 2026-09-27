@@ -1,0 +1,1181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "measurement_binding",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "binding_id",
+    "mapping",
+    "payload",
+    "producer",
+    "run",
+    "measurement_activation",
+    "measurement_parameters",
+    "bound_inputs",
+    "provenance",
+    "measurement_request",
+    "measurement",
+    "rules"
+  ],
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "measurement_binding/1"
+      ]
+    },
+    "binding_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "mapping": {
+      "type": "object",
+      "required": [
+        "layout",
+        "selector",
+        "binding",
+        "declaration",
+        "required_units",
+        "quantity_definition_ids"
+      ],
+      "properties": {
+        "layout": {
+          "enum": [
+            "candidate_evidence_v1",
+            "candidate_evidence_list_v1"
+          ]
+        },
+        "selector": {
+          "type": "object",
+          "required": [
+            "candidate_id",
+            "target_id",
+            "conformer_id"
+          ],
+          "properties": {
+            "candidate_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "target_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "conformer_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "binding": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "metric_name",
+              "category",
+              "scale"
+            ],
+            "properties": {
+              "metric_name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "category": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scale": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "declaration": {
+          "type": "object",
+          "required": [
+            "pair_id",
+            "context",
+            "category",
+            "scale"
+          ],
+          "properties": {
+            "pair_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "context": {
+              "type": "string",
+              "minLength": 1
+            },
+            "category": {
+              "type": "string",
+              "minLength": 1
+            },
+            "scale": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "required_units": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "quantity_definition_ids": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "payload": {
+      "type": "object",
+      "required": [
+        "record_index",
+        "record_count",
+        "record_identity",
+        "metric_indices",
+        "absent_detail",
+        "metrics"
+      ],
+      "properties": {
+        "record_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "record_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "record_identity": {
+          "type": "object",
+          "required": [
+            "candidate_id",
+            "target_id",
+            "conformer_id"
+          ],
+          "properties": {
+            "candidate_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "target_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "conformer_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "metric_indices": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          }
+        },
+        "absent_detail": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "required": [
+              "name",
+              "raw_value",
+              "value",
+              "context",
+              "category",
+              "unit",
+              "scale",
+              "source",
+              "provenance",
+              "missing_reason"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "raw_value": {},
+              "value": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "context": {
+                "type": "string",
+                "minLength": 1
+              },
+              "category": {
+                "type": "string",
+                "minLength": 1
+              },
+              "unit": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "scale": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256",
+                  "row"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "row": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": 1
+                  }
+                },
+                "additionalProperties": false
+              },
+              "provenance": {
+                "type": "object",
+                "required": [
+                  "model_id",
+                  "checkpoint_id",
+                  "seed"
+                ],
+                "properties": {
+                  "model_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "checkpoint_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "seed": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": 0
+                  }
+                },
+                "additionalProperties": false
+              },
+              "missing_reason": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "producer": {
+      "type": "object",
+      "required": [
+        "artifact_id",
+        "artifact_sha256",
+        "selected_path"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "selected_path": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "run": {
+      "type": "object",
+      "required": [
+        "pipeline_run_id",
+        "execution_id"
+      ],
+      "properties": {
+        "pipeline_run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "execution_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "measurement_activation": {
+      "type": "object",
+      "required": [
+        "opt_in",
+        "lane",
+        "formulation_id",
+        "formulation_version"
+      ],
+      "properties": {
+        "opt_in": {
+          "type": "boolean"
+        },
+        "lane": {
+          "type": "string",
+          "minLength": 1
+        },
+        "formulation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "formulation_version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "measurement_parameters": {
+      "type": "object",
+      "required": [
+        "profile_id",
+        "profile_version",
+        "values"
+      ],
+      "properties": {
+        "profile_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "values": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "unit",
+              "value"
+            ],
+            "properties": {
+              "unit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "value": {}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "bound_inputs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "metric_name",
+          "metric_index",
+          "quantity_definition_id",
+          "required_unit",
+          "declared_category",
+          "declared_scale",
+          "declared_unit",
+          "availability",
+          "unavailable_reason",
+          "bound_value",
+          "upstream_source",
+          "producer_provenance"
+        ],
+        "properties": {
+          "metric_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "metric_index": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "quantity_definition_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "required_unit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "declared_category": {
+            "type": "string",
+            "minLength": 1
+          },
+          "declared_scale": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "declared_unit": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "availability": {
+            "enum": [
+              "AVAILABLE",
+              "UNAVAILABLE"
+            ]
+          },
+          "unavailable_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "bound_value": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "upstream_source": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "required": [
+              "path",
+              "sha256",
+              "row"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "row": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 1
+              }
+            },
+            "additionalProperties": false
+          },
+          "producer_provenance": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "required": [
+              "model_id",
+              "checkpoint_id",
+              "seed"
+            ],
+            "properties": {
+              "model_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "checkpoint_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "seed": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "pipeline_run_id",
+        "execution_id",
+        "producer_result_id",
+        "payload_sha256",
+        "artifact_id",
+        "artifact_sha256",
+        "mapping_hash",
+        "producer_config_hash",
+        "source_hash",
+        "source",
+        "method_id",
+        "method_version",
+        "measurement_method_id",
+        "measurement_method_version",
+        "canonicalization_version",
+        "runtime_versions"
+      ],
+      "properties": {
+        "pipeline_run_id": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "execution_id": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "producer_result_id": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": "null"
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "payload_sha256": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "artifact_id": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "artifact_sha256": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "mapping_hash": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "producer_config_hash": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": "null"
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "source_hash": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "source": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "required": [
+                "path",
+                "sha256",
+                "row"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "row": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "method_id": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "method_version": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "measurement_method_id": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "measurement_method_version": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "canonicalization_version": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "runtime_versions": {
+          "type": "object",
+          "required": [
+            "value",
+            "unavailable_reason"
+          ],
+          "properties": {
+            "value": {
+              "type": "null"
+            },
+            "unavailable_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "measurement_request": {
+      "type": "object",
+      "required": [
+        "activation",
+        "declaration",
+        "inputs",
+        "parameters",
+        "provenance"
+      ],
+      "properties": {
+        "activation": {
+          "type": "object"
+        },
+        "declaration": {
+          "type": "object",
+          "required": [
+            "pair_id",
+            "context",
+            "category",
+            "scale"
+          ],
+          "properties": {
+            "pair_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "context": {
+              "type": "string",
+              "minLength": 1
+            },
+            "category": {
+              "type": "string",
+              "minLength": 1
+            },
+            "scale": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "inputs": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "quantity_definition_id",
+              "unit",
+              "availability",
+              "unavailable_reason",
+              "value"
+            ],
+            "properties": {
+              "quantity_definition_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "unit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "availability": {
+                "enum": [
+                  "AVAILABLE",
+                  "UNAVAILABLE"
+                ]
+              },
+              "unavailable_reason": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "minLength": 1
+              },
+              "value": {}
+            },
+            "additionalProperties": false
+          }
+        },
+        "parameters": {
+          "type": "object"
+        },
+        "provenance": {
+          "type": "object",
+          "required": [
+            "pipeline_run_id",
+            "execution_id",
+            "method_id",
+            "method_version",
+            "canonicalization_version",
+            "source",
+            "model"
+          ],
+          "properties": {
+            "pipeline_run_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "execution_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "method_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "method_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "canonicalization_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source": {
+              "type": "object",
+              "required": [
+                "path",
+                "sha256",
+                "row"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "row": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "model": {
+              "type": "object",
+              "required": [
+                "model_id",
+                "checkpoint_id",
+                "seed"
+              ],
+              "properties": {
+                "model_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "checkpoint_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "seed": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "measurement": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "result_id",
+        "status"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "status": {
+          "enum": [
+            "COMPUTED",
+            "UNAVAILABLE",
+            "REJECTED"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

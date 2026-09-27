@@ -1,0 +1,306 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "transfer_receipt",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "receipt_id",
+    "consumer_request",
+    "selected_path",
+    "expected_producer",
+    "observed_producer",
+    "artifact_matched_selection",
+    "quantity_identity_matched",
+    "outcome",
+    "failure",
+    "carried_reason",
+    "checks",
+    "transfer_id"
+  ],
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "transfer_receipt/1"
+      ]
+    },
+    "receipt_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "consumer_request": {
+      "type": "object",
+      "required": [
+        "consumer_id",
+        "quantity",
+        "item"
+      ],
+      "properties": {
+        "consumer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantity": {
+          "type": "object",
+          "required": [
+            "quantity_id",
+            "context",
+            "category",
+            "unit",
+            "scale"
+          ],
+          "properties": {
+            "quantity_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "context": {
+              "enum": [
+                "monomer",
+                "complex",
+                "counter_screen",
+                "unassigned"
+              ]
+            },
+            "category": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unit": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "scale": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "item": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "metric_name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "candidate_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "target_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "conformer_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "statistic": {
+              "enum": [
+                "min",
+                "median",
+                "max",
+                "mean"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "selected_path": {
+      "type": "string"
+    },
+    "expected_producer": {
+      "type": "object",
+      "required": [
+        "artifact_id",
+        "sha256",
+        "layout"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "layout": {
+          "enum": [
+            "candidate_evidence_v1",
+            "candidate_evidence_list_v1",
+            "quantity_summary_v1"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "observed_producer": {
+      "type": "object",
+      "required": [
+        "sha256",
+        "layout"
+      ],
+      "properties": {
+        "sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "layout": {
+          "enum": [
+            "candidate_evidence_v1",
+            "candidate_evidence_list_v1",
+            "quantity_summary_v1",
+            "UNRECOGNIZED",
+            "UNPARSEABLE",
+            null
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "artifact_matched_selection": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "quantity_identity_matched": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "outcome": {
+      "enum": [
+        "ADMITTED",
+        "UNAVAILABLE",
+        "EXCLUDED",
+        "REJECTED"
+      ]
+    },
+    "failure": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "class",
+        "stage",
+        "detail"
+      ],
+      "properties": {
+        "class": {
+          "enum": [
+            "ARTIFACT_PATH_INVALID",
+            "ARTIFACT_HASH_MISMATCH",
+            "ARTIFACT_CHANGED",
+            "ARTIFACT_PARSE_ERROR",
+            "ARTIFACT_LAYOUT_MISMATCH",
+            "ARTIFACT_RECORD_INVALID",
+            "SUMMARY_INVALID",
+            "QUANTITY_IDENTITY_MISMATCH",
+            "SELECTOR_NOT_FOUND",
+            "SELECTOR_AMBIGUOUS"
+          ]
+        },
+        "stage": {
+          "enum": [
+            "PATH_FORM",
+            "BYTES_HASH",
+            "LAYOUT",
+            "QUANTITY_IDENTITY"
+          ]
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "carried_reason": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "code",
+        "detail"
+      ],
+      "properties": {
+        "code": {
+          "enum": [
+            "VALUE_UNAVAILABLE",
+            "NO_ACCEPTED_VALUES",
+            "METRIC_ABSENT",
+            "INTEGER_NOT_EXACTLY_REPRESENTABLE"
+          ]
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "check",
+          "result"
+        ],
+        "properties": {
+          "check": {
+            "enum": [
+              "PATH_FORM",
+              "BYTES_HASH",
+              "LAYOUT",
+              "QUANTITY_IDENTITY",
+              "PAYLOAD"
+            ]
+          },
+          "result": {
+            "enum": [
+              "PASSED",
+              "FAILED",
+              "ABSENT",
+              "NOT_REACHED",
+              "ADMITTED",
+              "UNAVAILABLE",
+              "EXCLUDED"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "transfer_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

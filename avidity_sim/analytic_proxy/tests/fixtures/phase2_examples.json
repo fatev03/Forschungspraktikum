@@ -1,0 +1,1719 @@
+{
+ "certificates": {
+  "S0": {
+   "config_identity_hash": "7e72203a2747fb4190e96173f8f033b831ccb3055805df1974799cdccd208674",
+   "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+   "exact_or_approximate": "UNDEFINED",
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "state_hash": "f2c7c904613d61525cbecf2eb92661f6f0e5662770d90de27fb1c9b47798e5f3",
+   "state_result_id": "st-0f64c60c0a819702e01dbaedbd0456c6e9f7d1d511e0c80c4f340993be172c82",
+   "status": "VALID",
+   "topology_mode": "LINEAR_ORDERED_CASSETTE"
+  },
+  "S1": {
+   "config_identity_hash": "7e72203a2747fb4190e96173f8f033b831ccb3055805df1974799cdccd208674",
+   "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+   "exact_or_approximate": "UNDEFINED",
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "state_hash": "b09d4c25bf1f2e7908acdaf6bd1fb9fdf31f2b7ec4ad01c48908c077cdcb3f0e",
+   "state_result_id": "st-7387ab7e2fe3b78e78cdf8cb8b1b6cbb7ae1daa97a9ffe4a5beb9424d663ee72",
+   "status": "VALID",
+   "topology_mode": "LINEAR_ORDERED_CASSETTE"
+  },
+  "S12": {
+   "config_identity_hash": "7e72203a2747fb4190e96173f8f033b831ccb3055805df1974799cdccd208674",
+   "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+   "exact_or_approximate": "UNDEFINED",
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4",
+     "pose_placement=CAPTURE_POINT_ON_TARGET_SITE"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "state_hash": "2847de5c944e8137599f676cf20c1073fba501ac211e25040675fa31f1badae6",
+   "state_result_id": "st-120a27b35002230fab326480961b4b59abb8687cdb52a4d47797ef7461d291a5",
+   "status": "VALID",
+   "topology_mode": "LINEAR_ORDERED_CASSETTE"
+  },
+  "S123": {
+   "config_identity_hash": "7e72203a2747fb4190e96173f8f033b831ccb3055805df1974799cdccd208674",
+   "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+   "exact_or_approximate": "UNDEFINED",
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4",
+     "pose_placement=CAPTURE_POINT_ON_TARGET_SITE"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "state_hash": "4b8acdd84e3ac5ce36a6967451ca7817e3a8c05ac72f207c721d908fe90107ae",
+   "state_result_id": "st-7f9c6aebba943b4a732ea232ad1fc2d86c5c9a316721d5fb90bf1de769f55ab8",
+   "status": "VALID",
+   "topology_mode": "LINEAR_ORDERED_CASSETTE"
+  },
+  "S13": {
+   "config_identity_hash": "7e72203a2747fb4190e96173f8f033b831ccb3055805df1974799cdccd208674",
+   "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+   "exact_or_approximate": "UNDEFINED",
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4",
+     "pose_placement=CAPTURE_POINT_ON_TARGET_SITE",
+     "rigid_span_basis=DERIVED_FROM_ENTRY_EXIT_OFFSETS"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "state_hash": "323e178c90d1f877b8e8b323734f12d9d597bb9bc60681cf941d7cac91ff4068",
+   "state_result_id": "st-39c31290217e81c472173008a1890ef2357e61cf072f2526588544cb3b0d2036",
+   "status": "VALID",
+   "topology_mode": "LINEAR_ORDERED_CASSETTE"
+  },
+  "S2": {
+   "config_identity_hash": "7e72203a2747fb4190e96173f8f033b831ccb3055805df1974799cdccd208674",
+   "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+   "exact_or_approximate": "UNDEFINED",
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "state_hash": "72350fd25b0e333eca8b31fa3f66b4735a4daf0d48b61cc985a14ae0aa245fa2",
+   "state_result_id": "st-e9909de3bdc6d6462b2dd919e12c61d652840c1ee447efa08b5b38727dfc8dfc",
+   "status": "VALID",
+   "topology_mode": "LINEAR_ORDERED_CASSETTE"
+  },
+  "S23": {
+   "config_identity_hash": "7e72203a2747fb4190e96173f8f033b831ccb3055805df1974799cdccd208674",
+   "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+   "exact_or_approximate": "UNDEFINED",
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4",
+     "pose_placement=CAPTURE_POINT_ON_TARGET_SITE"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "state_hash": "cf6961e3f443e5927053bf8b4bc201d90f43c9ed12b0adab04906a4ae0eeecd9",
+   "state_result_id": "st-226b8bb665d4faed70b6dbcc7726b94ba244a7252af12fb7de27e9052a4776c3",
+   "status": "VALID",
+   "topology_mode": "LINEAR_ORDERED_CASSETTE"
+  },
+  "S2_config_b": {
+   "config_identity_hash": "490a36d3e510235b98b6f6dc1f374b30ce0c2b6d82cc1949e7dbe2d254922b56",
+   "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+   "exact_or_approximate": "UNDEFINED",
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "state_hash": "72350fd25b0e333eca8b31fa3f66b4735a4daf0d48b61cc985a14ae0aa245fa2",
+   "state_result_id": "st-282911e323c1eab2ee3e1e5fe3cf0ceff442337a885769a55bdd072796640871",
+   "status": "VALID",
+   "topology_mode": "LINEAR_ORDERED_CASSETTE"
+  },
+  "S2_context_b": {
+   "config_identity_hash": "7e72203a2747fb4190e96173f8f033b831ccb3055805df1974799cdccd208674",
+   "context_hash": "6f3c79e8b1326c0c67c14ee237caa918eb827300fdb032dec48c144adecc3000",
+   "exact_or_approximate": "UNDEFINED",
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-06,
+    "eps_rotation": 1e-09
+   },
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "state_hash": "72350fd25b0e333eca8b31fa3f66b4735a4daf0d48b61cc985a14ae0aa245fa2",
+   "state_result_id": "st-cac3d133ae79b216c0d4511c95cbfe68b3899f23d465a670cd53975bcd2e2797",
+   "status": "VALID",
+   "topology_mode": "LINEAR_ORDERED_CASSETTE"
+  },
+  "S3": {
+   "config_identity_hash": "7e72203a2747fb4190e96173f8f033b831ccb3055805df1974799cdccd208674",
+   "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+   "exact_or_approximate": "UNDEFINED",
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "state_hash": "4f6ddff0fbd86c7e2631a0e401234d6ddc780109ff76565acc79bf7d6c7c6c74",
+   "state_result_id": "st-5e4f888864d10b4cac771f6829618b27ac0453bfba0ab27213ad6fb686e19e39",
+   "status": "VALID",
+   "topology_mode": "LINEAR_ORDERED_CASSETTE"
+  }
+ },
+ "generator": "analytic_proxy/tests/make_phase2_examples.py",
+ "gotne_version": "0.3.1-phase2",
+ "state_results": {
+  "G19": {
+   "diagnostics": [
+    {
+     "code": "GEOMETRY_INPUT_INVALID",
+     "message": "an input the state-time gates read is missing or malformed",
+     "quantities": {
+      "defect": "TARGET_NOT_IN_CONTEXT",
+      "field": "target_id",
+      "source_id": "D1"
+     },
+     "remediation": null,
+     "severity": "ERROR"
+    },
+    {
+     "code": "CHECK_SKIPPED",
+     "message": "check skipped because a prerequisite failed",
+     "quantities": {
+      "because": "geometry input is invalid",
+      "check": "span intervals"
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "CHECK_SKIPPED",
+     "message": "check skipped because a prerequisite failed",
+     "quantities": {
+      "because": "geometry input is invalid",
+      "check": "closure sweep"
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "EXACT",
+   "nulled_due_to_status": false,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:c735322773ed9b7b8e6fb6a04195bcacb345e39d9feecc71458554b9dc4cd82f",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "EXACT_STRUCTURAL_VETO"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "EXACT_STRUCTURAL_VETO"
+   },
+   "result_id": "st-28ad3a4cd558972191060399874cbeccfebb387b41de56f8b5c58db5bd78637b",
+   "status": "INFEASIBLE",
+   "status_reason": "GEOMETRY_INPUT_INVALID",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {
+     "D1": {
+      "label": "ENGAGED",
+      "target_id": "t9"
+     }
+    },
+    "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+    "state_hash": "c735322773ed9b7b8e6fb6a04195bcacb345e39d9feecc71458554b9dc4cd82f"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": 0.0,
+    "conditional_probability": 0.0,
+    "effective_local_concentration": null,
+    "joint_score": 0.0,
+    "survival_correction": 0.0
+   },
+   "zeroed_due_to_status": true
+  },
+  "M12_marginalized": {
+   "diagnostics": [
+    {
+     "code": "ENGAGED_POSE_UNDERDETERMINED",
+     "message": "closure needs an orientation Phase 2 does not condition on",
+     "quantities": {
+      "downstream_module_id": "D2",
+      "engaged_pose_resolution": "ORIENTATION_MARGINALIZED",
+      "upstream_module_id": "D1"
+     },
+     "remediation": null,
+     "severity": "ERROR"
+    },
+    {
+     "code": "CLOSURE_SWEEP",
+     "message": "closure sweep executed over every closure pair",
+     "quantities": {
+      "closure_pairs": [
+       [
+        "D1",
+        "D2"
+       ]
+      ],
+      "closure_predicate_invocations": 1
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "UNRESOLVED_UPSTREAM",
+     "message": "intervening modules whose pose this state leaves unresolved (diagnostic context only)",
+     "quantities": {
+      "unresolved_upstream_ids": []
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "UNDEFINED",
+   "nulled_due_to_status": true,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:2847de5c944e8137599f676cf20c1073fba501ac211e25040675fa31f1badae6",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=ORIENTATION_MARGINALIZED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "result_id": "st-7d4400d2bf320caf3a4fa8c711aa44f196a2956a81e20856c6062368b98a37e5",
+   "status": "DEGENERATE",
+   "status_reason": "ENGAGED_POSE_UNDERDETERMINED",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {
+     "D1": {
+      "label": "ENGAGED",
+      "target_id": "t1"
+     },
+     "D2": {
+      "label": "ENGAGED",
+      "target_id": "t2"
+     }
+    },
+    "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+    "state_hash": "2847de5c944e8137599f676cf20c1073fba501ac211e25040675fa31f1badae6"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": null,
+    "conditional_probability": null,
+    "effective_local_concentration": null,
+    "joint_score": null,
+    "survival_correction": null
+   },
+   "zeroed_due_to_status": false
+  },
+  "S0": {
+   "diagnostics": [
+    {
+     "code": "CLOSURE_SWEEP",
+     "message": "closure sweep executed over an empty domain",
+     "quantities": {
+      "closure_pairs": [],
+      "closure_predicate_invocations": 0
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "UNRESOLVED_UPSTREAM",
+     "message": "intervening modules whose pose this state leaves unresolved (diagnostic context only)",
+     "quantities": {
+      "unresolved_upstream_ids": []
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "UNDEFINED",
+   "nulled_due_to_status": false,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:f2c7c904613d61525cbecf2eb92661f6f0e5662770d90de27fb1c9b47798e5f3",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "result_id": "st-0f64c60c0a819702e01dbaedbd0456c6e9f7d1d511e0c80c4f340993be172c82",
+   "status": "VALID",
+   "status_reason": "STATE_NOT_VETOED",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {},
+    "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+    "state_hash": "f2c7c904613d61525cbecf2eb92661f6f0e5662770d90de27fb1c9b47798e5f3"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": null,
+    "conditional_probability": null,
+    "effective_local_concentration": null,
+    "joint_score": null,
+    "survival_correction": null
+   },
+   "zeroed_due_to_status": false
+  },
+  "S1": {
+   "diagnostics": [
+    {
+     "code": "CLOSURE_SWEEP",
+     "message": "closure sweep executed over an empty domain",
+     "quantities": {
+      "closure_pairs": [],
+      "closure_predicate_invocations": 0
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "UNRESOLVED_UPSTREAM",
+     "message": "intervening modules whose pose this state leaves unresolved (diagnostic context only)",
+     "quantities": {
+      "unresolved_upstream_ids": []
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "UNDEFINED",
+   "nulled_due_to_status": false,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:b09d4c25bf1f2e7908acdaf6bd1fb9fdf31f2b7ec4ad01c48908c077cdcb3f0e",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "result_id": "st-7387ab7e2fe3b78e78cdf8cb8b1b6cbb7ae1daa97a9ffe4a5beb9424d663ee72",
+   "status": "VALID",
+   "status_reason": "STATE_NOT_VETOED",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {
+     "D1": {
+      "label": "ENGAGED",
+      "target_id": "t1"
+     }
+    },
+    "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+    "state_hash": "b09d4c25bf1f2e7908acdaf6bd1fb9fdf31f2b7ec4ad01c48908c077cdcb3f0e"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": null,
+    "conditional_probability": null,
+    "effective_local_concentration": null,
+    "joint_score": null,
+    "survival_correction": null
+   },
+   "zeroed_due_to_status": false
+  },
+  "S12": {
+   "diagnostics": [
+    {
+     "code": "CLOSURE_SWEEP",
+     "message": "closure sweep executed over every closure pair",
+     "quantities": {
+      "closure_pairs": [
+       [
+        "D1",
+        "D2"
+       ]
+      ],
+      "closure_predicate_invocations": 1
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "UNRESOLVED_UPSTREAM",
+     "message": "intervening modules whose pose this state leaves unresolved (diagnostic context only)",
+     "quantities": {
+      "unresolved_upstream_ids": []
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "UNDEFINED",
+   "nulled_due_to_status": false,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:2847de5c944e8137599f676cf20c1073fba501ac211e25040675fa31f1badae6",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4",
+     "pose_placement=CAPTURE_POINT_ON_TARGET_SITE"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "result_id": "st-120a27b35002230fab326480961b4b59abb8687cdb52a4d47797ef7461d291a5",
+   "status": "VALID",
+   "status_reason": "STATE_NOT_VETOED",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {
+     "D1": {
+      "label": "ENGAGED",
+      "target_id": "t1"
+     },
+     "D2": {
+      "label": "ENGAGED",
+      "target_id": "t2"
+     }
+    },
+    "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+    "state_hash": "2847de5c944e8137599f676cf20c1073fba501ac211e25040675fa31f1badae6"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": null,
+    "conditional_probability": null,
+    "effective_local_concentration": null,
+    "joint_score": null,
+    "survival_correction": null
+   },
+   "zeroed_due_to_status": false
+  },
+  "S123": {
+   "diagnostics": [
+    {
+     "code": "CLOSURE_SWEEP",
+     "message": "closure sweep executed over every closure pair",
+     "quantities": {
+      "closure_pairs": [
+       [
+        "D1",
+        "D2"
+       ],
+       [
+        "D2",
+        "D3"
+       ]
+      ],
+      "closure_predicate_invocations": 2
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "UNRESOLVED_UPSTREAM",
+     "message": "intervening modules whose pose this state leaves unresolved (diagnostic context only)",
+     "quantities": {
+      "unresolved_upstream_ids": []
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "UNDEFINED",
+   "nulled_due_to_status": false,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:4b8acdd84e3ac5ce36a6967451ca7817e3a8c05ac72f207c721d908fe90107ae",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4",
+     "pose_placement=CAPTURE_POINT_ON_TARGET_SITE"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "result_id": "st-7f9c6aebba943b4a732ea232ad1fc2d86c5c9a316721d5fb90bf1de769f55ab8",
+   "status": "VALID",
+   "status_reason": "STATE_NOT_VETOED",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {
+     "D1": {
+      "label": "ENGAGED",
+      "target_id": "t1"
+     },
+     "D2": {
+      "label": "ENGAGED",
+      "target_id": "t2"
+     },
+     "D3": {
+      "label": "ENGAGED",
+      "target_id": "t3"
+     }
+    },
+    "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+    "state_hash": "4b8acdd84e3ac5ce36a6967451ca7817e3a8c05ac72f207c721d908fe90107ae"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": null,
+    "conditional_probability": null,
+    "effective_local_concentration": null,
+    "joint_score": null,
+    "survival_correction": null
+   },
+   "zeroed_due_to_status": false
+  },
+  "S13": {
+   "diagnostics": [
+    {
+     "code": "CLOSURE_SWEEP",
+     "message": "closure sweep executed over every closure pair",
+     "quantities": {
+      "closure_pairs": [
+       [
+        "D1",
+        "D3"
+       ]
+      ],
+      "closure_predicate_invocations": 1
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "UNRESOLVED_UPSTREAM",
+     "message": "intervening modules whose pose this state leaves unresolved (diagnostic context only)",
+     "quantities": {
+      "unresolved_upstream_ids": [
+       "D2"
+      ]
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "DERIVED_RIGID_SPAN",
+     "message": "rigid spans derived from declared entry/exit offsets (provisional)",
+     "quantities": {
+      "element_ids": [
+       "D2.span"
+      ]
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "UNDEFINED",
+   "nulled_due_to_status": false,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:323e178c90d1f877b8e8b323734f12d9d597bb9bc60681cf941d7cac91ff4068",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4",
+     "pose_placement=CAPTURE_POINT_ON_TARGET_SITE",
+     "rigid_span_basis=DERIVED_FROM_ENTRY_EXIT_OFFSETS"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "result_id": "st-39c31290217e81c472173008a1890ef2357e61cf072f2526588544cb3b0d2036",
+   "status": "VALID",
+   "status_reason": "STATE_NOT_VETOED",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {
+     "D1": {
+      "label": "ENGAGED",
+      "target_id": "t1"
+     },
+     "D3": {
+      "label": "ENGAGED",
+      "target_id": "t3"
+     }
+    },
+    "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+    "state_hash": "323e178c90d1f877b8e8b323734f12d9d597bb9bc60681cf941d7cac91ff4068"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": null,
+    "conditional_probability": null,
+    "effective_local_concentration": null,
+    "joint_score": null,
+    "survival_correction": null
+   },
+   "zeroed_due_to_status": false
+  },
+  "S2": {
+   "diagnostics": [
+    {
+     "code": "CLOSURE_SWEEP",
+     "message": "closure sweep executed over an empty domain",
+     "quantities": {
+      "closure_pairs": [],
+      "closure_predicate_invocations": 0
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "UNRESOLVED_UPSTREAM",
+     "message": "intervening modules whose pose this state leaves unresolved (diagnostic context only)",
+     "quantities": {
+      "unresolved_upstream_ids": [
+       "D1"
+      ]
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "UNDEFINED",
+   "nulled_due_to_status": false,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:72350fd25b0e333eca8b31fa3f66b4735a4daf0d48b61cc985a14ae0aa245fa2",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "result_id": "st-e9909de3bdc6d6462b2dd919e12c61d652840c1ee447efa08b5b38727dfc8dfc",
+   "status": "VALID",
+   "status_reason": "STATE_NOT_VETOED",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {
+     "D2": {
+      "label": "ENGAGED",
+      "target_id": "t2"
+     }
+    },
+    "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+    "state_hash": "72350fd25b0e333eca8b31fa3f66b4735a4daf0d48b61cc985a14ae0aa245fa2"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": null,
+    "conditional_probability": null,
+    "effective_local_concentration": null,
+    "joint_score": null,
+    "survival_correction": null
+   },
+   "zeroed_due_to_status": false
+  },
+  "S23": {
+   "diagnostics": [
+    {
+     "code": "CLOSURE_SWEEP",
+     "message": "closure sweep executed over every closure pair",
+     "quantities": {
+      "closure_pairs": [
+       [
+        "D2",
+        "D3"
+       ]
+      ],
+      "closure_predicate_invocations": 1
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "UNRESOLVED_UPSTREAM",
+     "message": "intervening modules whose pose this state leaves unresolved (diagnostic context only)",
+     "quantities": {
+      "unresolved_upstream_ids": [
+       "D1"
+      ]
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "UNDEFINED",
+   "nulled_due_to_status": false,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:cf6961e3f443e5927053bf8b4bc201d90f43c9ed12b0adab04906a4ae0eeecd9",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4",
+     "pose_placement=CAPTURE_POINT_ON_TARGET_SITE"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "result_id": "st-226b8bb665d4faed70b6dbcc7726b94ba244a7252af12fb7de27e9052a4776c3",
+   "status": "VALID",
+   "status_reason": "STATE_NOT_VETOED",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {
+     "D2": {
+      "label": "ENGAGED",
+      "target_id": "t2"
+     },
+     "D3": {
+      "label": "ENGAGED",
+      "target_id": "t3"
+     }
+    },
+    "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+    "state_hash": "cf6961e3f443e5927053bf8b4bc201d90f43c9ed12b0adab04906a4ae0eeecd9"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": null,
+    "conditional_probability": null,
+    "effective_local_concentration": null,
+    "joint_score": null,
+    "survival_correction": null
+   },
+   "zeroed_due_to_status": false
+  },
+  "S2_config_b": {
+   "diagnostics": [
+    {
+     "code": "CLOSURE_SWEEP",
+     "message": "closure sweep executed over an empty domain",
+     "quantities": {
+      "closure_pairs": [],
+      "closure_predicate_invocations": 0
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "UNRESOLVED_UPSTREAM",
+     "message": "intervening modules whose pose this state leaves unresolved (diagnostic context only)",
+     "quantities": {
+      "unresolved_upstream_ids": [
+       "D1"
+      ]
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "UNDEFINED",
+   "nulled_due_to_status": false,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:72350fd25b0e333eca8b31fa3f66b4735a4daf0d48b61cc985a14ae0aa245fa2",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "result_id": "st-282911e323c1eab2ee3e1e5fe3cf0ceff442337a885769a55bdd072796640871",
+   "status": "VALID",
+   "status_reason": "STATE_NOT_VETOED",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {
+     "D2": {
+      "label": "ENGAGED",
+      "target_id": "t2"
+     }
+    },
+    "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+    "state_hash": "72350fd25b0e333eca8b31fa3f66b4735a4daf0d48b61cc985a14ae0aa245fa2"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": null,
+    "conditional_probability": null,
+    "effective_local_concentration": null,
+    "joint_score": null,
+    "survival_correction": null
+   },
+   "zeroed_due_to_status": false
+  },
+  "S2_context_b": {
+   "diagnostics": [
+    {
+     "code": "CLOSURE_SWEEP",
+     "message": "closure sweep executed over an empty domain",
+     "quantities": {
+      "closure_pairs": [],
+      "closure_predicate_invocations": 0
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "UNRESOLVED_UPSTREAM",
+     "message": "intervening modules whose pose this state leaves unresolved (diagnostic context only)",
+     "quantities": {
+      "unresolved_upstream_ids": [
+       "D1"
+      ]
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "UNDEFINED",
+   "nulled_due_to_status": false,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-06,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:72350fd25b0e333eca8b31fa3f66b4735a4daf0d48b61cc985a14ae0aa245fa2",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "result_id": "st-cac3d133ae79b216c0d4511c95cbfe68b3899f23d465a670cd53975bcd2e2797",
+   "status": "VALID",
+   "status_reason": "STATE_NOT_VETOED",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {
+     "D2": {
+      "label": "ENGAGED",
+      "target_id": "t2"
+     }
+    },
+    "context_hash": "6f3c79e8b1326c0c67c14ee237caa918eb827300fdb032dec48c144adecc3000",
+    "state_hash": "72350fd25b0e333eca8b31fa3f66b4735a4daf0d48b61cc985a14ae0aa245fa2"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": null,
+    "conditional_probability": null,
+    "effective_local_concentration": null,
+    "joint_score": null,
+    "survival_correction": null
+   },
+   "zeroed_due_to_status": false
+  },
+  "S3": {
+   "diagnostics": [
+    {
+     "code": "CLOSURE_SWEEP",
+     "message": "closure sweep executed over an empty domain",
+     "quantities": {
+      "closure_pairs": [],
+      "closure_predicate_invocations": 0
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "UNRESOLVED_UPSTREAM",
+     "message": "intervening modules whose pose this state leaves unresolved (diagnostic context only)",
+     "quantities": {
+      "unresolved_upstream_ids": [
+       "D1",
+       "D2"
+      ]
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "UNDEFINED",
+   "nulled_due_to_status": false,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:4f6ddff0fbd86c7e2631a0e401234d6ddc780109ff76565acc79bf7d6c7c6c74",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "NOT_COMPUTED"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "NOT_COMPUTED"
+   },
+   "result_id": "st-5e4f888864d10b4cac771f6829618b27ac0453bfba0ab27213ad6fb686e19e39",
+   "status": "VALID",
+   "status_reason": "STATE_NOT_VETOED",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {
+     "D3": {
+      "label": "ENGAGED",
+      "target_id": "t3"
+     }
+    },
+    "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+    "state_hash": "4f6ddff0fbd86c7e2631a0e401234d6ddc780109ff76565acc79bf7d6c7c6c74"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": null,
+    "conditional_probability": null,
+    "effective_local_concentration": null,
+    "joint_score": null,
+    "survival_correction": null
+   },
+   "zeroed_due_to_status": false
+  },
+  "V124": {
+   "diagnostics": [
+    {
+     "code": "CHAIN_CLOSURE_VIOLATED",
+     "message": "consecutive engaged pair cannot be closed within its span budget",
+     "quantities": {
+      "D_max_nm": 1.0,
+      "D_min_nm": 0.25,
+      "d_nm": 16.5,
+      "downstream_module_id": "D3",
+      "eps_len_nm": 1e-09,
+      "side": "ABOVE_D_MAX",
+      "upstream_module_id": "D2"
+     },
+     "remediation": null,
+     "severity": "ERROR"
+    },
+    {
+     "code": "CLOSURE_SWEEP",
+     "message": "closure sweep executed over every closure pair",
+     "quantities": {
+      "closure_pairs": [
+       [
+        "D1",
+        "D2"
+       ],
+       [
+        "D2",
+        "D3"
+       ]
+      ],
+      "closure_predicate_invocations": 2
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "UNRESOLVED_UPSTREAM",
+     "message": "intervening modules whose pose this state leaves unresolved (diagnostic context only)",
+     "quantities": {
+      "unresolved_upstream_ids": []
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "EXACT",
+   "nulled_due_to_status": false,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:972415a3897c18e61b299168b7817abdf03c6322e1cba667ed07e793634a3282",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "EXACT_GEOMETRIC_VETO"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4",
+     "pose_placement=CAPTURE_POINT_ON_TARGET_SITE"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "EXACT_GEOMETRIC_VETO"
+   },
+   "result_id": "st-a644e6c405ad01fcd00893a1f8c5a88dc985aa7f04e41106ea78cce5c1e429e8",
+   "status": "UNREACHABLE",
+   "status_reason": "CHAIN_CLOSURE_VIOLATED",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {
+     "D1": {
+      "label": "ENGAGED",
+      "target_id": "t1"
+     },
+     "D2": {
+      "label": "ENGAGED",
+      "target_id": "t2"
+     },
+     "D3": {
+      "label": "ENGAGED",
+      "target_id": "t4"
+     }
+    },
+    "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+    "state_hash": "972415a3897c18e61b299168b7817abdf03c6322e1cba667ed07e793634a3282"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": 0.0,
+    "conditional_probability": 0.0,
+    "effective_local_concentration": null,
+    "joint_score": 0.0,
+    "survival_correction": 0.0
+   },
+   "zeroed_due_to_status": true
+  },
+  "V14": {
+   "diagnostics": [
+    {
+     "code": "CHAIN_CLOSURE_VIOLATED",
+     "message": "consecutive engaged pair cannot be closed within its span budget",
+     "quantities": {
+      "D_max_nm": 3.75,
+      "D_min_nm": 0.0,
+      "d_nm": 18.75,
+      "downstream_module_id": "D3",
+      "eps_len_nm": 1e-09,
+      "side": "ABOVE_D_MAX",
+      "upstream_module_id": "D1"
+     },
+     "remediation": null,
+     "severity": "ERROR"
+    },
+    {
+     "code": "CLOSURE_SWEEP",
+     "message": "closure sweep executed over every closure pair",
+     "quantities": {
+      "closure_pairs": [
+       [
+        "D1",
+        "D3"
+       ]
+      ],
+      "closure_predicate_invocations": 1
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "UNRESOLVED_UPSTREAM",
+     "message": "intervening modules whose pose this state leaves unresolved (diagnostic context only)",
+     "quantities": {
+      "unresolved_upstream_ids": [
+       "D2"
+      ]
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "DERIVED_RIGID_SPAN",
+     "message": "rigid spans derived from declared entry/exit offsets (provisional)",
+     "quantities": {
+      "element_ids": [
+       "D2.span"
+      ]
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "EXACT",
+   "nulled_due_to_status": false,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-09,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:8acc30174f9e2b5130dd259fc99572a7ec8f4a0576dc08d380367e4d7fdea285",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "EXACT_GEOMETRIC_VETO"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4",
+     "pose_placement=CAPTURE_POINT_ON_TARGET_SITE",
+     "rigid_span_basis=DERIVED_FROM_ENTRY_EXIT_OFFSETS"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "EXACT_GEOMETRIC_VETO"
+   },
+   "result_id": "st-1c9c4f5014b111a7d86065d064ac92bbb1f4e692a0f674d87d7ae2754b8eec28",
+   "status": "UNREACHABLE",
+   "status_reason": "CHAIN_CLOSURE_VIOLATED",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {
+     "D1": {
+      "label": "ENGAGED",
+      "target_id": "t1"
+     },
+     "D3": {
+      "label": "ENGAGED",
+      "target_id": "t4"
+     }
+    },
+    "context_hash": "ecd687fa1feb49ff995c38746628c724e4466a2ccb9e33bd1d3b592ebf9b1fab",
+    "state_hash": "8acc30174f9e2b5130dd259fc99572a7ec8f4a0576dc08d380367e4d7fdea285"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": 0.0,
+    "conditional_probability": 0.0,
+    "effective_local_concentration": null,
+    "joint_score": 0.0,
+    "survival_correction": 0.0
+   },
+   "zeroed_due_to_status": true
+  },
+  "V14_context_b": {
+   "diagnostics": [
+    {
+     "code": "CHAIN_CLOSURE_VIOLATED",
+     "message": "consecutive engaged pair cannot be closed within its span budget",
+     "quantities": {
+      "D_max_nm": 3.75,
+      "D_min_nm": 0.0,
+      "d_nm": 18.75,
+      "downstream_module_id": "D3",
+      "eps_len_nm": 1e-06,
+      "side": "ABOVE_D_MAX",
+      "upstream_module_id": "D1"
+     },
+     "remediation": null,
+     "severity": "ERROR"
+    },
+    {
+     "code": "CLOSURE_SWEEP",
+     "message": "closure sweep executed over every closure pair",
+     "quantities": {
+      "closure_pairs": [
+       [
+        "D1",
+        "D3"
+       ]
+      ],
+      "closure_predicate_invocations": 1
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "UNRESOLVED_UPSTREAM",
+     "message": "intervening modules whose pose this state leaves unresolved (diagnostic context only)",
+     "quantities": {
+      "unresolved_upstream_ids": [
+       "D2"
+      ]
+     },
+     "remediation": null,
+     "severity": "INFO"
+    },
+    {
+     "code": "DERIVED_RIGID_SPAN",
+     "message": "rigid spans derived from declared entry/exit offsets (provisional)",
+     "quantities": {
+      "element_ids": [
+       "D2.span"
+      ]
+     },
+     "remediation": null,
+     "severity": "INFO"
+    }
+   ],
+   "exact_or_approximate": "EXACT",
+   "nulled_due_to_status": false,
+   "numerical_tolerance_used": {
+    "eps_len_nm": 1e-06,
+    "eps_rotation": 1e-09
+   },
+   "object_id": "S:8acc30174f9e2b5130dd259fc99572a7ec8f4a0576dc08d380367e4d7fdea285",
+   "object_kind": "STATE",
+   "provenance": {
+    "contributing_labels": [
+     "EXACT_GEOMETRIC_VETO"
+    ],
+    "declared_assumptions": [
+     "topology_mode=LINEAR_ORDERED_CASSETTE",
+     "junction_model=FREE_SWIVEL",
+     "engagement_order_policy=ANY_ORDER",
+     "unresolved_upstream_policy=SELF_AVOIDANCE_IGNORED",
+     "engaged_pose_resolution=POSE_REQUIRED",
+     "composite_density_method=GAUSSIAN_MOMENT_MATCH",
+     "tau_spacer=0.25",
+     "pose_marginalization_max_level=4",
+     "pose_placement=CAPTURE_POINT_ON_TARGET_SITE",
+     "rigid_span_basis=DERIVED_FROM_ENTRY_EXIT_OFFSETS"
+    ],
+    "method_id": "evaluate_state",
+    "method_version": "0.3.1",
+    "worst_label": "EXACT_GEOMETRIC_VETO"
+   },
+   "result_id": "st-611a2e23168486348a25dc7679f3d931acd09211bba822eea7daeddb11db6928",
+   "status": "UNREACHABLE",
+   "status_reason": "CHAIN_CLOSURE_VIOLATED",
+   "supersedes": null,
+   "units": {
+    "capture_integral": "1",
+    "conditional_probability": "1",
+    "effective_local_concentration": "M",
+    "joint_score": "1",
+    "survival_correction": "1"
+   },
+   "upstream_state": {
+    "assignments": {
+     "D1": {
+      "label": "ENGAGED",
+      "target_id": "t1"
+     },
+     "D3": {
+      "label": "ENGAGED",
+      "target_id": "t4"
+     }
+    },
+    "context_hash": "6f3c79e8b1326c0c67c14ee237caa918eb827300fdb032dec48c144adecc3000",
+    "state_hash": "8acc30174f9e2b5130dd259fc99572a7ec8f4a0576dc08d380367e4d7fdea285"
+   },
+   "value_intervals": {},
+   "values": {
+    "capture_integral": 0.0,
+    "conditional_probability": 0.0,
+    "effective_local_concentration": null,
+    "joint_score": 0.0,
+    "survival_correction": 0.0
+   },
+   "zeroed_due_to_status": true
+  }
+ }
+}

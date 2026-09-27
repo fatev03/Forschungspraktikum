@@ -1,0 +1,41 @@
+{
+ "candidate_id": "syn-d1",
+ "conformer_id": null,
+ "metrics": [
+  {
+   "category": "model_confidence",
+   "context": "complex",
+   "missing_reason": null,
+   "name": "syn-d:/iptm",
+   "provenance": {
+    "checkpoint_id": null,
+    "model_id": "synthetic-model",
+    "seed": 0
+   },
+   "raw_value": 62.0,
+   "scale": "0-100",
+   "source": {
+    "path": "/synthetic/producer-d/confidence.json",
+    "row": null,
+    "sha256": "efe8729775325e862322239d3f940cafe7ca65339e891dda5b630661a74cbe5e"
+   },
+   "unit": null,
+   "value": 62.0
+  }
+ ],
+ "missing_values": {
+  "conformer_id": "synthetic fixture",
+  "sequence_hash": "synthetic fixture"
+ },
+ "provenance": {
+  "checkpoint_id": null,
+  "model_id": "synthetic-model",
+  "seed": 0
+ },
+ "schema_version": "1.0",
+ "sequence_hash": null,
+ "target_id": "syn-target",
+ "warnings": [
+  "synthetic fixture; not evidence"
+ ]
+}

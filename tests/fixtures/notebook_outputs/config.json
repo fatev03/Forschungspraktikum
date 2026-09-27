@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "sequence_roles": {"csv": ["target", "candidate"]},
+  "metric_contexts": {"csv": {"mpnn": "unassigned", "plddt": "complex", "i_ptm": "complex", "i_pae": "complex", "rmsd": "unassigned"}},
+  "plddt_profiles": {
+    "csv": {"profile": "plddt_0_1_to_0_100_v1", "producer_name": "synthetic-csv", "producer_version": "fixture-v1"},
+    "boltz0": {"profile": "plddt_0_1_to_0_100_v1", "producer_name": "synthetic-boltz", "producer_version": "fixture-v1"},
+    "boltz1": {"profile": "plddt_0_1_to_0_100_v1", "producer_name": "synthetic-boltz", "producer_version": "fixture-v1"}
+  }
+}

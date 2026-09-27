@@ -1,0 +1,412 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "linked_transfer",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "transfer_id",
+    "consumer_request",
+    "producer",
+    "quantity_identity",
+    "payload",
+    "checks"
+  ],
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "linked_transfer/1"
+      ]
+    },
+    "transfer_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "consumer_request": {
+      "type": "object",
+      "required": [
+        "consumer_id",
+        "quantity",
+        "item"
+      ],
+      "properties": {
+        "consumer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantity": {
+          "type": "object",
+          "required": [
+            "quantity_id",
+            "context",
+            "category",
+            "unit",
+            "scale"
+          ],
+          "properties": {
+            "quantity_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "context": {
+              "enum": [
+                "monomer",
+                "complex",
+                "counter_screen",
+                "unassigned"
+              ]
+            },
+            "category": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unit": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "scale": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "item": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "metric_name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "candidate_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "target_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "conformer_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "statistic": {
+              "enum": [
+                "min",
+                "median",
+                "max",
+                "mean"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "producer": {
+      "type": "object",
+      "required": [
+        "artifact_id",
+        "sha256",
+        "layout",
+        "summary_id"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "layout": {
+          "enum": [
+            "candidate_evidence_v1",
+            "candidate_evidence_list_v1",
+            "quantity_summary_v1"
+          ]
+        },
+        "summary_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "quantity_identity": {
+      "type": "object",
+      "required": [
+        "verified_definition",
+        "locator"
+      ],
+      "properties": {
+        "verified_definition": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "context",
+            "category",
+            "unit",
+            "scale"
+          ],
+          "properties": {
+            "context": {
+              "enum": [
+                "monomer",
+                "complex",
+                "counter_screen",
+                "unassigned"
+              ]
+            },
+            "category": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unit": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "scale": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "locator": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "record_index": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "candidate_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "target_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "conformer_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "metric_name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "metric_index": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "source": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "required": [
+                "path",
+                "sha256",
+                "row"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "row": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "producer_provenance": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "required": [
+                "model_id",
+                "checkpoint_id",
+                "seed"
+              ],
+              "properties": {
+                "model_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "checkpoint_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "seed": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                }
+              },
+              "additionalProperties": false
+            },
+            "summary_id": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "quantity_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "statistic": {
+              "enum": [
+                "min",
+                "median",
+                "max",
+                "mean"
+              ]
+            },
+            "statistics_status": {
+              "enum": [
+                "SUMMARIZED",
+                "NO_ACCEPTED_VALUES"
+              ]
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "payload": {
+      "type": "object",
+      "required": [
+        "status",
+        "value",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "ADMITTED",
+            "UNAVAILABLE",
+            "EXCLUDED"
+          ]
+        },
+        "value": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "code",
+            "detail"
+          ],
+          "properties": {
+            "code": {
+              "enum": [
+                "VALUE_UNAVAILABLE",
+                "NO_ACCEPTED_VALUES",
+                "METRIC_ABSENT",
+                "INTEGER_NOT_EXACTLY_REPRESENTABLE"
+              ]
+            },
+            "detail": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "check",
+          "result"
+        ],
+        "properties": {
+          "check": {
+            "enum": [
+              "PATH_FORM",
+              "BYTES_HASH",
+              "LAYOUT",
+              "QUANTITY_IDENTITY",
+              "PAYLOAD"
+            ]
+          },
+          "result": {
+            "enum": [
+              "PASSED",
+              "FAILED",
+              "ABSENT",
+              "NOT_REACHED",
+              "ADMITTED",
+              "UNAVAILABLE",
+              "EXCLUDED"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protein Design Stack — Deployment Feasibility (laptop · Colab · Slurm HPC)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Roboto, system-ui, sans-serif; background: #f8fafc; padding: 2rem 1rem; color: #0b1a2b; }
+  .container { max-width: 1700px; margin: 0 auto; background: white; border-radius: 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.08); padding: 2rem 1.5rem; }
+  h1 { font-size: 2rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  h1 small { font-size: 0.95rem; font-weight: 400; color: #4b5a6b; }
+  h2 { font-size: 1.05rem; margin: 1.8rem 0 0.6rem; }
+  .subhead { color: #2c3e50; margin-bottom: 1.2rem; border-left: 4px solid #3b82f6; font-size: 1rem; background: #f1f5f9; border-radius: 0 8px 8px 0; padding: 12px 20px; line-height: 1.5; }
+  .warnbox { background: #fff7ed; border: 1px solid #fdba74; border-left: 4px solid #ea580c; border-radius: 0 8px 8px 0; padding: 12px 20px; margin-bottom: 1.5rem; font-size: 0.88rem; line-height: 1.55; }
+  .okbox { background: #ecfdf5; border: 1px solid #6ee7b7; border-left: 4px solid #059669; border-radius: 0 8px 8px 0; padding: 12px 20px; margin-bottom: 1.5rem; font-size: 0.88rem; line-height: 1.55; }
+  .assume { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 1.2rem; }
+  .assume div { flex: 1 1 260px; background: #f1f5f9; border-radius: 12px; padding: 10px 16px; font-size: 0.82rem; line-height: 1.5; }
+  .assume strong { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.6px; color: #475569; margin-bottom: 3px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px 26px; margin-bottom: 1.5rem; font-size: 0.83rem; background: #f1f5f9; padding: 12px 18px; border-radius: 16px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+  .tabs { display: flex; gap: 4px; margin-bottom: 1.6rem; border-bottom: 2px solid #e2e8f0; flex-wrap: wrap; }
+  .tab-btn { padding: 10px 22px; font-weight: 600; font-size: 0.88rem; border: none; background: transparent; color: #4b5a6b; cursor: pointer; border-radius: 8px 8px 0 0; transition: all .2s; font-family: inherit; }
+  .tab-btn:hover { background: #f1f5f9; color: #0b1a2b; }
+  .tab-btn.active { background: #0b1a2b; color: white; }
+  .tab-btn:focus-visible { outline: 3px solid #3b82f6; outline-offset: 2px; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .table-wrap { overflow-x: auto; border-radius: 16px; border: 1px solid #e2e8f0; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 1400px; }
+  thead { background: #0b1a2b; color: white; }
+  th { padding: 10px 8px; text-align: left; font-weight: 600; letter-spacing: .3px; font-size: .64rem; text-transform: uppercase; border-right: 1px solid #1e2a3a; }
+  th:last-child { border-right: none; }
+  td { padding: 8px; border-bottom: 1px solid #e9edf2; vertical-align: top; background: white; line-height: 1.4; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f8fafc; }
+  .grp td { background: #eef2f7; font-weight: 700; font-size: .7rem; text-transform: uppercase; letter-spacing: .6px; color: #334155; }
+  .model-name { font-weight: 600; color: #0b1a2b; font-size: .84rem; }
+  .sub { font-size: .66rem; color: #4b5a6b; display: block; font-weight: 400; margin-top: 2px; }
+
+  .v { font-weight: 700; font-size: .78rem; white-space: nowrap; }
+  .v-yes { color: #059669; }
+  .v-warn { color: #d97706; }
+  .v-no { color: #dc2626; }
+  .v-web { color: #7c3aed; }
+  .cell-yes { background: #f0fdf4 !important; }
+  .cell-warn { background: #fffbeb !important; }
+  .cell-no { background: #fef2f2 !important; }
+  .cell-web { background: #faf5ff !important; }
+
+  .pain { display: inline-block; font-weight: 700; font-size: .68rem; padding: 2px 9px; border-radius: 20px; white-space: nowrap; }
+  .p1 { background: #d1fae5; color: #065f46; }
+  .p2 { background: #fef3c7; color: #92400e; }
+  .p3 { background: #fee2e2; color: #991b1b; }
+
+  .notebox { margin-top: 1.2rem; font-size: .85rem; color: #334155; background: #f1f5f9; padding: 14px 20px; border-radius: 12px; line-height: 1.6; }
+  .notebox ul { margin-top: 6px; padding-left: 20px; }
+  .notebox li { margin-bottom: 5px; }
+  .notebox h3 { font-size: .9rem; margin-bottom: 5px; }
+  code { background: #e2e8f0; padding: 1px 5px; border-radius: 4px; font-size: .9em; font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+  .footer { margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1.2rem; font-size: .82rem; color: #4b5a6b; line-height: 1.55; }
+  .footer a { color: #2563eb; }
+  .stack { counter-reset: step; }
+  .stack .step { border-left: 3px solid #3b82f6; padding: 10px 0 10px 16px; margin-bottom: 10px; background: #f8fafc; border-radius: 0 10px 10px 0; }
+  .stack .step h4 { font-size: .9rem; margin-bottom: 3px; }
+  .stack .step p { font-size: .82rem; line-height: 1.55; color: #334155; }
+  @media (max-width: 700px) { .container { padding: 1rem; } h1 { font-size: 1.4rem; } table { font-size: .7rem; min-width: 1150px; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>⚙️ Where can you actually run this?
+    <small>Deployment feasibility for the 2026 folding &amp; design stack</small>
+  </h1>
+  <div class="subhead">
+    Companion to the model-comparison table. Same tools, but scored on <strong>can I run it</strong> rather than
+    <strong>is it good</strong>. Three targets: a laptop with no dedicated GPU, Google Colab, and a Slurm cluster
+    with GPUs up to B300.
+  </div>
+
+  <div class="assume">
+    <div><strong>💻 Laptop (assumed)</strong> No dedicated NVIDIA GPU. CPU inference or Apple-Silicon MLX only. Treated as an analysis and orchestration machine, not a compute node.</div>
+    <div><strong>☁️ Colab (assumed)</strong> Free = T4, ~15 GB VRAM. Pro/Pro+ = L4 24 GB, sometimes A100 40/80 GB, never guaranteed. Max 12 h session, ~90 min idle disconnect, ephemeral disk, no persistent TB-scale databases.</div>
+    <div><strong>🖥️ HPC (assumed)</strong> Slurm, mixed GPUs up to B300 (Blackwell Ultra, 288 GB). No root; Apptainer rather than Docker. Compute nodes may have no outbound internet. Shared scratch.</div>
+  </div>
+
+  <div class="warnbox">
+    <strong>⚠️ The two findings that actually change your plan.</strong>
+    <br>1. <strong>Your best GPU is your riskiest GPU.</strong> Blackwell (B200/B300, compute capability 10.x)
+    is not a safe default for this software. AF3's docs specify CC 8.0+ and predate Blackwell; there is an open
+    compatibility request against JAX. RFdiffusion3's own install tutorial warns that Lovelace/Blackwell
+    "may require upgraded PyTorch nightly builds." Every JAX-based tool in this stack (AlphaFold2, ColabFold,
+    ColabDesign, BindCraft, Germinal) inherits that risk, as does anything shipping custom CUDA kernels
+    (PXDesign, Boltz-2's cuEquivariance path). Plan to run the JAX half of your pipeline on
+    <strong>A100/H100/L40S</strong> partitions and save B300 for pure-PyTorch, long-context jobs.
+    <br>2. <strong>MSA databases, not GPUs, are the real HPC install cost.</strong> AF2's full genetic DBs are
+    ~2.6 TB; AF3's are ~252 GB compressed / ~630 GB uncompressed. If your compute nodes have no internet, the
+    convenient <code>--use_msa_server</code> path fails and you must host these locally. Choosing MSA-free tools
+    (ESMFold/ESMFold2, SimpleFold, RFdiffusion3, ProteinMPNN, SeedProteo) sidesteps the entire problem.
+  </div>
+
+  <div class="legend">
+    <span><span class="v v-yes">✅ Runs</span> practical, documented path</span>
+    <span><span class="v v-warn">⚠️ Caveats</span> works, but constrained by memory, time or setup</span>
+    <span><span class="v v-no">❌ No</span> not realistically feasible</span>
+    <span><span class="v v-web">🌐 Hosted</span> use the web server / API instead</span>
+    <span><span class="pain p1">Easy</span> pip / one script</span>
+    <span><span class="pain p2">Fiddly</span> conda + weights + licence</span>
+    <span><span class="pain p3">Hard</span> containers, DBs, kernels, or gated access</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">🧭 Feasibility matrix</button>
+    <button class="tab-btn" data-tab="t2">✅ Recommended stack per platform</button>
+    <button class="tab-btn" data-tab="t3">🧱 Platform-specific gotchas</button>
+  </div>
+
+  <!-- ============ TAB 1 ============ -->
+  <div id="t1" class="tab-content active">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="min-width:150px;">Tool</th>
+            <th style="min-width:110px;">💻 Laptop (no GPU)</th>
+            <th style="min-width:150px;">☁️ Colab</th>
+            <th style="min-width:150px;">🖥️ Slurm HPC</th>
+            <th style="min-width:80px;">Install</th>
+            <th style="min-width:230px;">Hardware / storage reality</th>
+            <th style="min-width:250px;">The blocker that actually bites</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        <tr class="grp"><td colspan="7">Cheap and portable — run these anywhere, including the laptop</td></tr>
+
+        <tr>
+          <td><span class="model-name">ProteinMPNN</span><span class="sub">Inverse folding</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span><span class="sub">CPU, seconds</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span><span class="sub">free tier fine</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Trivial</span></td>
+          <td><span class="pain p1">Easy</span></td>
+          <td>Weights are a few MB. No GPU needed, no database.</td>
+          <td>None. This is the one tool with no deployment story at all — which is part of why it is still the field default.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">ipSAE / pDockQ / LIS / actifpTM</span><span class="sub">Interface scoring</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span><span class="sub">pure numpy</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span><span class="sub">CPU partition</span></td>
+          <td><span class="pain p1">Easy</span></td>
+          <td><code>pip install numpy</code>. Post-processes PAE + structure files you already have.</td>
+          <td>Only that it needs a PAE matrix. That rules out <em>ESMFold v1</em> — but <strong>not ESMFold2</strong>, which does emit a full N×N PAE matrix alongside pTM and ipTM, so it can feed this whole metric family. (The source table's "so not ESMFold" applies to v1 only; worth correcting there.) Highest value-per-watt item in the whole table.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">PepMLM</span><span class="sub">Peptide binders, sequence-only</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span><span class="sub">slow but works</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span></td>
+          <td><span class="pain p1">Easy</span></td>
+          <td>ESM-2 650M scale, ~2.5 GB weights. No structure, no MSA.</td>
+          <td>None technically. The constraint is scientific — linear peptides only, and you still need a folding model to filter.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">SimpleFold</span> <span class="sub">+ SimpleFold-Turbo</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ If Apple Silicon</span><span class="sub">MLX backend</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span><span class="sub">small/mid sizes</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span></td>
+          <td><span class="pain p1">Easy</span></td>
+          <td>Six sizes 100M–3B; the repo ships an MLX backend and the paper states 3B runs on a 64 GB MacBook Pro. Weights only — no MSA server, no database.</td>
+          <td>On an x86 laptop with no GPU there is no MLX path, so you are on slow CPU PyTorch. Accuracy is 72–99% of AF2 depending on set and size — it is the "runs anywhere" option, not the accurate one.</td>
+        </tr>
+
+        <tr class="grp"><td colspan="7">Structure prediction</td></tr>
+
+        <tr>
+          <td><span class="model-name">AlphaFold2 / ColabFold</span><span class="sub">Folding</span></td>
+          <td class="cell-web"><span class="v v-web">🌐 Hosted</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Best-in-class</span><span class="sub">the reference Colab</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ DB cost</span></td>
+          <td><span class="pain p2">Fiddly</span> local<br><span class="pain p1">Easy</span> Colab</td>
+          <td>Colab: T4 15 GB is enough for most monomers because ColabFold offloads MSA search to a remote MMseqs2 server. Local: ~2.6 TB genetic DBs is the documented figure.</td>
+          <td>On HPC it is the databases and JAX-on-Blackwell, not the model. ColabFold with a remote MSA server is the pragmatic escape hatch — but only if your compute nodes can reach the internet.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">AlphaFold3</span><span class="sub">Co-folding</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span><span class="sub">licence + DBs</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Heavy</span></td>
+          <td><span class="pain p3">Hard</span></td>
+          <td>Docs: NVIDIA GPU with compute capability ≥8.0, up to 5,120 tokens on one 80 GB A100/H100, ≥64 GB system RAM, up to 1 TB disk (~252 GB compressed / ~630 GB uncompressed DBs). Linux only.</td>
+          <td><strong>Three-way blocker:</strong> weights are gated behind an application and non-commercial terms (so no Colab, no casual sharing); the DB footprint is a real storage request; and Blackwell support is an open question — the docs stop at CC 8.0+. If you have B300s and no A100s, budget debugging time.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">ESMFold</span><span class="sub">Folding, MSA-free</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Painful</span><span class="sub">CPU, ~hours</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span><span class="sub">HF notebook</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Easy win</span></td>
+          <td><span class="pain p1">Easy</span></td>
+          <td>~15 GB VRAM class model, weights only, <strong>no genetic database at all</strong>.</td>
+          <td>Nothing structural. This is the highest-throughput-per-setup-hour folding option on a cluster, and it is the one that beats AF2 on <em>de novo</em> designed proteins — which is exactly what you will be filtering.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">ESMFold2 / ESMFold2-Fast</span><span class="sub">Folding &amp; co-folding mode</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Pro</span><span class="sub">Fast variant likely OK</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span><span class="sub">fast, MSA-free</span></td>
+          <td><span class="pain p1">Easy</span></td>
+          <td>MIT, commercial use allowed. <strong>Genuinely fast per prediction</strong> — "order of magnitude" faster in single-sequence mode; ESMFold2-Fast is further inference-optimised and not MSA-conditioned.</td>
+          <td><strong>Fast ≠ small.</strong> It is fast because it skips MSA search — the minutes AF2 spends are mostly CPU database search, and removing that removes them. The network itself is <em>bigger</em>: the pipeline sits on the ESMC-6B encoder. The HF cards list "0.2 B params" for both variants, which almost certainly counts the structure module only with ESMC loaded separately — do not read that as the deployed footprint.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">ESMFold2 (design mode)</span><span class="sub">gradient inversion → binders</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span><span class="sub">even on Pro</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span><span class="sub">H100 / B300</span></td>
+          <td><span class="pain p2">Fiddly</span></td>
+          <td>A published reference deployment runs it on a single <strong>H100</strong>, sized for the 6 B ESMC encoder plus four ESMFold2 critic models — <strong>~50 GB of weights</strong>. Design is <strong>150 gradient steps per design</strong>, each a forward <em>and backward</em> pass through the structure-prediction graph (lr 0.1, annealed sigmoid temperature on soft sequence logits).</td>
+          <td><strong>This is why a fast model still costs ~2 days per target.</strong> A backward pass is roughly 2× a forward, so one design ≈ 450 forward-equivalents — then multiply by thousands of designs, and again by the inference-time compute scaling its reported rates depend on (minibinders 54%→70%, scFvs 12%→21%). The fast forward pass is what makes inversion tractable at all; it does not make the campaign cheap. ~50 GB also exceeds an L4 (24 GB) and an A100-40, so Colab is out even on Pro. Pure PyTorch → low Blackwell risk, and a B300's 288 GB is a real advantage here.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">Boltz-2</span><span class="sub">Co-folding + affinity</span></td>
+          <td class="cell-no"><span class="v v-no">❌ CPU only in theory</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Pro</span><span class="sub">L4/A100</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span></td>
+          <td><span class="pain p1">Easy</span><span class="sub">pip install boltz[cuda]</span></td>
+          <td>An independent study puts stock Boltz-2 at ~1,600 tokens on 24 GB VRAM; the LMI4Boltz memory patches push that past 2,660 tokens on the same card for ~8.5% wall-time cost. MSA via server or local DBs.</td>
+          <td>A CPU build exists but the repo calls it "significantly slower" — not a real laptop path. On HPC the cuEquivariance kernel path is the thing to sanity-check on Blackwell; fall back to the non-kernel path if it misbehaves.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">Chai-1</span><span class="sub">Co-folding</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Pro</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span></td>
+          <td><span class="pain p1">Easy</span><span class="sub">pip</span></td>
+          <td>Repo recommends A100 80 GB / H100 80 GB / L40S 48 GB; A10 and A30 work for smaller complexes. Needs bfloat16 support. Linux, Python ≥3.10.</td>
+          <td>Licensing has improved — weights are now stated as Apache-2.0, i.e. academic <em>and</em> commercial. Worth updating in your main table, which still lists a restrictive community licence.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">OpenFold3-preview</span><span class="sub">Co-folding, Apache-2.0</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-no"><span class="v v-no">❌ Not sensibly</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Preview</span></td>
+          <td><span class="pain p2">Fiddly</span></td>
+          <td>AF3-class, so assume AF3-class memory and MSA needs. Requirements not stated in the whitepaper.</td>
+          <td><strong>Directly relevant to you:</strong> PolyFold reports it is weak on membrane proteins (DockQ ≈ 0). For surface-protein binder work that is close to disqualifying, despite the attractive licence.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">RoseTTAFold All-Atom</span><span class="sub">Co-folding</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ DB heavy</span></td>
+          <td><span class="pain p3">Hard</span></td>
+          <td>Multi-TB sequence/structure databases in the same class as AF2; needs signalp and other external deps.</td>
+          <td>Superseded for most binder purposes by Boltz-2 / Chai-1 / RFd3. Only worth the install if you specifically need its covalent-modification handling.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">D-I-TASSER</span><span class="sub">Folding (hybrid, simulation)</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span><span class="sub">12 h wall clock</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Ideal fit</span><span class="sub">CPU partition!</span></td>
+          <td><span class="pain p3">Hard</span></td>
+          <td>Threading libraries + deep MSA; fragment-assembly simulation is CPU-bound and slow.</td>
+          <td>The unusual case where HPC is not just better but <em>the only</em> option — and where your idle CPU nodes matter more than your B300s. Academic licence, registration required.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">DCFold</span> · <span class="model-name">SeedFold</span></td>
+          <td class="cell-no"><span class="v v-no">❌</span></td>
+          <td class="cell-no"><span class="v v-no">❌</span></td>
+          <td class="cell-no"><span class="v v-no">❌ Not yet</span></td>
+          <td><span class="pain p3">n/a</span></td>
+          <td>No public code release.</td>
+          <td>Nothing to deploy. Track, do not plan around.</td>
+        </tr>
+
+        <tr class="grp"><td colspan="7">Generative binder design — the part you actually care about</td></tr>
+
+        <tr>
+          <td><span class="model-name">BindCraft</span><span class="sub">AF2 hallucination pipeline</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Official Colab, but</span><span class="sub">memory-bound</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span><span class="sub">avoid Blackwell</span></td>
+          <td><span class="pain p2">Fiddly</span><span class="sub">install script + CUDA version</span></td>
+          <td>Requires a CUDA NVIDIA card; README recommends <strong>≥32 GB GPU memory</strong> for local installs. AF2 weights ~5.3 GB, code ~2 MB. 300–3,000 trajectories per target.</td>
+          <td>The Colab notebook exists and is officially maintained, but the authors themselves say larger target+binder complexes need a local install — on a free T4 you are limited to small targets. On HPC the real risks are the PyRosetta licence and JAX on new GPU architectures. Still the best-validated open pipeline (Nature 2025, mean 46.3% across 12 targets, 4 X-ray structures).</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">RFdiffusion3</span><span class="sub">All-atom design, open</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes!</span><span class="sub">even free tier</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span></td>
+          <td><span class="pain p1">Easy</span><span class="sub">pip install "rc-foundry[rfd3]"</span></td>
+          <td><strong>The surprise of this table:</strong> the install tutorial states ~3 GB GPU memory recommended, ~16 GB RAM, ~3 GB for checkpoints. No MSA. Python 3.9–3.12, Linux/macOS. A Docker image exists → <code>apptainer build docker://rosettacommons/foundry</code>.</td>
+          <td>Two real notes: the docs explicitly warn Lovelace/Blackwell may need PyTorch nightly, and they recommend installing <em>from a GPU compute node</em> on Slurm. Also <code>--checkpoint-dir</code> exists for small home quotas. ~10× faster than RFd2, training code released.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">BoltzGen</span><span class="sub">MIT, minibinders + VHH + macrocycles</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Toy runs only</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Strong fit</span><span class="sub">multi-GPU via --devices</span></td>
+          <td><span class="pain p1">Easy</span><span class="sub">pip install boltzgen</span></td>
+          <td>Python ≥3.11, <code>pip install boltzgen</code>. Timings benchmarked on A100. Parallelises across GPUs with <code>--devices</code>.</td>
+          <td><strong>The budget is the blocker, not the install.</strong> The repo says start at <code>--num_design 50</code> to smoke-test, then go to 10,000–60,000. That is an array-job workload and settles the platform question by itself. Documented failure mode: asking for 73–76 residues often returns something that is essentially ubiquitin — filter for that.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">PXDesign</span> / <span class="model-name">Protenix-v2</span><span class="sub">ByteDance, Apache-2.0</span></td>
+          <td class="cell-web"><span class="v v-web">🌐 Web server</span><span class="sub">and it's good</span></td>
+          <td class="cell-web"><span class="v v-web">🌐 Web server</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Custom kernels</span></td>
+          <td><span class="pain p3">Hard</span> local<br><span class="pain p1">Easy</span> server</td>
+          <td>Requires <strong>CUDA ≥ 12.1</strong>; install via Docker or a conda script taking <code>--cuda-version</code>. Runtimes benchmarked on an L20. BF16 gives lower memory than FP32.</td>
+          <td>The authors <em>strongly recommend the web server</em> and describe the local path as needing custom CUDA kernels — which is precisely the category that breaks on a new GPU architecture. Excellent reported hit rates (17–82%), so worth the effort, but start on the server before committing cluster time.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">Germinal</span><span class="sub">de novo nanobodies</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Expensive</span></td>
+          <td><span class="pain p3">Hard</span></td>
+          <td>Explicit and honest requirements: <strong>40 GB+ VRAM minimum</strong> (60 GB+ for larger runs), 50 GB+ for results. Tested on A100 40/80, H100, L40S. 2–8 min per nanobody iteration on an H100; <strong>~200–400 H100-hours for ~200 successful designs</strong>. Ships a <code>slurm/</code> directory.</td>
+          <td>Needs PyRosetta <em>and</em> IgLM licences plus manual AF-Multimer parameter downloads. <a href="https://doi.org/10.64898/2026.06.25.734527" target="_blank" rel="noopener">OpenGerminal</a> (2026) replaces those with a fully open stack — use that instead unless you need exact reproduction.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">Proteina-Complexa</span><span class="sub">NVIDIA, co-design</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Scale mismatch</span></td>
+          <td><span class="pain p2">Fiddly</span></td>
+          <td>Requirements not stated; published benchmarks were run on <strong>100-GPU jobs</strong>, and inference-time search dominates cost.</td>
+          <td>The headline 68% is per-<em>target</em> over 127 targets from 1M designs — a Manifold-scale campaign. Reproducing the method is feasible; reproducing the result is not, on an academic allocation.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">RFantibody</span> · <span class="model-name">BoltzDesign1</span><span class="sub">open</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Small runs</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span></td>
+          <td><span class="pain p2">Fiddly</span></td>
+          <td>RFdiffusion-class memory; BoltzDesign1 inherits Boltz's footprint.</td>
+          <td>Full-antibody format remains substantially harder (10–20% band) than minibinders. Fine to install; do not make it the first campaign.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">SeedProteo</span></td>
+          <td class="cell-no"><span class="v v-no">❌</span></td>
+          <td class="cell-no"><span class="v v-no">❌</span></td>
+          <td class="cell-no"><span class="v v-no">❌ Check</span></td>
+          <td><span class="pain p3">n/a</span></td>
+          <td>No MSA needed; Pairformer cut 48→12 layers for cost.</td>
+          <td>Release status unclear (project page only) and no wet-lab validation claimed. Not a deployment candidate yet.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">Chai-2</span> · <span class="model-name">AlphaProteo</span> · <span class="model-name">Latent-X</span></td>
+          <td class="cell-web"><span class="v v-web">🌐 Only option</span></td>
+          <td class="cell-web"><span class="v v-web">🌐 Only option</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No weights</span></td>
+          <td><span class="pain p3">n/a</span></td>
+          <td>Closed. Latent-X offers a no-code platform with a free tier; AlphaProteo is Trusted-Tester only; Chai-2 is closed.</td>
+          <td>Your hardware is irrelevant here — access is the constraint. Latent-X's free tier is the only one you can try today, and its reported 91–100% macrocycle / 10–64% minibinder rates at 30–100 designs tested make it worth an evaluation account.</td>
+        </tr>
+
+        <tr class="grp"><td colspan="7">Inverse folding &amp; scoring</td></tr>
+
+        <tr>
+          <td><span class="model-name">DualMPNN</span><span class="sub">65.5% CATH recovery</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Foldseek DB</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ DB won't persist</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span></td>
+          <td><span class="pain p2">Fiddly</span></td>
+          <td>Model itself is MPNN-scale, but it <strong>requires a Foldseek index of the PDB</strong> for template retrieval — that is the storage line item, not the weights.</td>
+          <td>On Colab you would rebuild or re-download the index every session. It also only helps when homologous structures exist — for genuinely <em>de novo</em> binder backbones the advantage over ProteinMPNN narrows.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">SurfFold</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Probably</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Likely</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Yes</span></td>
+          <td><span class="pain p2">Fiddly</span></td>
+          <td>One-shot MLP decoder, fast. Requirements not stated.</td>
+          <td><strong>No licence file in the repo</strong> — legally that means all rights reserved. Fine to evaluate, not safe to build a pipeline or any commercial work on.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">Refold</span></td>
+          <td class="cell-no"><span class="v v-no">❌</span></td>
+          <td class="cell-no"><span class="v v-no">❌</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Anonymised</span></td>
+          <td><span class="pain p3">Hard</span></td>
+          <td>Trained on a single A800; needs a structure database for retrieval.</td>
+          <td>Anonymised release only. Revisit after de-anonymisation.</td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">AF2 initial-guess (AF2-IG)</span><span class="sub">the standard filter</span></td>
+          <td class="cell-no"><span class="v v-no">❌ No</span></td>
+          <td class="cell-warn"><span class="v v-warn">⚠️ Small batches</span></td>
+          <td class="cell-yes"><span class="v v-yes">✅ Essential</span></td>
+          <td><span class="pain p2">Fiddly</span></td>
+          <td>AF2-class GPU memory, but no MSA search needed when seeded with the design model — so no 2.6 TB database.</td>
+          <td>JAX again, so same Blackwell caveat. Most published hit rates are conditioned on this filter, so if you want your numbers to be comparable to the literature you need it in the pipeline.</td>
+        </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notebox">
+      <h3>📐 The pattern in one paragraph</h3>
+      Feasibility in this field is not mainly about FLOPs. Three things decide it: <strong>(1) does it need an MSA
+      database</strong> — that is a terabyte-scale, one-time institutional cost that no laptop or Colab session can
+      absorb; <strong>(2) is the design budget above or below ~12 hours</strong> — that single number cleanly
+      separates "Colab can do it" from "this is an array job"; and <strong>(3) is the licence a technical or a legal
+      artifact</strong> — AF3's gated weights, PyRosetta, IgLM and SurfFold's missing licence file will each stop
+      you more reliably than any VRAM limit.
+    </div>
+  </div>
+
+  <!-- ============ TAB 2 ============ -->
+  <div id="t2" class="tab-content">
+
+    <div class="okbox">
+      <strong>Short version.</strong> The laptop is a control plane, Colab is a teaching and prototyping surface,
+      and the HPC is where every real campaign runs. Do not try to make the first two do the third's job — but do
+      use them deliberately, because both have a job that the cluster does badly.
+    </div>
+
+    <h2>💻 Laptop — orchestration, analysis, and hosted services</h2>
+    <div class="stack">
+      <div class="step">
+        <h4>Run locally: ProteinMPNN, ipSAE + the pDockQ family, PepMLM, SimpleFold (if Apple Silicon)</h4>
+        <p>All CPU-viable, all genuinely useful. ipSAE in particular is the single best-validated ranking
+        improvement available — it beat ipTM, iPAE, actifpTM and pDockQ across 1,589 BindCraft/RFdiffusion designs
+        — and it costs you a <code>pip install numpy</code>. Reranking a finished campaign on your laptop is real work.</p>
+      </div>
+      <div class="step">
+        <h4>Use hosted services for anything exploratory</h4>
+        <p>The Protenix/PXDesign web server (free, no GPU, and the authors' own recommendation), Latent-X's
+        free tier, ESM Atlas, and the AlphaFold Server. For "what does this target look like, is this epitope
+        plausible" questions these beat waiting in a Slurm queue.</p>
+      </div>
+      <div class="step">
+        <h4>Treat the laptop as the pipeline driver</h4>
+        <p>Write your submit scripts, parse results, and do all filtering/plotting here. Everything downstream of
+        the GPU in this field is small-data.</p>
+      </div>
+    </div>
+
+    <h2>☁️ Google Colab — prototyping and teaching, on Pro</h2>
+    <div class="stack">
+      <div class="step">
+        <h4>What it is genuinely good for</h4>
+        <p><strong>ColabFold</strong> is the best folding experience on any platform, because it moves MSA search
+        to a remote server and removes the 2.6 TB problem entirely. <strong>RFdiffusion3</strong> is a
+        surprise fit — ~3 GB GPU memory means it runs even on a free T4. The <strong>BindCraft</strong> and
+        <strong>ColabDesign/RFdiffusion</strong> notebooks are the fastest way to understand what these pipelines
+        actually do before you commit cluster hours to them. On Pro, <strong>Boltz-2</strong> handles ~1,600 tokens
+        on a 24 GB L4.</p>
+      </div>
+      <div class="step">
+        <h4>What kills you</h4>
+        <p>The 12-hour ceiling and ~90-minute idle disconnect. A BoltzGen campaign wants 10,000–60,000 designs; an
+        ESMFold2 design run is ~2 days per target; Germinal is 200–400 H100-hours. None of these survive contact
+        with a Colab session. Ephemeral disk also means no persistent Foldseek index and no local MSA databases.
+        And GPU allocation is never guaranteed, even on Pro — you cannot plan a deadline around it.</p>
+      </div>
+      <div class="step">
+        <h4>Verdict</h4>
+        <p>Worth a Pro subscription as a <em>learning and debugging</em> environment. Never as production. If you
+        catch yourself trying to checkpoint around the 12-hour limit, that is the signal to move to Slurm.</p>
+      </div>
+    </div>
+
+    <h2>🖥️ Slurm HPC — the actual platform</h2>
+    <div class="stack">
+      <div class="step">
+        <h4>Step 1 · Pick the epitope before you pick the model</h4>
+        <p>You are targeting <em>surface</em> proteins, so the extracellular topology determines what is even
+        designable. This project already has a DeepTMHMM workflow on the cluster — run it first and design only
+        against confidently extracellular regions. Note too that PolyFold found OpenFold3 essentially fails on
+        membrane proteins (DockQ ≈ 0), which is a warning about the whole model class on this target type.</p>
+      </div>
+      <div class="step">
+        <h4>Step 2 · Generate — BoltzGen as primary, RFdiffusion3 as the cheap workhorse</h4>
+        <p><strong>BoltzGen</strong> (MIT, <code>pip install boltzgen</code>) covers minibinders, VHHs and
+        macrocycles in one model, parallelises with <code>--devices</code>, and reported nanomolar binders for 66%
+        of 9 novel targets. Smoke-test with <code>--num_design 50</code>, then run 10,000–60,000 as a Slurm array.
+        <strong>RFdiffusion3</strong> is worth installing regardless: ~3 GB VRAM and ~10× faster than RFd2 means
+        you can run it opportunistically on whatever GPU is free. Keep <strong>BindCraft</strong> as your
+        reference baseline — it is the pipeline with published, X-ray-confirmed, independently-scrutinised numbers.</p>
+      </div>
+      <div class="step">
+        <h4>Step 3 · Filter hard — this is where the leverage is</h4>
+        <p>AF2-IG re-prediction, then rank with <strong>ipSAE</strong> (practical cutoff ipSAE_min &gt; 0.61),
+        cross-checked with Boltz-2's affinity module. PXDesign's result that simply <em>re-ranking</em> existing
+        RFdiffusion designs by a better confidence metric raises hit rates on every target is the cheapest
+        available improvement in the whole pipeline. Budget real compute for filtering, not just generation.</p>
+      </div>
+      <div class="step">
+        <h4>Step 4 · Partition your GPUs by framework, not by size</h4>
+        <p>Send JAX jobs (ColabFold, BindCraft, AF2-IG, Germinal) to A100/H100/L40S. Send pure-PyTorch jobs
+        (BoltzGen, RFdiffusion3, ESMFold2, Boltz-2, Chai-1) to the B300s, where the 288 GB of HBM buys you long
+        targets and large batches. Validate one small job per tool per GPU generation before submitting an array —
+        a 2,000-job array that fails on <code>sm_100</code> at minute one is an expensive way to learn this.</p>
+      </div>
+      <div class="step">
+        <h4>Step 5 · Close the loop experimentally</h4>
+        <p>Adaptyv's BenchBB is the only fixed-target, fixed-budget, independent wet-lab benchmark in the field,
+        with an API and open results under ODbL. Their Nipah G round — 1,196 community designs → 111 binders,
+        under 10% — is the number to calibrate against, not the 66–88% headline rates.</p>
+      </div>
+    </div>
+
+    <div class="notebox">
+      <h3>🎯 If you only install four things</h3>
+      <ul>
+        <li><strong>BoltzGen</strong> — MIT, one pip command, covers the formats you need, strongest credible reported rates.</li>
+        <li><strong>RFdiffusion3</strong> — ~3 GB VRAM, ~10× faster than RFd2, Apptainer-able, training code released.</li>
+        <li><strong>ipSAE</strong> — numpy only, best-validated filter, works on Boltz/Chai/AF output.</li>
+        <li><strong>BindCraft</strong> — your baseline for sanity-checking everything above against published wet-lab numbers.</li>
+      </ul>
+      That stack is MIT/open end to end, needs no gated weights, no PyRosetta licence for the first three, and no
+      terabyte-scale MSA database. Add Boltz-2 when you want affinity estimates, and OpenGerminal if you move into
+      nanobody formats.
+    </div>
+  </div>
+
+  <!-- ============ TAB 3 ============ -->
+  <div id="t3" class="tab-content">
+
+    <h2>🧨 Blackwell / B300 — the thing to test before you trust</h2>
+    <div class="notebox" style="margin-top:0;">
+      Blackwell-generation cards use compute capability 10.x (B200/B300) and 12.0 (RTX 50-series), which most of
+      this software predates. Concretely:
+      <ul>
+        <li><strong>JAX stack</strong> (AlphaFold2, AlphaFold3, ColabFold, ColabDesign, BindCraft, AF2-IG, Germinal) — AF3's docs specify CC ≥8.0 and do not mention Blackwell; there are open compatibility issues against both AlphaFold and AlphaFold3 for Blackwell cards. Needs a recent <code>jax[cuda12]</code> with matching cuDNN and PTX; expect to pin versions.</li>
+        <li><strong>PyTorch stack</strong> — generally fine on recent versions, but RFdiffusion3's own tutorial warns Lovelace/Blackwell "may require upgraded PyTorch nightly builds with matching CUDA versions."</li>
+        <li><strong>Custom CUDA kernels</strong> (PXDesign, Boltz-2's cuEquivariance path, various Triton kernels) — the highest-risk category. They either need recompiling for <code>sm_100</code> or fall back silently to a slower path. Time one small job and compare against an H100 before believing your throughput numbers.</li>
+        <li><strong>PTX JIT</strong> issues have been reported on Blackwell with CUDA 12.8/12.9 toolkits — if you see missing <code>libnvptxcompiler</code> errors, that is this, not your code.</li>
+      </ul>
+      <strong>Practical rule:</strong> the newest GPU is the least compatible one. Treat B300 as a capacity
+      resource for validated jobs, not as your development target.
+    </div>
+
+    <h2>🌐 No internet on compute nodes?</h2>
+    <div class="notebox" style="margin-top:0;">
+      This one flag flips the feasibility of half the table, because it kills every <code>--use_msa_server</code>
+      path. Mitigations in order of preference:
+      <ul>
+        <li><strong>Prefer MSA-free models.</strong> ESMFold, ESMFold2, SimpleFold, RFdiffusion3, ProteinMPNN, BoltzGen's generator all need no genetic database. This is the single biggest simplification available to you.</li>
+        <li><strong>Pre-compute MSAs on the login node</strong> in a separate job stage, then pass them to the GPU job as files. Works for Boltz-2, Chai-1, AF3.</li>
+        <li><strong>Host the databases</strong> only if you truly need AF2/AF3-grade MSAs: ~2.6 TB for AF2's full set, ~630 GB uncompressed for AF3's. Ask for a project allocation, not home quota.</li>
+        <li><strong>Cache weights explicitly.</strong> Most of these tools download checkpoints on first run. Do that once on a login node; use flags like RFd3's <code>--checkpoint-dir</code> and set <code>HF_HOME</code> to shared scratch.</li>
+      </ul>
+    </div>
+
+    <h2>📦 No root, Apptainer only</h2>
+    <div class="notebox" style="margin-top:0;">
+      Less of a problem than it used to be. RFdiffusion3/foundry, RFdiffusion2 and PXDesign all publish container
+      images, and <code>apptainer build x.sif docker://…</code> converts them without root. Everything else in the
+      recommended stack is plain pip. Two habits worth keeping: build the <code>.sif</code> once on the login node
+      and store it in shared scratch, and pin exact versions — this ecosystem breaks compatibility quickly.
+    </div>
+
+    <h2>⚖️ Licence blockers, ranked by how often they stop people</h2>
+    <div class="notebox" style="margin-top:0;">
+      <ul>
+        <li><strong>PyRosetta</strong> — needed by BindCraft and Germinal. Free for academics but requires registration and a site install. OpenGerminal exists specifically to remove this dependency.</li>
+        <li><strong>AlphaFold2 multimer weights</strong> — CC BY-NC-SA. BindCraft is MIT but inherits this, so BindCraft output is not commercially clean.</li>
+        <li><strong>AlphaFold3 weights</strong> — application-gated, granted at DeepMind's discretion, non-commercial terms. Cannot be redistributed, which is why there is no legitimate AF3 Colab.</li>
+        <li><strong>IgLM</strong> — needed by original Germinal.</li>
+        <li><strong>SurfFold</strong> — ships with no licence file at all, which defaults to all rights reserved. Evaluate, don't build on it.</li>
+        <li><strong>Clean end to end:</strong> BoltzGen (MIT), Boltz-2 (MIT), ESMFold2 (MIT), Protenix/PXDesign (Apache-2.0), Chai-1 (now stated Apache-2.0 for weights), ProteinMPNN, RFdiffusion3, ipSAE.</li>
+      </ul>
+    </div>
+
+    <h2>⏱️ Rough compute budget for one binder campaign</h2>
+    <div class="notebox" style="margin-top:0;">
+      Order-of-magnitude only, from the numbers the tools themselves state:
+      <ul>
+        <li><strong>BindCraft</strong> — 300–3,000 trajectories per target; a single GPU-days-scale job per target.</li>
+        <li><strong>BoltzGen</strong> — 10,000–60,000 designs recommended upstream of filtering; embarrassingly parallel, so this is an array job sized by your allocation rather than by wall clock.</li>
+        <li><strong>Germinal</strong> — the most honest published figure in the table: ~200–400 H100-hours for ~200 successful designs, ~1 success per GPU-hour.</li>
+        <li><strong>ESMFold2 design mode</strong> — ~2 days generation plus &lt;1 day scoring per target. Note the shape of that cost: the model is fast per fold, but design is 150 gradient steps (forward + backward) per design, so ~450 forward-equivalents each, times thousands of designs.</li>
+        <li><strong>Filtering</strong> — plan for this to be a similar order of magnitude to generation, not an afterthought. It is where the published hit rates come from.</li>
+      </ul>
+      A reasonable first ask: one target, BoltzGen + RFdiffusion3 generation, AF2-IG + ipSAE filtering, ~20–100
+      designs ordered from Adaptyv. That is a few hundred GPU-hours and a real result.
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div>
+      <strong>Confidence notes.</strong> Requirements quoted above come from each project's own documentation and
+      are marked as such in the table; where a project states nothing (PXDesign VRAM, OpenFold3, SurfFold,
+      Proteina-Complexa) this document says so rather than estimating. Colab tier specifics vary and are not
+      contractually guaranteed even on Pro. The Blackwell assessment is a risk judgement based on documented CC
+      requirements and open compatibility issues, not on a test you have run — validate one small job per tool per
+      GPU generation before scaling.
+      <br><br>Built 13 August 2026 as a companion to <em>Protein Modeling 2026 — fact-checked edition</em>.
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tab-content').forEach(function (c) { c.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

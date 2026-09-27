@@ -1,0 +1,30 @@
+{
+  "sets": [
+    {
+      "name": "ready",
+      "references": [
+        {
+          "component_kind": "record_occurrence",
+          "component_id": "record:1@header_line:3"
+        },
+        {
+          "component_kind": "selected_occurrence",
+          "component_id": "record:0@header_line:1"
+        }
+      ]
+    },
+    {
+      "name": "blocked",
+      "references": [
+        {
+          "component_kind": "record_occurrence",
+          "component_id": "record:2@header_line:5"
+        },
+        {
+          "component_kind": "record_occurrence",
+          "component_id": "record:9@header_line:99"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,265 @@
+# F01 Coordinate Admission Amendment v1
+
+Status: Proposed, accepted for implementation planning
+Authority: astra math formulation.txt remains authoritative
+Amendment ID: F01-coordinate-admission-v1
+Decision: nm-only identity admission
+Scope: F01 coordinate input normalization and provenance only
+Non-goals: No length conversion, no F02 changes, no aggregation,
+no probability/ranking/optimization, no frozen-core edits
+
+## 1. Proposed amendment text
+
+**Status: proposal only.** Authority remains [astra math formulation.txt](/Users/fatihyigitevyapan/Desktop/Forschungspraktikum/astra%20math%20formulation.txt). No existing document, implementation or decision is modified.
+
+**Amendment identifier:** `F01-coordinate-admission-v1`.
+
+### Amendment scope
+
+Amend only:
+
+- **§2 quantity dictionary:** Add mandatory coordinate-unit, frame and declaration provenance requirements to `distance_nm`. Its type, unit, domain and lack of aggregation remain unchanged.
+- **§5 `10_input_normalization`:** Add explicit, opt-in coordinate admission under the policy below.
+- **§3/§4 F01 input envelope:** Require normalized endpoint records and verified normalization traces.
+- **§4 provenance/serialization:** Add path-independent coordinate identities and traces. For F01 only, an undeclared producer configuration uses explicit null/reason.
+
+The F01 equation remains unchanged:
+
+\[
+d=\|\mathbf{x}-\mathbf{y}\|_2.
+\]
+
+Existing span equations, predicates and their prerequisites remain unchanged.
+
+The coordinate-admission decision becomes `IMPLEMENTABLE` **only after this amendment is accepted and every required declaration and validation succeeds**. Missing coordinate declarations retain `ARTIFACT_SEMANTICS_INCOMPLETE`. This does not certify an implementation or waive other F01 prerequisites.
+
+### Coordinate declaration envelope
+
+One declaration applies to **all coordinates in one explicitly selected artifact/model scope**.
+
+Required fields:
+
+- `coordinate_declaration_id: string` — caller-assigned, immutable, path-independent identifier.
+- `scope.artifact_id: string`.
+- `scope.artifact_sha256: string` — exactly 64 lowercase hexadecimal characters.
+- `scope.selected_model_id: string` — explicit, opaque model identity.
+- `coordinate_unit: "nm"` — admitted output unit.
+- `source_unit: "nm"` — explicit caller declaration.
+- `frame_id: string` — opaque, path-independent frame identifier.
+- `frame_kind: "cartesian_3d"`.
+- `normalization_profile_id: "coordinate-nm-identity"`.
+- `normalization_profile_version: "1"`.
+- `conversion.applied: false`.
+- `conversion.factor: 1`.
+- `conversion.formula: "x_nm = x_source"`.
+- `canonicalization_version: "coordinate-json-v1"`.
+
+**Nullability and vocabulary**
+
+- No declaration field may be null, omitted or replaced by an empty string.
+- Unknown fields are rejected in version 1.
+- Units, frame kind, profile identity and conversion fields use the exact vocabulary above; aliases and case variants are rejected.
+- Identifier strings are nonempty and compared exactly. No trimming, case folding or Unicode normalization occurs.
+
+**Frame semantics**
+
+- `frame_id` is a caller assertion of a common origin, basis and axis convention.
+- Endpoint frame equality requires exact equality of both `frame_id` and `frame_kind`.
+- Equal coordinate values do not establish frame equality.
+- Different frame IDs are rejected; no transform or equivalence inference is permitted.
+- The declaration establishes explicit input semantics; software does not independently prove the caller’s frame assertion.
+
+**Declaration identity**
+
+- `coordinate_declaration_sha256` is SHA-256 of the entire canonical declaration object.
+- The same declaration ID with a different declaration hash is invalid.
+- Artifact/model scope must match the selected input exactly.
+- Source coordinates are **never admitted without this declaration**, including coordinates already asserted elsewhere to use nm.
+
+### F01 normalized input contract
+
+F01 receives two immutable endpoint records, `x` and `y`. Each contains:
+
+- `point_id: string`.
+- `coordinates_nm: tuple<number, number, number>`.
+- `coordinate_unit: "nm"`.
+- `frame_id: string`.
+- `frame_kind: "cartesian_3d"`.
+- `artifact_id`, `artifact_sha256`, `selected_model_id`.
+- `endpoint_locator: object` — the existing stable record locator, interpreted by its explicitly selected locator profile.
+- `coordinate_declaration_id`, `coordinate_declaration_sha256`.
+- `normalization_profile_id`, `normalization_profile_version`.
+- `normalization_trace`, `normalization_trace_sha256`.
+
+Coordinate components must be finite binary64-representable numbers; booleans and numeric strings are rejected. Each locator must resolve to exactly one coordinate triple in the selected artifact/model.
+
+The normalization trace contains:
+
+- Artifact/model identity and endpoint locator.
+- Declaration ID/hash.
+- Profile ID/version.
+- `source_unit: "nm"`, `target_unit: "nm"`.
+- `source_coordinates` and `normalized_coordinates`.
+- `operation: "identity_admission"`.
+- `normalization_pass_count: 1`.
+- `conversion_count: 0`.
+- `conversion_applied: false`, `factor: 1`.
+- `formula: "x_nm = x_source"`.
+- Canonicalization version.
+
+Source and normalized coordinate triples must be identical. No scaling, rounding, clipping or coordinate transformation is performed.
+
+A normalized record goes directly to F01. Resubmitting it to `10_input_normalization` is rejected. Re-reading an original artifact creates a new admission operation from source coordinates; it does not normalize a previous result again.
+
+### Provenance and serialization
+
+A successful `distance_nm` record requires:
+
+- Artifact IDs and SHA-256 values for both endpoints.
+- Explicit selected model identities.
+- Endpoint locators and point IDs.
+- Shared frame ID/kind.
+- Coordinate declaration IDs/hashes.
+- Profile IDs/versions.
+- Full normalization traces and trace hashes.
+- `mapping_hash`.
+- `payload_hash`.
+- `producer_configuration_hash: string|null`.
+- `producer_configuration_missing_reason: null|"not_declared"`.
+- `formulation_id: "deterministic_geometry_v1"`.
+- `formulation_version: "1"`.
+- `input_contract_id: "F01-coordinate-admission-v1"`.
+- `canonicalization_version: "coordinate-json-v1"`.
+
+A declared producer configuration requires its canonical snapshot and matching hash; its missing reason is null. If no configuration is declared, the hash is null and the reason is exactly `not_declared`. This exception applies only to F01.
+
+**Hash definitions**
+
+- Declaration hash: complete declaration object.
+- Trace hash: complete trace object, excluding its own hash field.
+- Mapping hash: ordered `x`, `y` associations, including point IDs, artifact/model identities, endpoint locators and declaration hashes.
+- Payload hash: the complete location-independent result payload, excluding its own hash field. It includes endpoint records, trace hashes, mapping hash, configuration provenance, formulation identity, `distance_nm` and unit.
+
+Hash inputs are prefixed with a distinct object-kind tag and canonicalization version to separate declaration, trace, mapping and result identities.
+
+**Canonicalization profile**
+
+`coordinate-json-v1` specifies:
+
+- UTF-8 JSON; no insignificant whitespace or byte-order mark.
+- Object keys sorted by Unicode code-point order; array order preserved.
+- No Unicode normalization.
+- Quote and backslash escaped; control characters encoded as lowercase `\u00xx`; other characters emitted as UTF-8.
+- Integers use decimal notation without leading zeros.
+- Coordinate numbers use binary64 values rendered with 17 significant decimal digits, trailing fractional zeros removed; lowercase exponent with no `+` or redundant leading zeros.
+- Negative zero serializes as `0`; this is a serialization rule, not a coordinate correction.
+- NaN, infinity, duplicate object keys and unsupported value types are rejected.
+- Hash fields never include themselves.
+
+Execution-only metadata may contain `selected_path`, run/execution IDs and timestamps. None belongs in declaration, mapping, trace or payload hashes. Artifact locators inside endpoint records are **record selectors**, not filesystem paths.
+
+## 2. Canonical JSON examples
+
+These are synthetic declaration examples. They assert no unit or frame for any existing artifact. The displayed digest is an illustrative expected artifact identity, not a verified local artifact hash. Hashing uses the canonical byte rules above.
+
+**Admissible declaration shape:**
+
+```json
+{
+  "canonicalization_version": "coordinate-json-v1",
+  "conversion": {
+    "applied": false,
+    "factor": 1,
+    "formula": "x_nm = x_source"
+  },
+  "coordinate_declaration_id": "declaration-example-01",
+  "coordinate_unit": "nm",
+  "frame_id": "frame-example-01",
+  "frame_kind": "cartesian_3d",
+  "normalization_profile_id": "coordinate-nm-identity",
+  "normalization_profile_version": "1",
+  "scope": {
+    "artifact_id": "artifact-example-01",
+    "artifact_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "selected_model_id": "model-01"
+  },
+  "source_unit": "nm"
+}
+```
+
+**Rejected declaration shape — unsupported source unit:**
+
+```json
+{
+  "canonicalization_version": "coordinate-json-v1",
+  "conversion": {
+    "applied": false,
+    "factor": 1,
+    "formula": "x_nm = x_source"
+  },
+  "coordinate_declaration_id": "declaration-example-02",
+  "coordinate_unit": "nm",
+  "frame_id": "frame-example-01",
+  "frame_kind": "cartesian_3d",
+  "normalization_profile_id": "coordinate-nm-identity",
+  "normalization_profile_version": "1",
+  "scope": {
+    "artifact_id": "artifact-example-01",
+    "artifact_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "selected_model_id": "model-01"
+  },
+  "source_unit": "angstrom"
+}
+```
+
+Expected failure: `COORDINATE_UNIT_UNSUPPORTED`. No scaling is attempted.
+
+## 3. Unit policy decision
+
+**Select A — nm-only admission.**
+
+- Only source coordinates explicitly declared in nm are admitted.
+- The amendment creates an **identity-admission profile**, not a conversion profile.
+- `conversion.applied=false` and `factor=1` document the absence of conversion.
+- `angstrom` and every other source-unit token are unsupported.
+- Artifact filenames, parser behavior, model identifiers, environment values and documentation cannot supply or override the declaration.
+
+This is the smallest amendment that supplies the missing semantics without introducing a new length conversion rule. Admission of another source unit would require a separate accepted amendment.
+
+## 4. Failure ordering
+
+The following is a closed first-failure sequence. At each stage inspect `x` before `y`; stop on failure. Later stages are `not checked`.
+
+1. **`INPUT_CONTRACT_INVALID`** — malformed outer request, missing required non-declaration fields, unsupported canonicalization or invalid configuration-provenance pairing.
+2. **`COORDINATE_DECLARATION_MISSING`** — required declaration absent or null.
+3. **`COORDINATE_DECLARATION_INVALID`** — malformed declaration, unknown fields, missing required fields other than frame/unit/profile, or reused declaration ID with different content.
+4. **`ARTIFACT_IDENTITY_MISMATCH`** — artifact bytes, declared scope, selected artifact or selected model identity disagree.
+5. **`COORDINATE_FRAME_MISSING`** — frame ID/kind absent, null or empty.
+6. **`COORDINATE_UNIT_UNSUPPORTED`** — source/output unit absent or outside the closed vocabulary.
+7. **`COORDINATE_UNIT_PROFILE_UNKNOWN`** — profile ID/version absent or not the exact authorized pair.
+8. **`COORDINATE_DECLARATION_INVALID`** — unsupported frame kind or conversion fields inconsistent with the authorized profile.
+9. **`COORDINATE_CONVERSION_REPEATED`** — normalization invoked on an already normalized record, or a declared prior normalization/conversion pass is present at the source-admission boundary.
+10. **`POINT_SELECTOR_NOT_FOUND`** — endpoint locator resolves to no record.
+11. **`POINT_SELECTOR_AMBIGUOUS`** — endpoint locator resolves to multiple records.
+12. **`COORDINATE_FRAME_MISMATCH`** — endpoint frame identities differ.
+13. **`COORDINATE_NONFINITE`** — malformed coordinate triple, invalid component type or nonfinite component.
+14. **`NORMALIZATION_TRACE_INVALID`** — missing, inconsistent or hash-invalid trace; declaration-reference mismatch; source/normalized values differ; pass/count/profile fields disagree.
+15. **`DISTANCE_NONFINITE`** — finite admitted coordinates nevertheless produce an unrepresentable result.
+
+For F01 consuming a normalized record, the recorded single admission pass is required; it is not a repeated-conversion failure. The repeated-conversion check applies when attempting another normalization operation.
+
+Every failure produces `distance_nm=null` and one primary code with endpoint/field location. No partial distance, inferred declaration, default conversion, frame substitution or silent repair is permitted. These codes belong to the admission layer; they do not modify frozen-core statuses.
+
+## 5. Migration conditions before implementation
+
+- Accept this amendment explicitly and pin its text/hash alongside the authoritative baseline.
+- Freeze the declaration schema, identity-admission profile, canonicalization rules and failure ordering.
+- Supply caller declarations scoped to the exact artifact hashes and selected models.
+- Establish exact endpoint locator resolution and explicit shared-frame assertions.
+- Prepare reviewable fixtures for missing declarations, unsupported units, unknown profiles, repeated normalization, unequal frames, invalid coordinates, missing/ambiguous selectors, trace tampering and artifact mismatch.
+- Include a synthetic nm example with points \((0,0,0)\) and \((3,4,0)\), expected `distance_nm=5`; verify that moving the artifact path changes execution metadata only.
+- Confirm unchanged F01 prerequisites for any separately requested span predicates. Coordinate admission alone does not enable them.
+- Until acceptance and these prerequisites are satisfied, do not mark the affected path `IMPLEMENTABLE`.
+
+**Explicit non-goals:** F01 equations unchanged; no coordinate substitution using PAE, RMSD, pLDDT, ipTM, confidence, filenames, seed/sample tokens or generic metadata; no F02 changes; no `segment_count_dimensionless` producer; no aggregation; no probability, ranking, score-combination or optimization; no notebook changes; no frozen-core mutation.
+

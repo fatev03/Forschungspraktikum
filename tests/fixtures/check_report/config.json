@@ -1,0 +1,7 @@
+{
+  "version": "1.0",
+  "bridge_manifest_id": "bridge",
+  "allowed_input_roots": [
+    "REPLACE_WITH_EXPLICIT_SYNTHETIC_FIXTURE_ROOT"
+  ]
+}

@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "value_flow_receipt",
+  "description": "One consumer-side use event for a CEFF_M / ARM_REACH_NM transfer. States only whether the supplied pair was accepted, rejected or unavailable, and records the producer -> envelope -> consumer -> export chain.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "receipt_id",
+    "consumer",
+    "selected_producer_path",
+    "selected_reference_paths",
+    "expected",
+    "observed",
+    "checks",
+    "outcome",
+    "reason",
+    "detail",
+    "chain"
+  ],
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "value_flow_receipt/1"
+      ]
+    },
+    "receipt_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "consumer": {
+      "type": "object",
+      "required": [
+        "consumer_id",
+        "export_id"
+      ],
+      "properties": {
+        "consumer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "export_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "selected_producer_path": {
+      "type": "string"
+    },
+    "selected_reference_paths": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "reference_id",
+          "path"
+        ],
+        "properties": {
+          "reference_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "expected": {
+      "type": "object",
+      "required": [
+        "producer_result_id",
+        "configuration",
+        "quantities"
+      ],
+      "properties": {
+        "producer_result_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "configuration": {
+          "type": "object",
+          "required": [
+            "profile_id",
+            "profile_version"
+          ],
+          "properties": {
+            "profile_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "profile_version": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "quantities": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "quantity_id",
+              "quantity_definition_id",
+              "context",
+              "category",
+              "unit",
+              "scale"
+            ],
+            "properties": {
+              "quantity_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "quantity_definition_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "context": {
+                "type": "string",
+                "minLength": 1
+              },
+              "category": {
+                "type": "string",
+                "minLength": 1
+              },
+              "unit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scale": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "observed": {
+      "type": "object",
+      "required": [
+        "result_id",
+        "method_id",
+        "method_version",
+        "pipeline_run_id",
+        "execution_id",
+        "profile_id",
+        "profile_version",
+        "status"
+      ],
+      "properties": {
+        "result_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "method_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "method_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pipeline_run_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "execution_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "profile_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "profile_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "enum": [
+            null,
+            "COMPUTED",
+            "UNAVAILABLE",
+            "REJECTED"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "stage",
+          "result"
+        ],
+        "properties": {
+          "stage": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "enum": [
+              "PASSED",
+              "FAILED",
+              "NOT_REACHED"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "outcome": {
+      "enum": [
+        "ACCEPTED",
+        "UNAVAILABLE",
+        "REJECTED"
+      ]
+    },
+    "reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "detail": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "chain": {
+      "type": "object",
+      "required": [
+        "producer_result_id",
+        "envelope_id",
+        "consumer_id",
+        "export_id"
+      ],
+      "properties": {
+        "producer_result_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "envelope_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "consumer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "export_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

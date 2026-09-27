@@ -1,0 +1,258 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "alignment_evidence_envelope",
+  "description": "One immutable publication of one alignment reader result. The source block records the caller-declared artifact identity, content hash and layout; source_fields maps each fixed JSON Pointer into the verified reader result to the value found there, unchanged. Without a reader result, the reader's closed diagnostic code, locator and details are carried and source_fields is null. The document contains no filesystem path, allowed root, path-bearing contract hash or free-text reader message.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "envelope_id",
+    "source",
+    "reader",
+    "status",
+    "reason",
+    "reader_diagnostic",
+    "source_fields",
+    "rules"
+  ],
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "alignment_evidence_envelope/1"
+      ]
+    },
+    "envelope_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "artifact_id",
+        "declared_sha256",
+        "declared_layout"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "declared_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "declared_layout": {
+          "type": "object",
+          "required": [
+            "format",
+            "source_kind",
+            "source_kind_status",
+            "profile_id",
+            "profile_version",
+            "profile_selection"
+          ],
+          "properties": {
+            "format": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_kind": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_kind_status": {
+              "type": "string",
+              "minLength": 1
+            },
+            "profile_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "profile_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "profile_selection": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "reader": {
+      "type": "object",
+      "required": [
+        "entry_point",
+        "module",
+        "result_type"
+      ],
+      "properties": {
+        "entry_point": {
+          "enum": [
+            "parse_colabfold_a3m"
+          ]
+        },
+        "module": {
+          "enum": [
+            "structure_audit.colabfold_a3m_lossless"
+          ]
+        },
+        "result_type": {
+          "enum": [
+            "ColabFoldA3MReaderResult"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "status": {
+      "enum": [
+        "AVAILABLE",
+        "UNAVAILABLE",
+        "UNSUPPORTED",
+        "REJECTED"
+      ]
+    },
+    "reason": {
+      "enum": [
+        null,
+        "READER_CODE_UNRECOGNIZED",
+        "SOURCE_CONTENT_HASH_MISMATCH",
+        "SOURCE_LAYOUT_UNSUPPORTED",
+        "SOURCE_MALFORMED",
+        "SOURCE_REQUEST_REJECTED",
+        "SOURCE_SELECTION_REJECTED",
+        "SOURCE_UNREADABLE"
+      ]
+    },
+    "reader_diagnostic": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "code",
+        "locator",
+        "details"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "locator": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "details": {}
+      },
+      "additionalProperties": false
+    },
+    "source_fields": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "/status",
+        "/artifact/snapshot/artifact_id",
+        "/artifact/snapshot/format",
+        "/artifact/snapshot/source_kind",
+        "/artifact/snapshot/source_kind_status",
+        "/artifact/raw_sha256",
+        "/artifact/size_bytes",
+        "/reconstructed_sha256",
+        "/profile",
+        "/position_bases",
+        "/configuration/query_gap_policy",
+        "/configuration/lowercase_x_policy",
+        "/configuration/unknown_tokens",
+        "/configuration/unknown_policy",
+        "/effective_execution_gates",
+        "/raw_preamble",
+        "/records",
+        "/occurrence_mapping",
+        "/query",
+        "/inventory",
+        "/raw_id_duplicate_summary",
+        "/sequence_duplicate_summary",
+        "/unknown_token_summary",
+        "/insertion_transform_summary",
+        "/provenance_snapshot",
+        "/diagnostics",
+        "/limitations"
+      ],
+      "properties": {
+        "/status": {},
+        "/artifact/snapshot/artifact_id": {},
+        "/artifact/snapshot/format": {},
+        "/artifact/snapshot/source_kind": {},
+        "/artifact/snapshot/source_kind_status": {},
+        "/artifact/raw_sha256": {},
+        "/artifact/size_bytes": {},
+        "/reconstructed_sha256": {},
+        "/profile": {},
+        "/position_bases": {},
+        "/configuration/query_gap_policy": {},
+        "/configuration/lowercase_x_policy": {},
+        "/configuration/unknown_tokens": {},
+        "/configuration/unknown_policy": {},
+        "/effective_execution_gates": {},
+        "/raw_preamble": {},
+        "/records": {},
+        "/occurrence_mapping": {},
+        "/query": {},
+        "/inventory": {},
+        "/raw_id_duplicate_summary": {},
+        "/sequence_duplicate_summary": {},
+        "/unknown_token_summary": {},
+        "/insertion_transform_summary": {},
+        "/provenance_snapshot": {},
+        "/diagnostics": {},
+        "/limitations": {}
+      },
+      "additionalProperties": false
+    },
+    "rules": {
+      "type": "object",
+      "required": [
+        "arithmetic",
+        "authority",
+        "exclusions",
+        "identity",
+        "immutability",
+        "mode",
+        "statuses"
+      ],
+      "properties": {
+        "arithmetic": {
+          "type": "string"
+        },
+        "authority": {
+          "type": "string"
+        },
+        "exclusions": {
+          "type": "string"
+        },
+        "identity": {
+          "type": "string"
+        },
+        "immutability": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string"
+        },
+        "statuses": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

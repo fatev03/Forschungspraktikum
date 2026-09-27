@@ -1,0 +1,363 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "quantity_summary",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "summary_id",
+    "quantity",
+    "producer_artifacts",
+    "values",
+    "availability",
+    "statistics",
+    "rules"
+  ],
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "quantity_summary/1"
+      ]
+    },
+    "summary_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "quantity": {
+      "type": "object",
+      "required": [
+        "quantity_id",
+        "context",
+        "category",
+        "unit",
+        "scale"
+      ],
+      "properties": {
+        "quantity_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "context": {
+          "enum": [
+            "monomer",
+            "complex",
+            "counter_screen",
+            "unassigned"
+          ]
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "scale": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "producer_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "artifact_id",
+          "sha256",
+          "layout",
+          "metric_name",
+          "record_count"
+        ],
+        "properties": {
+          "artifact_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "layout": {
+            "enum": [
+              "candidate_evidence_v1",
+              "candidate_evidence_list_v1"
+            ]
+          },
+          "metric_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "values": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "value_id",
+          "artifact_id",
+          "record_index",
+          "candidate_id",
+          "target_id",
+          "conformer_id",
+          "metric_name",
+          "metric_index",
+          "source",
+          "producer_provenance",
+          "status",
+          "value",
+          "exclusion_reason",
+          "exclusion_detail"
+        ],
+        "properties": {
+          "value_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "artifact_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "candidate_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "conformer_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "metric_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "metric_index": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "source": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "required": [
+              "path",
+              "sha256",
+              "row"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "row": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 1
+              }
+            },
+            "additionalProperties": false
+          },
+          "producer_provenance": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "required": [
+              "model_id",
+              "checkpoint_id",
+              "seed"
+            ],
+            "properties": {
+              "model_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "checkpoint_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "seed": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              }
+            },
+            "additionalProperties": false
+          },
+          "status": {
+            "enum": [
+              "accepted",
+              "excluded"
+            ]
+          },
+          "value": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "exclusion_reason": {
+            "enum": [
+              null,
+              "METRIC_ABSENT",
+              "VALUE_UNAVAILABLE",
+              "INTEGER_NOT_EXACTLY_REPRESENTABLE"
+            ]
+          },
+          "exclusion_detail": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "availability": {
+      "type": "object",
+      "required": [
+        "total_records",
+        "accepted_count",
+        "excluded_count",
+        "exclusion_reason_counts"
+      ],
+      "properties": {
+        "total_records": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "accepted_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "excluded_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "exclusion_reason_counts": {
+          "type": "object",
+          "required": [
+            "METRIC_ABSENT",
+            "VALUE_UNAVAILABLE",
+            "INTEGER_NOT_EXACTLY_REPRESENTABLE"
+          ],
+          "properties": {
+            "METRIC_ABSENT": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "VALUE_UNAVAILABLE": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "INTEGER_NOT_EXACTLY_REPRESENTABLE": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "statistics": {
+      "type": "object",
+      "required": [
+        "status",
+        "count",
+        "min",
+        "median",
+        "max",
+        "mean"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "SUMMARIZED",
+            "NO_ACCEPTED_VALUES"
+          ]
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "min": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "median": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "max": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "mean": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

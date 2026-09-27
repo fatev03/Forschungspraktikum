@@ -1,0 +1,3 @@
+design,n,seq,mpnn,plddt,i_ptm,i_pae,rmsd,note
+0,0,G/A,1.200,0.913,0.20,15.000,3.000,"synthetic, not biological"
+0,1,G/A,1.400,0.850,0.15,18.000,4.000,synthetic second sample

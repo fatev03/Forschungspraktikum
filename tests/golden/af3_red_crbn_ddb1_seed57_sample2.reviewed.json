@@ -1,0 +1,3372 @@
+{
+  "run_directory": "/Users/fatihyigitevyapan/Desktop/Forschungspraktikum/external_artifacts/af3_red/CRBN-DDB1/af3-red/s2.0-w100.0_apo/af_output/crbn_20251015_034523",
+  "source": "AF3-ReD",
+  "real_output_record": {
+    "path": "/Users/fatihyigitevyapan/Desktop/Forschungspraktikum/external_artifacts/af3_red/CRBN-DDB1.tar.gz",
+    "sha256": "06647cd51103fa02a10032dd92767820aff009e7d629c2d27e4c46b9856297bb"
+  },
+  "review_note": "Real extracted CRBN-DDB1 AF3-ReD output supplied by the user from Zenodo. Archive SHA-256, run discovery, all 301 artifact hashes/roles, unbound readiness results, selected native-reader provenance and root-copy bytes were observed before this golden test. User explicitly selected target_id=crbn, model_id=1, auth_asym_id=A, label_asym_id=A; receptor identity is not independently inferred or verified. The selected sample reads successfully but remains candidate because the adapter sidecar is absent. No bias metadata was inferred from paths/scripts. Expected values are frozen pre-test observations; the test must not generate or update this baseline.",
+  "expected_input_sha256": "bf35c577897af0595f7dc3cd65d09bf9ddfe345bc4e01093199efe8a04da94f1",
+  "expected_sidecar_sha256": null,
+  "sample_relative_path": "seed-57_sample-2/crbn_seed-57_sample-2_model.cif",
+  "binding": {
+    "artifact_sha256": "58f38cc8f279fb827851c27ff735bdc4b310ca22276a6a2cf8ebbb2414a882ed",
+    "target_id": "crbn",
+    "model_id": "1",
+    "auth_asym_id": "A",
+    "label_asym_id": "A"
+  },
+  "expected_artifacts": {
+    "crbn_model.cif": {
+      "sha256": "c89b1ce35264bc82310be016a528aa2362816877ad10d197f538103cdf1a9ef5",
+      "role": "upstream_selected_copy",
+      "status": "candidate",
+      "reasons": [
+        "root_copy_not_an_independent_sample"
+      ]
+    },
+    "seed-10_sample-0/crbn_seed-10_sample-0_model.cif": {
+      "sha256": "cfef9b33cde6ac15aaadf6ef1176935a5af96ced79f66b2f1d4001927d7a25d9",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-10_sample-1/crbn_seed-10_sample-1_model.cif": {
+      "sha256": "3cc774172be457b1741387cbbe52791315508658e6bec0dbe1127d7a9a1efa06",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-10_sample-2/crbn_seed-10_sample-2_model.cif": {
+      "sha256": "dfe13c33ecf3299bc7c4123263138b2186d9f308ec5f69f1d232e7055611f73c",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-10_sample-3/crbn_seed-10_sample-3_model.cif": {
+      "sha256": "336f7812871052a8d16b3e5eebcca24624c361d829c50aac1ef005e71a932609",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-10_sample-4/crbn_seed-10_sample-4_model.cif": {
+      "sha256": "8352822740b257c568381e040674ed3412c65f2f24d3eeee364c2d7a2f346598",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-11_sample-0/crbn_seed-11_sample-0_model.cif": {
+      "sha256": "a8d8c99a58dd199840c2e20fe2799730da65232c12c41a14774cd24b7a2e5c54",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-11_sample-1/crbn_seed-11_sample-1_model.cif": {
+      "sha256": "0b25da2ae83ef43e7f67c07e54f644496b3e6ba86fbaf04ebcb217ea57a03e42",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-11_sample-2/crbn_seed-11_sample-2_model.cif": {
+      "sha256": "0d1e50a074c954b121acecb2fd103e9adc2b3e599592bc0b5ed46bd46c4af814",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-11_sample-3/crbn_seed-11_sample-3_model.cif": {
+      "sha256": "94252cb7890c6762db38abb691783bd5eaf3f67f59fed9203a979e9a3b3062a3",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-11_sample-4/crbn_seed-11_sample-4_model.cif": {
+      "sha256": "f83baa83f23bc17a23129e7e436c2f5b375fb6cb61949203095eadca3e6b5dd4",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-12_sample-0/crbn_seed-12_sample-0_model.cif": {
+      "sha256": "41487814f4acd06478dbb6f2929ee81cc2cf64567622c02e5f7691d503d79399",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-12_sample-1/crbn_seed-12_sample-1_model.cif": {
+      "sha256": "ada2be47c8dd1ff62714c0ea29c95b47ad74e352ac861030b195fa0a9002bac1",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-12_sample-2/crbn_seed-12_sample-2_model.cif": {
+      "sha256": "23c1978f11b41ab52dda082ff78904447caa83cdce518151fa412616f5b74026",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-12_sample-3/crbn_seed-12_sample-3_model.cif": {
+      "sha256": "cc38a72dfa7b1b9ccf0db804adf62f6ae17cffd3a3e3493ea5af1d1aca306613",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-12_sample-4/crbn_seed-12_sample-4_model.cif": {
+      "sha256": "068295fc03e7dd69602badff182b9bc89a3f083dcad53d25a1b3fed1f737e850",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-13_sample-0/crbn_seed-13_sample-0_model.cif": {
+      "sha256": "0857715c00f89c6747f03699a212c5ac73c585b79e86a47f77435c2c69984d17",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-13_sample-1/crbn_seed-13_sample-1_model.cif": {
+      "sha256": "dcac9019460f53fc9a3d4388d7aecdd541df3804a98653eff832e282bea310ef",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-13_sample-2/crbn_seed-13_sample-2_model.cif": {
+      "sha256": "e896ea8e3c8202aacf52b5adbb1a44ef36b9992be7ca5a7eaee8434f2f5d6a00",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-13_sample-3/crbn_seed-13_sample-3_model.cif": {
+      "sha256": "e37b550c240fe50a9fec3ce537db236acdece0b595a8cf146992cc1674955ce4",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-13_sample-4/crbn_seed-13_sample-4_model.cif": {
+      "sha256": "6de37b25833b308e698115b0211d26e64b1e2f032bcae9093eeb9185895d23a6",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-14_sample-0/crbn_seed-14_sample-0_model.cif": {
+      "sha256": "3d6601159622233041ca42a968f263bc89d8d5759e7dd5f0fa2a15212ec914d2",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-14_sample-1/crbn_seed-14_sample-1_model.cif": {
+      "sha256": "7d28abdea170c79b90d8def0eb93832e8174a0387ce99e802e51b9b5c5adf079",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-14_sample-2/crbn_seed-14_sample-2_model.cif": {
+      "sha256": "6033929d6575aed459993b233c93052372b69e55242a34b1911e507809be93be",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-14_sample-3/crbn_seed-14_sample-3_model.cif": {
+      "sha256": "c6bab6ee51a75f67c49b15382af04fba19ff2f40d05e52941d880105e0335cc5",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-14_sample-4/crbn_seed-14_sample-4_model.cif": {
+      "sha256": "5cda1dffd87293952e0866f54aa69983c06b2bc491cb066570904af8653fcd35",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-15_sample-0/crbn_seed-15_sample-0_model.cif": {
+      "sha256": "39c7a800a5f687a913b666219216191f18b0a6ee10d954a9aab972133c85c622",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-15_sample-1/crbn_seed-15_sample-1_model.cif": {
+      "sha256": "4976fdad3082cc948757f0499f515b19624b83aa3f1fd6d72c18bad6a59a658d",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-15_sample-2/crbn_seed-15_sample-2_model.cif": {
+      "sha256": "7c5988bb615115cb6fea6d5a734a4b9d602e008600a3768e13fb9ec40920646e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-15_sample-3/crbn_seed-15_sample-3_model.cif": {
+      "sha256": "12cfe5532429f1cf490b6292229b8aa96af287f298a3be85bccf658fb03b5f30",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-15_sample-4/crbn_seed-15_sample-4_model.cif": {
+      "sha256": "d1c1675105c7bdca983b56c3c4236dbbd8cb8682cfbef0f7ec186818865a5551",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-16_sample-0/crbn_seed-16_sample-0_model.cif": {
+      "sha256": "eab3b368e30161a5c6c83ce0da49953e7d3ea633d58167d6ed8c3077585d70b4",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-16_sample-1/crbn_seed-16_sample-1_model.cif": {
+      "sha256": "e8f06304071b25cd56ac3a494c2116bf55259645d340d485b4a22f9b55ccaf6d",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-16_sample-2/crbn_seed-16_sample-2_model.cif": {
+      "sha256": "dcfafe9d6de63fb124e4aa9c051b62769d4282b583294903ed4179baafd1b984",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-16_sample-3/crbn_seed-16_sample-3_model.cif": {
+      "sha256": "04c354d599e6fb21362fabe05b27a7afc48d060a74ea2016fa3eddeba8eb7d2e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-16_sample-4/crbn_seed-16_sample-4_model.cif": {
+      "sha256": "d32cc85c4e4dd386bae01cdd5c3511168351b8a437eb50b5e418fc84ad573825",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-17_sample-0/crbn_seed-17_sample-0_model.cif": {
+      "sha256": "9ef9e05b047c7f464ddd75e2d8430460b11e37e9ec469159d05f7d91f22f3bd9",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-17_sample-1/crbn_seed-17_sample-1_model.cif": {
+      "sha256": "85d7706a1589b94938be9eecbf22ba38075d39512885874719f48e053c20aa07",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-17_sample-2/crbn_seed-17_sample-2_model.cif": {
+      "sha256": "ec1b2d9153d2b1e5a014c06879ef6426c6fe108d481afad8fa274eeaf1bca7a0",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-17_sample-3/crbn_seed-17_sample-3_model.cif": {
+      "sha256": "27496069d675795bed6eed9d2691f6123877253a0bb8d7fa64277917aab6adbf",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-17_sample-4/crbn_seed-17_sample-4_model.cif": {
+      "sha256": "7c00aac13cf5d4f8de46bc3cf70d7764ccc7604ee2e62c799d3603c8c2e97262",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-18_sample-0/crbn_seed-18_sample-0_model.cif": {
+      "sha256": "c1a8e7d96f1bdaa20024e810915c653aab0bb0dafa0c4972d4f9859d900e1852",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-18_sample-1/crbn_seed-18_sample-1_model.cif": {
+      "sha256": "2e4d7466e768454e16d7955a12854df73e82e7eedece8eff18b1f20d754e1875",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-18_sample-2/crbn_seed-18_sample-2_model.cif": {
+      "sha256": "72174eaa64eb07d3dfa122797cdbde4197a5986c4f76c1595f40ba1faba5fa25",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-18_sample-3/crbn_seed-18_sample-3_model.cif": {
+      "sha256": "c19724e86f2cf8a131af7307ffd67c62e55469572b63aba15dc0984f5f0fb691",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-18_sample-4/crbn_seed-18_sample-4_model.cif": {
+      "sha256": "84b80607c32749cedb0d4880eb0732282b5619187a38cf2f5fb364dca9ad4903",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-19_sample-0/crbn_seed-19_sample-0_model.cif": {
+      "sha256": "f7fa5c1e6a02f516f5bd8c51f3b0c1f30905b5bb20bb9b2b4289f4a9c8ba2de7",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-19_sample-1/crbn_seed-19_sample-1_model.cif": {
+      "sha256": "34e2cd4093ab900dfe514e6d9515ab642df9e6e1af8682636e49d039b721a1c5",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-19_sample-2/crbn_seed-19_sample-2_model.cif": {
+      "sha256": "af5b3614f94be1fcbded45687cb5251555ba424faee35ef29557f7c41476f8e3",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-19_sample-3/crbn_seed-19_sample-3_model.cif": {
+      "sha256": "0221af5b30696ca0a245797a1e91d353a290ec7bd54b2cfd582e30c903991a1b",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-19_sample-4/crbn_seed-19_sample-4_model.cif": {
+      "sha256": "4fed03a9681dc0df08cd4c79773071d572bd3cd26e482255e2bca9ac247740b0",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-1_sample-0/crbn_seed-1_sample-0_model.cif": {
+      "sha256": "701d7f3c81b5918e2306c99e81d8e17e0bb2198620d20ac7851521880385ac32",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-1_sample-1/crbn_seed-1_sample-1_model.cif": {
+      "sha256": "ac1b3c3f828382b41f582ea3eac7b9538e79fede48af207107a91d23668d5a13",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-1_sample-2/crbn_seed-1_sample-2_model.cif": {
+      "sha256": "e37dd450a0a062f01ccffd8cf833181fceb02db8e3370841118ae8b39add79a4",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-1_sample-3/crbn_seed-1_sample-3_model.cif": {
+      "sha256": "6029f1e554a86cd262f475c01fade5e2f47ffed0345735bce15d402075cfd00d",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-1_sample-4/crbn_seed-1_sample-4_model.cif": {
+      "sha256": "00caaa94d0aa85e21bbc35e4727ae25e93688bb0a3c957f202fa9082c30f50d7",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-20_sample-0/crbn_seed-20_sample-0_model.cif": {
+      "sha256": "652f8a4c27bd81e648dfd0fd5d75d62ff9180eec8693720e6e515af91c802486",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-20_sample-1/crbn_seed-20_sample-1_model.cif": {
+      "sha256": "a088499ff448f81f29f5d1d37ceb54e0c43c7d6bcbc98912ec8b6880407f6948",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-20_sample-2/crbn_seed-20_sample-2_model.cif": {
+      "sha256": "64528464119a336f734b18082971839104ad362a9051bc01cb4214e9b7e62e0f",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-20_sample-3/crbn_seed-20_sample-3_model.cif": {
+      "sha256": "275bf8bbd2a21175bc941f77a1c10913301d57da6ca94a11c093eb28cda19376",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-20_sample-4/crbn_seed-20_sample-4_model.cif": {
+      "sha256": "ad26449a78692249699805383f5851334f6ad45158c9a1c6e369742f6572826e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-21_sample-0/crbn_seed-21_sample-0_model.cif": {
+      "sha256": "856dcbe43bba0b69c482df87d32e0fbabb870ca02bf5b33d923e52aa2e171403",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-21_sample-1/crbn_seed-21_sample-1_model.cif": {
+      "sha256": "c11fefa36bd1a23a575069e802b8675d4da7b9f3247a880656739639c569d539",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-21_sample-2/crbn_seed-21_sample-2_model.cif": {
+      "sha256": "6835edf48269dd2a49be79f42daf7354368ef6878370a06224c3da4ce760a29e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-21_sample-3/crbn_seed-21_sample-3_model.cif": {
+      "sha256": "4a857297392961e8d0e15bb63e5c1e2c08fc7bf9047b3970e6ff1ebbe5a7fc31",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-21_sample-4/crbn_seed-21_sample-4_model.cif": {
+      "sha256": "ff7ff66b877d8d05562242f85a70d0d2a381191abf2570a1d381baa1b0a40af3",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-22_sample-0/crbn_seed-22_sample-0_model.cif": {
+      "sha256": "383c1cb6b7bd0406cbcd0463a6759b18ff325147a637f3e6d5afe3c31c88e498",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-22_sample-1/crbn_seed-22_sample-1_model.cif": {
+      "sha256": "0a9c32783eccada18e78e2fc38dd1993ecfb359ea21bf10e8865b4506d333ffe",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-22_sample-2/crbn_seed-22_sample-2_model.cif": {
+      "sha256": "2d018b91476c0b9904b6aed0027f97190995e61f221528d2f17abddd628ab7bc",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-22_sample-3/crbn_seed-22_sample-3_model.cif": {
+      "sha256": "060a525e09a540fa8d2c590dccb4e740a33d731c58a90be5a5fdb68630b9d6dc",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-22_sample-4/crbn_seed-22_sample-4_model.cif": {
+      "sha256": "81a02a9995cccca4a1fbe2b0dfea491b6d3bc54722e9550412f98cf47998036b",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-23_sample-0/crbn_seed-23_sample-0_model.cif": {
+      "sha256": "916acf5bafd57f0fd0d8c3ba6b8f04fe6d5ed86c47acee43f8ed95e6c6b656bd",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-23_sample-1/crbn_seed-23_sample-1_model.cif": {
+      "sha256": "5af7a98bace43323f5bc92e3d6deea0fa4545673d2965096842e384f3d7e134c",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-23_sample-2/crbn_seed-23_sample-2_model.cif": {
+      "sha256": "06a420bdefb28fdd9866d594bdea7ebd984c21d3fa187d3791c8dedf49b340b6",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-23_sample-3/crbn_seed-23_sample-3_model.cif": {
+      "sha256": "872120736f255164c4291c9398c4ec62e0d83005f7ec55a0df749e892a229335",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-23_sample-4/crbn_seed-23_sample-4_model.cif": {
+      "sha256": "b97efa1a422dc7b7b72c91378a1404997c655ebc54636a39d322f9666ba8b06d",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-24_sample-0/crbn_seed-24_sample-0_model.cif": {
+      "sha256": "93d7df439b2559605d09c730f9f2d2c628b8ac2867ceb885293faadf7ac2845c",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-24_sample-1/crbn_seed-24_sample-1_model.cif": {
+      "sha256": "1e9d122cc1df3f4b334761e6a0024d16e0fe59df2fbd04e2655ee6fbf6b7bb9b",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-24_sample-2/crbn_seed-24_sample-2_model.cif": {
+      "sha256": "eb809cf2df5ca0a2f752f624b0f46aeffd0beefc1a75124ca75a919034e5b133",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-24_sample-3/crbn_seed-24_sample-3_model.cif": {
+      "sha256": "dd4913db9aaf50da90c047c1835d72c2ba9564a2a7634781647b6e42eccbf4f9",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-24_sample-4/crbn_seed-24_sample-4_model.cif": {
+      "sha256": "2fe0c18b5cb1884372b8b93407cd512a154917265457d463f5873d7616255493",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-25_sample-0/crbn_seed-25_sample-0_model.cif": {
+      "sha256": "fa0bce2196753628e6008acdefc153c23be583b865ef6db00c412b2abd5c5b4e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-25_sample-1/crbn_seed-25_sample-1_model.cif": {
+      "sha256": "ff3424d4d847e932671f539ba6467a3ac020d017a2a72a533ff5e8a2e7127e31",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-25_sample-2/crbn_seed-25_sample-2_model.cif": {
+      "sha256": "b5b0d969a6c71c5721cbd0e96a6aa9f357d0a030cf68212b2fb369586c59be3f",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-25_sample-3/crbn_seed-25_sample-3_model.cif": {
+      "sha256": "63d6a8893222378953936496f4fc024a57a1c7a4e4103f074c4a3d1eb8f9fa3a",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-25_sample-4/crbn_seed-25_sample-4_model.cif": {
+      "sha256": "8c9a0bde90a4f4d0823f285d1e306cb69597987a8743dba76e9186c7c0bd586f",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-26_sample-0/crbn_seed-26_sample-0_model.cif": {
+      "sha256": "0eca477a43f71bc1bf6d41bb3cd5e0a642c2d90bfa1fb6b9c1785cd92a143e12",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-26_sample-1/crbn_seed-26_sample-1_model.cif": {
+      "sha256": "303d5277bfd2b42cc11f817a5c306e250fe999f7800fd1a7dfaac815905a0b8e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-26_sample-2/crbn_seed-26_sample-2_model.cif": {
+      "sha256": "00efd3b9d4fb003368022ae22c58837c210fb874621d06ec1475ece073ba8b91",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-26_sample-3/crbn_seed-26_sample-3_model.cif": {
+      "sha256": "bd55f5f6448b4e4e65c489ea95936f1fea5b27b8172f18e5697c89f3fdde3162",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-26_sample-4/crbn_seed-26_sample-4_model.cif": {
+      "sha256": "798fe3e722bd3f87f2a8056be9929b532a001e74b48c148754800fd98a51aac7",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-27_sample-0/crbn_seed-27_sample-0_model.cif": {
+      "sha256": "0b0dcda944ac2bf478737930fddbe4774e6500e6216634291a602fa98c224a53",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-27_sample-1/crbn_seed-27_sample-1_model.cif": {
+      "sha256": "c80eb00c0eb743340ead61707b42a828b238e04ce04146dcbba5b64737847c7c",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-27_sample-2/crbn_seed-27_sample-2_model.cif": {
+      "sha256": "143cf05d7fe28b6b27e66c09dc40a6678fa164427ca5fcbf5d73e5560759b766",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-27_sample-3/crbn_seed-27_sample-3_model.cif": {
+      "sha256": "f9b169f61134cf31d1863966c24ca8c21c98432d779a76773d7e07be9436f7cd",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-27_sample-4/crbn_seed-27_sample-4_model.cif": {
+      "sha256": "a31b18abc236f1992865394d6d3ad566fbbce1c26b31ebf7855498a81d7d856f",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-28_sample-0/crbn_seed-28_sample-0_model.cif": {
+      "sha256": "f8850269a0c5c8e1d7d4fe42b67a816b0f218d9e94b916b49471887b5b1941b9",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-28_sample-1/crbn_seed-28_sample-1_model.cif": {
+      "sha256": "c31128e76bd1880452d787c187b05b480bba11a2a2afb7d02dd83a8c42a142f0",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-28_sample-2/crbn_seed-28_sample-2_model.cif": {
+      "sha256": "3f567e81914da5fab1ad114d5785294c192d7a5c0d5c8b6c86f57b7f7bde9bb9",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-28_sample-3/crbn_seed-28_sample-3_model.cif": {
+      "sha256": "6e099c82f2b30c8f1a58a5dac741c1e60414b37e0374143cf04538234e0553e2",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-28_sample-4/crbn_seed-28_sample-4_model.cif": {
+      "sha256": "42b177fbb7a48a7a93b4e6a1a89db9972099c9a814496021a6d31887821d81a3",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-29_sample-0/crbn_seed-29_sample-0_model.cif": {
+      "sha256": "ca21a359ba72d1f5038ea38832c3ae56d9f66c438c069444924bc7d9e9adb8be",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-29_sample-1/crbn_seed-29_sample-1_model.cif": {
+      "sha256": "0f6d73c2796e09b1620d3f9cd3235b655436ef351000930a5d1305c6f1a66eb0",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-29_sample-2/crbn_seed-29_sample-2_model.cif": {
+      "sha256": "c7328fa0586e6a8ea8c7013bcf27495675cf41b0fd0461d5a97799b637c5c239",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-29_sample-3/crbn_seed-29_sample-3_model.cif": {
+      "sha256": "e0f1eabf22ee51145223ed9aefa164c9463e110d0df23dd8d0d3d1807e545e01",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-29_sample-4/crbn_seed-29_sample-4_model.cif": {
+      "sha256": "416ad4ca2c2e79a588232c321cd1583e51cdaacaa5c6d860695f39cc7a46ca10",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-2_sample-0/crbn_seed-2_sample-0_model.cif": {
+      "sha256": "c130c2405329900138789b220a6e0e221447585e0f4d7e5b10c14a43ed12ad5f",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-2_sample-1/crbn_seed-2_sample-1_model.cif": {
+      "sha256": "efea21c2a9d9b060c4b7d015b36f2a27d47665d345726526c5d6248e055e9054",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-2_sample-2/crbn_seed-2_sample-2_model.cif": {
+      "sha256": "6d53818e627fa3d7abc4f93649763ee78908570c3767cfabf2265d5c6e6852eb",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-2_sample-3/crbn_seed-2_sample-3_model.cif": {
+      "sha256": "17bc282c3b152266a040594a9f94ec9e08b0625fc746220235b413860e07bab5",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-2_sample-4/crbn_seed-2_sample-4_model.cif": {
+      "sha256": "81fa37937eb2df01fb89597fff58832677f997c2ea704921b3058901d220afcd",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-30_sample-0/crbn_seed-30_sample-0_model.cif": {
+      "sha256": "6cc42c05e97d847f1d116562af4113b14143bf65ab8a294b016507775b84dfdf",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-30_sample-1/crbn_seed-30_sample-1_model.cif": {
+      "sha256": "74b66f87284f6fe36681d9df574fb3317aedbabf44c2f0c95d8fb665c9c231b7",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-30_sample-2/crbn_seed-30_sample-2_model.cif": {
+      "sha256": "8d7b4901e3a77d8e3e7e2f9a7746e8d290bf6a5009bfcd83efc9c1ff7a7a64f9",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-30_sample-3/crbn_seed-30_sample-3_model.cif": {
+      "sha256": "bb57dd714e936485e769e48fdcee255bb59ea036703dbbd20e1365fa0f1f28f2",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-30_sample-4/crbn_seed-30_sample-4_model.cif": {
+      "sha256": "f1fc16954b9d29850736055b852340211759942c9b5ac052b0fbdc6d1f19347d",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-31_sample-0/crbn_seed-31_sample-0_model.cif": {
+      "sha256": "32d11f0cd965ba1dbbb36d59aca25fa78dc8b231eb89595ec56c434b4243fd39",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-31_sample-1/crbn_seed-31_sample-1_model.cif": {
+      "sha256": "f6bb7d9b0211c301843652aa78b39fa3d06767ddd2d9e8ecc0102f3b4aa73a9f",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-31_sample-2/crbn_seed-31_sample-2_model.cif": {
+      "sha256": "483d6aa39abd782203032ee0be70266492192bdc91e44eb33cab6a56c230d423",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-31_sample-3/crbn_seed-31_sample-3_model.cif": {
+      "sha256": "f61c07c5bc2208cf802ea404525e11ee86583c18ba7bc3dbf3a80a99e3f92e49",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-31_sample-4/crbn_seed-31_sample-4_model.cif": {
+      "sha256": "9c71ec34ef650314f2d159500fcbdbaab155fda9b43b2c6e750d1a7147dfbf9a",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-32_sample-0/crbn_seed-32_sample-0_model.cif": {
+      "sha256": "33ea69f8e8fcef00a5bfd6eec1e8ddc88477f28561028876df40917828f96949",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-32_sample-1/crbn_seed-32_sample-1_model.cif": {
+      "sha256": "0b091aa00cb2517922766aa02a4e9f2cceb5a9deaffcd5d081d23457468c4f84",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-32_sample-2/crbn_seed-32_sample-2_model.cif": {
+      "sha256": "0644f697ec904311c987c495019343a1590674c9488177b4ee1241c5f18fd7eb",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-32_sample-3/crbn_seed-32_sample-3_model.cif": {
+      "sha256": "09daf961ea96ba59dd7ecd0a2956a220fcc729f29e373044f84dbe725152e17b",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-32_sample-4/crbn_seed-32_sample-4_model.cif": {
+      "sha256": "606c30984983daba587cc5b5209f1d3e698443ae6cefe0611f1872189c063c59",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-33_sample-0/crbn_seed-33_sample-0_model.cif": {
+      "sha256": "cecd4a3201b66a839cb5903866206ac633b36f454f537b5e7a427fe1c1368dad",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-33_sample-1/crbn_seed-33_sample-1_model.cif": {
+      "sha256": "bc6286db963d38f7005d503024e06969b6b4b621523a96d841128f653ccfca5e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-33_sample-2/crbn_seed-33_sample-2_model.cif": {
+      "sha256": "c7f24d37837a5f08ff17469f8fbf17763b0fb50ab227896699195cdf104379df",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-33_sample-3/crbn_seed-33_sample-3_model.cif": {
+      "sha256": "0daa23d1248efef93cfe3f1a41eeca12ed80562e79ed7f61372ba972292f5cb8",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-33_sample-4/crbn_seed-33_sample-4_model.cif": {
+      "sha256": "85fff94d81e32cf6b178d7f6abcb9f06be3f24bd0b1a7a5b400749d6bf4d46f8",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-34_sample-0/crbn_seed-34_sample-0_model.cif": {
+      "sha256": "c2b368007fae07c83d115d36cb2e8f3b241005c7917e886c3e4187dd35831dbe",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-34_sample-1/crbn_seed-34_sample-1_model.cif": {
+      "sha256": "10239abe22af4d2d5c20bb9b4df523446879be4e6627fc46242df465112daaed",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-34_sample-2/crbn_seed-34_sample-2_model.cif": {
+      "sha256": "dfd0a29ea68f0ee31764cb46f9cd7fd2e16a2ea366cb736938e718d9f6c2222a",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-34_sample-3/crbn_seed-34_sample-3_model.cif": {
+      "sha256": "24455d399b10cdd3b5c127b870c86a3a5ca19c9944aeb99150fa08c786330733",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-34_sample-4/crbn_seed-34_sample-4_model.cif": {
+      "sha256": "a98536da0313975253f3c2f50f743b9fc71e982233e11bdaaa5377e9c6215bd5",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-35_sample-0/crbn_seed-35_sample-0_model.cif": {
+      "sha256": "0a53d552649c654f4a619d43be15fdb071381f29aaae1004b15cc23c8680b12a",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-35_sample-1/crbn_seed-35_sample-1_model.cif": {
+      "sha256": "be285e1fb1b7d3cdd8ddcf4496f05c444ed1d38e2e8f41c90e2b502ee5a1ac16",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-35_sample-2/crbn_seed-35_sample-2_model.cif": {
+      "sha256": "475d4108157645a1151f59ae4bb9493d28effd3bacdf3c30d2be54a3daf58141",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-35_sample-3/crbn_seed-35_sample-3_model.cif": {
+      "sha256": "355cf21693105830c3544b28c475ee2d322e6dcb68a23aae5906bbfffda4eccd",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-35_sample-4/crbn_seed-35_sample-4_model.cif": {
+      "sha256": "797a608b5c294f16127af6b4e964320850cc0bdc432abb430fd8c95829bf7ef9",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-36_sample-0/crbn_seed-36_sample-0_model.cif": {
+      "sha256": "55770c401d2f71f810b50a0da64e9d9b5b79c88ee0a04ceeda423d684aecfcce",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-36_sample-1/crbn_seed-36_sample-1_model.cif": {
+      "sha256": "b4a5a8034ffab5952ca1e83808796c5472b8e814b618d2492d7f2bfccb1d44f7",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-36_sample-2/crbn_seed-36_sample-2_model.cif": {
+      "sha256": "f35d977ac7744d03ef16b0d2f1009d5b2e6bfea25a5793d850e8062cb860eec4",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-36_sample-3/crbn_seed-36_sample-3_model.cif": {
+      "sha256": "56a75f6b3eb882a5c5e443d21db628c25747ba7ef47dff9cdefcb644f99001e7",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-36_sample-4/crbn_seed-36_sample-4_model.cif": {
+      "sha256": "bac9193c4978d033f98d54bbb00f18e770b9c8aa7f6b526b32b6a3478ab93e89",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-37_sample-0/crbn_seed-37_sample-0_model.cif": {
+      "sha256": "619df6d3b3ae06b75efcda1d0bb8d16dda1aa61acdba222ee61a27f3dea972d2",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-37_sample-1/crbn_seed-37_sample-1_model.cif": {
+      "sha256": "244694a4cd76a7dbc8e5b659676270dee4a797e03d8f750be81376cf766719f5",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-37_sample-2/crbn_seed-37_sample-2_model.cif": {
+      "sha256": "17cc7d1f0b9f3f814db0867f7b5f763aab54a8102ecb269767db309b30e1b9ae",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-37_sample-3/crbn_seed-37_sample-3_model.cif": {
+      "sha256": "3942ba143d865ab0b033478154e27be47e553d7144b9524a09e88c2d107721ed",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-37_sample-4/crbn_seed-37_sample-4_model.cif": {
+      "sha256": "90cf86dea60ca9c39bcc40252ecb15dc6c83e8db602a19aa25d9cf71810095f8",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-38_sample-0/crbn_seed-38_sample-0_model.cif": {
+      "sha256": "85fffd39ee5ddfa840d00ba0b5a4db16eb188866659ec2ffc55a33f9521948f3",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-38_sample-1/crbn_seed-38_sample-1_model.cif": {
+      "sha256": "7372ad9b0ac3f8e6dd543253d43692b03deb6150274dcea4b2312c01a6e607f8",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-38_sample-2/crbn_seed-38_sample-2_model.cif": {
+      "sha256": "57070a4417710aeeb657458678acbc46f22aa31b2e19917dcbe6576342b5e825",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-38_sample-3/crbn_seed-38_sample-3_model.cif": {
+      "sha256": "565bbd8b9b188d722c340419958e67546423b71396fe4fcc37078e63d8220be9",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-38_sample-4/crbn_seed-38_sample-4_model.cif": {
+      "sha256": "ebd65bb5dcf17ef8d7a9e5b5d8d646483832c73fd717142de40c718e0c01e812",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-39_sample-0/crbn_seed-39_sample-0_model.cif": {
+      "sha256": "59125705ce86a69ab8f1f325e935c220ea282e3d156fb239f381f2fdd985ab16",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-39_sample-1/crbn_seed-39_sample-1_model.cif": {
+      "sha256": "e7751e777239f3bfb48dd8f3bf741976cf590986f0980b2f95bb87ab95344e8c",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-39_sample-2/crbn_seed-39_sample-2_model.cif": {
+      "sha256": "3a63b562fbb78e278fccf5d4f9f62367659b35fdcdfa4702bef6359f1c5e47c8",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-39_sample-3/crbn_seed-39_sample-3_model.cif": {
+      "sha256": "50c8e3b2bc03490c4513fd830d7900e670cb62ef59449825a4ec66b6d10c605e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-39_sample-4/crbn_seed-39_sample-4_model.cif": {
+      "sha256": "f96339da66fae86a5a3155c37394e2fb6ccf25502759143f6b79e12e645139f0",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-3_sample-0/crbn_seed-3_sample-0_model.cif": {
+      "sha256": "17d3048bd91d346ce82c6d370232682f585182fb447539fc573b2a999bb615bf",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-3_sample-1/crbn_seed-3_sample-1_model.cif": {
+      "sha256": "f8cec64cbbed2b93c11c6d491c399d9b2793a796c56cfa24ab7060a32dfe5975",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-3_sample-2/crbn_seed-3_sample-2_model.cif": {
+      "sha256": "621b6588c28b1a99acaa4b7a176748330efc503bd00ab7da80932c6384c27183",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-3_sample-3/crbn_seed-3_sample-3_model.cif": {
+      "sha256": "99ffa37b9afbcbcc8e5b83e9c93880cb92f7e1165fecb0ce0c86ea74de92783a",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-3_sample-4/crbn_seed-3_sample-4_model.cif": {
+      "sha256": "21820782065c6c5a0f1385c82c6b819448d9cba7b18387f2ccc0716bed4dc625",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-40_sample-0/crbn_seed-40_sample-0_model.cif": {
+      "sha256": "4e5c4dc98c23597e0dfb4018632c5c460b4b955cbd89678e2ba0e49ce94c17a1",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-40_sample-1/crbn_seed-40_sample-1_model.cif": {
+      "sha256": "93a9bdb95bf71c92125628e3f959ba22b3a15e68531321320dec572819240603",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-40_sample-2/crbn_seed-40_sample-2_model.cif": {
+      "sha256": "9741a3feb9ce3bfb293310a1776e7217b66c31f3dba893d9be886531be54956c",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-40_sample-3/crbn_seed-40_sample-3_model.cif": {
+      "sha256": "656a6a72c96d837ec31479aa75d45c364e576488070a7633bf9176f27e8f7e49",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-40_sample-4/crbn_seed-40_sample-4_model.cif": {
+      "sha256": "83a0b36f8a71503ae8483cbd3bb81c321dd71e808316a299dfcccc8331fed05a",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-41_sample-0/crbn_seed-41_sample-0_model.cif": {
+      "sha256": "fed9d777d1b295fbf21ed0637e42d8965ec2ebc83f703ce541561878af7828a1",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-41_sample-1/crbn_seed-41_sample-1_model.cif": {
+      "sha256": "410b09d8d21ab2d776b0867fc66ea8d4b661f2ec5eb1c0bce82aedc4a96b5a06",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-41_sample-2/crbn_seed-41_sample-2_model.cif": {
+      "sha256": "f88d296a61d259fe5699e3f8fb2759a7bb718b4e5a9abe79a648e8d48622574d",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-41_sample-3/crbn_seed-41_sample-3_model.cif": {
+      "sha256": "d38d1d8925be6b1acd099cf837ab240927414edd2d134584bdeca58981ecaf19",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-41_sample-4/crbn_seed-41_sample-4_model.cif": {
+      "sha256": "1e9edf0159ec75d2aee6c751d8dfd188371154c2d55a13b9714d90b0775935b4",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-42_sample-0/crbn_seed-42_sample-0_model.cif": {
+      "sha256": "32991295b6410ff0704d21f55a2a71c22356136a4dfd1a56e848d01f852ee435",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-42_sample-1/crbn_seed-42_sample-1_model.cif": {
+      "sha256": "74b4867da2ee6b6027f39f9fcda3933a45d96afe2f5c8e215eee48d582c88a01",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-42_sample-2/crbn_seed-42_sample-2_model.cif": {
+      "sha256": "05ab6985c8bbdb0e77f49fcfc6a46aa2423bae18eb53b0ecbba33bdaa0e2a62b",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-42_sample-3/crbn_seed-42_sample-3_model.cif": {
+      "sha256": "cad4690269850086cfab15feaddcb743829929f0b85f61512add2236e96ec132",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-42_sample-4/crbn_seed-42_sample-4_model.cif": {
+      "sha256": "69070e3d207ce4a33484205237681e4912ce46fbd96dc7d63f7cf0fbd943b13e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-43_sample-0/crbn_seed-43_sample-0_model.cif": {
+      "sha256": "a67537617a646bd78feb343ae0a86527d8485e06ddc08b674d00761476e5b2d4",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-43_sample-1/crbn_seed-43_sample-1_model.cif": {
+      "sha256": "f2a27f98cc33a0117b8824a6da98b4bcda1043d9cb1590b327967419802bc2af",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-43_sample-2/crbn_seed-43_sample-2_model.cif": {
+      "sha256": "e9b87e51858994413365c58950849acc1338981bb6f30f647e532ab676eff14c",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-43_sample-3/crbn_seed-43_sample-3_model.cif": {
+      "sha256": "5712935e814c2a7605d2f8b0dee780891b44055f50e4c598fbe61aecf046da84",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-43_sample-4/crbn_seed-43_sample-4_model.cif": {
+      "sha256": "499717819564468ad2b9cebb9332850e4c3c67b9376dfba383f59f90b104461d",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-44_sample-0/crbn_seed-44_sample-0_model.cif": {
+      "sha256": "2d49718e50483d8388f82de45ec5eb9f22a7a06d9bf5866e7ebf719ca586a03a",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-44_sample-1/crbn_seed-44_sample-1_model.cif": {
+      "sha256": "74ef5334c2f72b015b8487bde59693872815c1aab075c9a20cdede3bddbd5d09",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-44_sample-2/crbn_seed-44_sample-2_model.cif": {
+      "sha256": "7abd4ad5f2846ca5c5525829205d78081c3558527872e524867ad5f8a3aa2493",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-44_sample-3/crbn_seed-44_sample-3_model.cif": {
+      "sha256": "1e841d48487cf15e181f7843c844bcea5f6a5dc71cac62b12c16d0c6e57ba2dc",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-44_sample-4/crbn_seed-44_sample-4_model.cif": {
+      "sha256": "562967617d2fbf5cc6ee56634e7453aa577eeb8c2b2b87c41b26ce199e6e78c2",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-45_sample-0/crbn_seed-45_sample-0_model.cif": {
+      "sha256": "1e59c01b997a8d466fd4bf94d6dd124853098272f3e4bae1ef05bb922903d71e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-45_sample-1/crbn_seed-45_sample-1_model.cif": {
+      "sha256": "24508a59c8b3e70c32f35908fdb6d804b6adbaed9cee347e6e19a929b55fb8d0",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-45_sample-2/crbn_seed-45_sample-2_model.cif": {
+      "sha256": "f0608ae5575a38d9198ab9748e6cbcedbb94d591c290060a76df8db2c0da4f05",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-45_sample-3/crbn_seed-45_sample-3_model.cif": {
+      "sha256": "437a6b5beb28ed1e8765652571c73142cdea6edbbfc6bc20ace536c7eff65a01",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-45_sample-4/crbn_seed-45_sample-4_model.cif": {
+      "sha256": "9da3ca5e23caeb9544c9cc8847d0c1af26fd495a0ce85f23b650ecaa5e4fe21d",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-46_sample-0/crbn_seed-46_sample-0_model.cif": {
+      "sha256": "2ef72f9d0ced52960c50c55cbdbd717c8fc96edd5f1b6a56709994a4aa05ff4a",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-46_sample-1/crbn_seed-46_sample-1_model.cif": {
+      "sha256": "d43a54575d6dacdc20f9dbad0c64604461d813911e3bd90a8c7e7cbfa772f67b",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-46_sample-2/crbn_seed-46_sample-2_model.cif": {
+      "sha256": "5ff4b9053325971e40384a85d4d18aeec5f67a0a7861667d5498bad6304d0710",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-46_sample-3/crbn_seed-46_sample-3_model.cif": {
+      "sha256": "159b73463b19ca1081cf8902c76b3c7cc829c633300c0ea30a796e7ce8be02ae",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-46_sample-4/crbn_seed-46_sample-4_model.cif": {
+      "sha256": "1ccc17263aa5949bcdf5c8d3c9777b2b7205a845a64ed5b1c06f74f90d438d67",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-47_sample-0/crbn_seed-47_sample-0_model.cif": {
+      "sha256": "79a73e061d3a9e1bb896a57d49cc565e819f961fce994db0215cbe6cbb0c57a8",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-47_sample-1/crbn_seed-47_sample-1_model.cif": {
+      "sha256": "ccbfbc1cf8d1fd7cfaa3a87c09d8d607fbc5ac70e5d4b4b7f1b59d170f8a8ea9",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-47_sample-2/crbn_seed-47_sample-2_model.cif": {
+      "sha256": "d49e3a7d2b76711626b16599874be4fdd0d9660af068b039a02f1519205693a5",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-47_sample-3/crbn_seed-47_sample-3_model.cif": {
+      "sha256": "f37de53928badcb30fce96042c2cedec8ed8f9e95d1e17e588ae8c8ff787b5ce",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-47_sample-4/crbn_seed-47_sample-4_model.cif": {
+      "sha256": "c99fb04f406ccffd66d160601e9ed20b2b8ffaf1a8ca126a09f2ff06b1acc74e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-48_sample-0/crbn_seed-48_sample-0_model.cif": {
+      "sha256": "15fae8bb0c948af7b5728876e3d8f2ae8a210511e0c8d66a39a574674965eabd",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-48_sample-1/crbn_seed-48_sample-1_model.cif": {
+      "sha256": "91696ebcd232fb61582ea1a168a48ac6bc395031c89164ebe45640f3e76d34a2",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-48_sample-2/crbn_seed-48_sample-2_model.cif": {
+      "sha256": "d90ed580cd472ad2cc10385e9f67ea99c9f7b9f11e51703695f364f1d1dc7766",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-48_sample-3/crbn_seed-48_sample-3_model.cif": {
+      "sha256": "3929ba4285838a2cb162d507e4c10ef737d557f00b5776ad840b87a9778a5826",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-48_sample-4/crbn_seed-48_sample-4_model.cif": {
+      "sha256": "acc5d37705a4dcb661e977d1921629109452cbb14b5703723855bbcda0ced6d2",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-49_sample-0/crbn_seed-49_sample-0_model.cif": {
+      "sha256": "28168082cd7480db1e7d84d5b706fc2a607deb4c2710bafc696d0ba66990e516",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-49_sample-1/crbn_seed-49_sample-1_model.cif": {
+      "sha256": "c6733ce507eef5459120328eedcab537e1c92589abd1510c55566d3e4ff39ddb",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-49_sample-2/crbn_seed-49_sample-2_model.cif": {
+      "sha256": "af5aa7e44fc9d88a96ee641925e4169737081b4cb9d364bd4d404ea5f6e3e653",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-49_sample-3/crbn_seed-49_sample-3_model.cif": {
+      "sha256": "8490db5a435f7d5c05bf388de782a579c85aa39a66dbdf08c7bd14067a1abc3d",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-49_sample-4/crbn_seed-49_sample-4_model.cif": {
+      "sha256": "dd16ae6a6201dde69f033eeb82e0b82d261108505c5be845a606c2ae4983305e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-4_sample-0/crbn_seed-4_sample-0_model.cif": {
+      "sha256": "002cdc4791aeb505e996f42a196ab05beb38a6d3e8181c15d004ea1fa537f24b",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-4_sample-1/crbn_seed-4_sample-1_model.cif": {
+      "sha256": "2bcd41a800197bcd2a0f26d4f14a19a70b5c129ab14555dd125db8bec0f303e3",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-4_sample-2/crbn_seed-4_sample-2_model.cif": {
+      "sha256": "f97d2a23530ec948b678ed03dd7aed788909a6611e58fdfeeb6092b7d4e789ea",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-4_sample-3/crbn_seed-4_sample-3_model.cif": {
+      "sha256": "9b45edb88e2632975c837b9e83f617b4170ac17e38921e5a5ded19b552321451",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-4_sample-4/crbn_seed-4_sample-4_model.cif": {
+      "sha256": "121318bf66fa164a3114697afc0f9b9fb40d953efaf9d3173023ebb1556e1088",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-50_sample-0/crbn_seed-50_sample-0_model.cif": {
+      "sha256": "578c69f65282298649722536b65f96c5ab3cc8d6d07205b72d35f524e7f61bc7",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-50_sample-1/crbn_seed-50_sample-1_model.cif": {
+      "sha256": "560c090a244d17447bb738569ed9cd1e0ace106edf47d793eb979c8cb0f1b792",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-50_sample-2/crbn_seed-50_sample-2_model.cif": {
+      "sha256": "42813c17662dd2e526bc865795cd52f5946adf4ced14e91ea77dac4b193b9624",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-50_sample-3/crbn_seed-50_sample-3_model.cif": {
+      "sha256": "26511fbf1133ec14154888e4764755cb52a1a69cdb275d3c3e10547b2a1b7a2b",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-50_sample-4/crbn_seed-50_sample-4_model.cif": {
+      "sha256": "59c1e4fc05089736a8c12f440d5e7e4c1f68f9974b342446991f2f34241bbeb5",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-51_sample-0/crbn_seed-51_sample-0_model.cif": {
+      "sha256": "07a1f38fd955da74a25199b73ff9229028896646feb6fb77025536f994559460",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-51_sample-1/crbn_seed-51_sample-1_model.cif": {
+      "sha256": "72277f490b70ebd3218afc8d4c903236284e38e9f245e095ef88d1e5f6b2dca3",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-51_sample-2/crbn_seed-51_sample-2_model.cif": {
+      "sha256": "48946d625fac0ebd1cf9223ead08e3b220127f8a73f946833b84415f4323b79b",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-51_sample-3/crbn_seed-51_sample-3_model.cif": {
+      "sha256": "0f303bd3ff983f8d8539f71cf88e3afd2a4588ded3a368d7626c5b042b357def",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-51_sample-4/crbn_seed-51_sample-4_model.cif": {
+      "sha256": "b432a4cf6d05f73a4d9fed011d408ed0aa8df2cebabd66165308b8c85ea28f93",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-52_sample-0/crbn_seed-52_sample-0_model.cif": {
+      "sha256": "56d192ef9cde97129cae1e16038e26fa9a29138544cb707e8f4a2b080b6bda5d",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-52_sample-1/crbn_seed-52_sample-1_model.cif": {
+      "sha256": "caf76216bd6fe443772da4c701d51ad1b8bdbe3b2171de4220e95bbfc04bc6eb",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-52_sample-2/crbn_seed-52_sample-2_model.cif": {
+      "sha256": "0eeaa1ad6e91cfe1944f992ca67ad60fa363470b5aac0f6a60e68f19257a9a11",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-52_sample-3/crbn_seed-52_sample-3_model.cif": {
+      "sha256": "bc28e9bbbb627df1178328284b6db110da5139298780f078d41a4ac382fd67db",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-52_sample-4/crbn_seed-52_sample-4_model.cif": {
+      "sha256": "939618103ff9dfddc9c8a6a839d69389e5fc80196c6e19e752bb583d1b25464d",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-53_sample-0/crbn_seed-53_sample-0_model.cif": {
+      "sha256": "de5c512e516fbaba93558e82f34fe3696d255ff60eae6b2143363496466c7670",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-53_sample-1/crbn_seed-53_sample-1_model.cif": {
+      "sha256": "c805cde6d5aca09da54c8fa8e634332f00a0a96f79402e02dde44be2eab16a4a",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-53_sample-2/crbn_seed-53_sample-2_model.cif": {
+      "sha256": "02139a4b9bc2a96b4f93b5bd1c833c92591be87871bb28fb643e84634cfd62e6",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-53_sample-3/crbn_seed-53_sample-3_model.cif": {
+      "sha256": "31c86dd0d50f44b936c09a161b2385dd0701d9321827c327b0407cdf364fc6da",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-53_sample-4/crbn_seed-53_sample-4_model.cif": {
+      "sha256": "df91ffa9d5413eb455735443fbfeb448f3b9c7b599b99a9c0d662dd2b2613943",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-54_sample-0/crbn_seed-54_sample-0_model.cif": {
+      "sha256": "bb4c61f4dd7749058183f4216b0e3f15fe91ecf28156f1c14ab5796a3708e06a",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-54_sample-1/crbn_seed-54_sample-1_model.cif": {
+      "sha256": "0e9c2a74ef1a21dcdb57b9522607ba4cc828af8604c36ee51500369750d7551b",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-54_sample-2/crbn_seed-54_sample-2_model.cif": {
+      "sha256": "445a9714905eec168382c74dfafe00474ddf7ac6c0a17d93d5f26cfaa6b0cdcb",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-54_sample-3/crbn_seed-54_sample-3_model.cif": {
+      "sha256": "6285765dfdd178aa5ac9cc082e7bf3922b01d536efb7aaf1e3ddeed3f905fb3e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-54_sample-4/crbn_seed-54_sample-4_model.cif": {
+      "sha256": "b34c51743440f25eb87ca420b9bbcebdee1b0fb1fd346aaf71f53476ec30563c",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-55_sample-0/crbn_seed-55_sample-0_model.cif": {
+      "sha256": "192fa6fd2fc905d0c284474ace16ed1b232d0f6e891844f3524bc1400fd2cdaa",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-55_sample-1/crbn_seed-55_sample-1_model.cif": {
+      "sha256": "30553d823a2545e98eb36a8da69d902e73ccc7d1ff988e2709ba4f315a1605c0",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-55_sample-2/crbn_seed-55_sample-2_model.cif": {
+      "sha256": "b8076757c8748909572f0c999c1223c1ee4e1a69b547c444bc8b5939813bd466",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-55_sample-3/crbn_seed-55_sample-3_model.cif": {
+      "sha256": "20dcf75fa9ba9e5384a21c1b1010d9cc2bedb67bbff4e417ac4b44827576fe99",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-55_sample-4/crbn_seed-55_sample-4_model.cif": {
+      "sha256": "9815570b050b0d638907313a6fbdaa8f01f6149108dfc79e664c4c4cdb40cd4c",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-56_sample-0/crbn_seed-56_sample-0_model.cif": {
+      "sha256": "5ea316990edc0969e6783062cf9bf92f39c40349717969ef4b014bb93f885a61",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-56_sample-1/crbn_seed-56_sample-1_model.cif": {
+      "sha256": "d84f398dec054307a1528107c8a2885bba9fd5069ce2824ce41c40b8e9d08a69",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-56_sample-2/crbn_seed-56_sample-2_model.cif": {
+      "sha256": "58210c54889367270a64e8aac315b325b178bab73900362d44a06257257ea4b9",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-56_sample-3/crbn_seed-56_sample-3_model.cif": {
+      "sha256": "267657d01857a8e7a59a7ed9148310267aee1ab8ae59e302494b12f8a1b0ad7b",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-56_sample-4/crbn_seed-56_sample-4_model.cif": {
+      "sha256": "2e36ffaa08a69179cb3e1d4f6b9d2daa060279ee1b26db366628ee5c5e89da32",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-57_sample-0/crbn_seed-57_sample-0_model.cif": {
+      "sha256": "e29398cb29b2a6e65b3d642a1b218b18423cda10ec79af71389d107d19a1b971",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-57_sample-1/crbn_seed-57_sample-1_model.cif": {
+      "sha256": "e310a75ecf43d8fc891eb46dfcd98243dc5768064bbc25090bdb1902110e165f",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-57_sample-2/crbn_seed-57_sample-2_model.cif": {
+      "sha256": "58f38cc8f279fb827851c27ff735bdc4b310ca22276a6a2cf8ebbb2414a882ed",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown"
+      ]
+    },
+    "seed-57_sample-3/crbn_seed-57_sample-3_model.cif": {
+      "sha256": "e589a1b09bfffe6779733b1da691640e408a8d0c3bdff5f9fe27b5f4be5cd7da",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-57_sample-4/crbn_seed-57_sample-4_model.cif": {
+      "sha256": "ba934a1e84a48a96b9009189ebd12351309e66d621a26af3e7c58dd1312a617e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-58_sample-0/crbn_seed-58_sample-0_model.cif": {
+      "sha256": "504210791d0749290d02fb14163b3b12f656763a3b9273e76e21367657a3ffb5",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-58_sample-1/crbn_seed-58_sample-1_model.cif": {
+      "sha256": "be1d52793be10c05e427320e2c4f2075155a77f90522de0cef2bcfccd270ca2e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-58_sample-2/crbn_seed-58_sample-2_model.cif": {
+      "sha256": "40b94346288736f5c17ec7fde0b0605f2ec86190d3b9514e54f692592546f30c",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-58_sample-3/crbn_seed-58_sample-3_model.cif": {
+      "sha256": "a4605478628137ede35ce90d893c2c9cd128dcfce3dcfb011689108a7b4d5d6a",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-58_sample-4/crbn_seed-58_sample-4_model.cif": {
+      "sha256": "f4831f34692519f0f515b146d9b3c8e4c9ed21eb5bd0c1785c8432484a65ab29",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-59_sample-0/crbn_seed-59_sample-0_model.cif": {
+      "sha256": "a8565d4e1c30fdace8ef6be268fdc89d44c80f2004b57fbc39097d73b7b731d7",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-59_sample-1/crbn_seed-59_sample-1_model.cif": {
+      "sha256": "9c7810eb8a09d4cad56aefd90477cb40c84e3761b13d3cb55a8126bd147fc9b1",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-59_sample-2/crbn_seed-59_sample-2_model.cif": {
+      "sha256": "5d5a3f94005090f5b5a61bb09783f8665b1941ca9ed6cb8be1f7fb3d277f5682",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-59_sample-3/crbn_seed-59_sample-3_model.cif": {
+      "sha256": "c581a556b4c2bb7c4ae92b57035847432022360fced77bfa8692fbb47d536689",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-59_sample-4/crbn_seed-59_sample-4_model.cif": {
+      "sha256": "b0afa4e914aedbd48eaff5f9eb46621d1bd4800206bbdc7d41fb58e88f1d6021",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-5_sample-0/crbn_seed-5_sample-0_model.cif": {
+      "sha256": "4d7f53a55d8ed5e6bbc5d51e32ba2412b898f8320f4dfc48a5a9aa831c2bdb98",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-5_sample-1/crbn_seed-5_sample-1_model.cif": {
+      "sha256": "f3e9e3d5f05e424c907dafceb7fc5467a77ac91fc3efd2dd80d68573d43ae1fd",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-5_sample-2/crbn_seed-5_sample-2_model.cif": {
+      "sha256": "cd32a4bbfa09af72ade15d033f3492cb297a458c45cbeda773b2b94349e12d7e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-5_sample-3/crbn_seed-5_sample-3_model.cif": {
+      "sha256": "8df2c478e356600f167d668690c5b8f2edc54d1aec2fb3911fa2a4aef5b9d37c",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-5_sample-4/crbn_seed-5_sample-4_model.cif": {
+      "sha256": "9d8e6e9dbf81a77cd8398fe5bdde7cd5a57e5e68f056b3553421cc45bba289ab",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-60_sample-0/crbn_seed-60_sample-0_model.cif": {
+      "sha256": "fb324502b87351b97f9d91af9fbe5de47215d82bc3e1a06fe4d2a10bf00d296f",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-60_sample-1/crbn_seed-60_sample-1_model.cif": {
+      "sha256": "7d88a34719489062e8f264cc76f18c6846d6d18df111b69a021e9e51f9320dec",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-60_sample-2/crbn_seed-60_sample-2_model.cif": {
+      "sha256": "dc5d3c047fdddf2522c1637fe6a23c5b7f7ce80a16744fd41d21e94cb8bb16db",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-60_sample-3/crbn_seed-60_sample-3_model.cif": {
+      "sha256": "61264f761eeb4eaa7b0415b30f9c171097dbacced1c052f33836f1afc4200222",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-60_sample-4/crbn_seed-60_sample-4_model.cif": {
+      "sha256": "b0b1eed7db99b48cc102e3ca53eea58a6b6a2b70a0fc1cbfffc53a471dab33bb",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-6_sample-0/crbn_seed-6_sample-0_model.cif": {
+      "sha256": "74445b5adaa7c4644ef13a9fc8eaee2c207ce6e8c4aaa36c4e98f75cf913041d",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-6_sample-1/crbn_seed-6_sample-1_model.cif": {
+      "sha256": "4cf72b9def6064a2e9af9f176d482182683afc36cbb15fa47eb9df6e4e295e8e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-6_sample-2/crbn_seed-6_sample-2_model.cif": {
+      "sha256": "a4368b3882de68b0e9a299aeafce482587713a4915db237f69028f46f7fe03d2",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-6_sample-3/crbn_seed-6_sample-3_model.cif": {
+      "sha256": "79ea7256ff637f20bec6678d466a08841a9eb7e6cba36852c7959f1fb4036afc",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-6_sample-4/crbn_seed-6_sample-4_model.cif": {
+      "sha256": "39994cf4b320e4ff23e0b4585fe5458f8b7ed4063644c0d4cc668bc9fae8aa61",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-7_sample-0/crbn_seed-7_sample-0_model.cif": {
+      "sha256": "2f297333e9bcfbe7fbc353343a7522647fca02733fc0c2bb111934e16f2d9f71",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-7_sample-1/crbn_seed-7_sample-1_model.cif": {
+      "sha256": "92c72bcce00dd5d9ebeb3ac5985bec201807985b3d823539695e5883c03e2994",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-7_sample-2/crbn_seed-7_sample-2_model.cif": {
+      "sha256": "72e8e7c0d0b58981efceaf711a0849fe77601edb700cc57e3dd58159b26cd4df",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-7_sample-3/crbn_seed-7_sample-3_model.cif": {
+      "sha256": "756b5316493f8f46fd2b07dc2c864f09a464607803e54e86f8234d864b7df048",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-7_sample-4/crbn_seed-7_sample-4_model.cif": {
+      "sha256": "c12f9be2fde0a97614e40e7400e7aad3481ec76051013242a67dc8a398f37826",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-8_sample-0/crbn_seed-8_sample-0_model.cif": {
+      "sha256": "84829189b68831a68718a0dc2b3abe63892754ab89dd7ed2e07bcfe154f97c28",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-8_sample-1/crbn_seed-8_sample-1_model.cif": {
+      "sha256": "0a3ed80ce08b95e0f9ae5a027922cc6c7339ff9c75c6131c5ee835c27910dba9",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-8_sample-2/crbn_seed-8_sample-2_model.cif": {
+      "sha256": "e9bfd9803be3c7e45f027db2541206142ea150b60ccb7e23d55ae99ce16fa944",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-8_sample-3/crbn_seed-8_sample-3_model.cif": {
+      "sha256": "472a5be8c34d9c49d3bcb1c7ab967c267dadf4d70ca5c581eae556814d68fc9a",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-8_sample-4/crbn_seed-8_sample-4_model.cif": {
+      "sha256": "737257ac1c6b8d9f77daf1b68d49329948887d30d05b59b27cbffb710a37990e",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-9_sample-0/crbn_seed-9_sample-0_model.cif": {
+      "sha256": "c5b6b635d65f42b186c1cb402da1ab13517bb65f060307e801fb496371b91248",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-9_sample-1/crbn_seed-9_sample-1_model.cif": {
+      "sha256": "bd7cc095cf9edb2bbae329f64a00d6b8ffbdcd5d5fddfa8c38b8febb25daabfc",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-9_sample-2/crbn_seed-9_sample-2_model.cif": {
+      "sha256": "9d79b46044dbd43418eeac90d483c4ff49f565922e817c0e23c097c08b6a8e70",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-9_sample-3/crbn_seed-9_sample-3_model.cif": {
+      "sha256": "33f966d4ea8b994f63c0c6aeb98e257f4c2910d37a3ae19b9d74c605f6861027",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    },
+    "seed-9_sample-4/crbn_seed-9_sample-4_model.cif": {
+      "sha256": "fc8e29ebb1c0b64a2acd7f8eac6242d1cc8894cc14ab5d3305905ccbaf20b384",
+      "role": "native_sample",
+      "status": "candidate",
+      "reasons": [
+        "af3red_execution_declaration_missing",
+        "bias_sigma_unknown",
+        "bias_weight_unknown",
+        "explicit_target_model_chain_binding_required"
+      ]
+    }
+  },
+  "expected_read_provenance": {
+    "absent_fields": [
+      "_atom_site.auth_atom_id",
+      "_atom_site.auth_comp_id"
+    ],
+    "available_models": [
+      "1"
+    ],
+    "columns": [
+      "_atom_site.group_PDB",
+      "_atom_site.id",
+      "_atom_site.type_symbol",
+      "_atom_site.label_atom_id",
+      "_atom_site.label_alt_id",
+      "_atom_site.label_comp_id",
+      "_atom_site.label_asym_id",
+      "_atom_site.label_entity_id",
+      "_atom_site.label_seq_id",
+      "_atom_site.pdbx_PDB_ins_code",
+      "_atom_site.Cartn_x",
+      "_atom_site.Cartn_y",
+      "_atom_site.Cartn_z",
+      "_atom_site.occupancy",
+      "_atom_site.B_iso_or_equiv",
+      "_atom_site.auth_seq_id",
+      "_atom_site.auth_asym_id",
+      "_atom_site.pdbx_PDB_model_num"
+    ],
+    "field_policy": "present_cif_fields_only; no_namespace_substitution",
+    "producer_verified": false,
+    "profile": "af3_native_v1",
+    "read_completed": true,
+    "reader": "read_af3_native_cif",
+    "reader_version": "0.1",
+    "selected_model": "1",
+    "source_path": "seed-57_sample-2/crbn_seed-57_sample-2_model.cif",
+    "source_sha256": "58f38cc8f279fb827851c27ff735bdc4b310ca22276a6a2cf8ebbb2414a882ed"
+  },
+  "expected_hetatm_rows": 1,
+  "expected_root_copy": {
+    "relative_path": "crbn_model.cif",
+    "sha256": "c89b1ce35264bc82310be016a528aa2362816877ad10d197f538103cdf1a9ef5",
+    "byte_equal_to_selected_sample": false
+  }
+}

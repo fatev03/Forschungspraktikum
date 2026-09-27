@@ -1,0 +1,181 @@
+### 1. Scope and exclusions
+
+- **Baseline:** explicit input conversion; deterministic distances, coordinate transforms and permitted span checks; typed measurement transport; summaries of eligible deterministic measurements; identity validation; trace export.
+- **Experimental-only:** the existing pointwise spatial-density measurement profile associated with Source-A. Activation requires explicit configuration and independent validation. Outputs cannot populate frozen-core fields.
+- **Reference-only:** Source-A overlap integrals and capture-region averages; Source-B finite-state balance; Source-C transition networks; Source-E objective definitions and score imports; Source-F extensions. Source-D supports descriptive summaries only.
+- **Explicitly disabled:** probability branch: **not evaluated**.
+- This specification defines an orchestration envelope. It does not amend frozen equations, status precedence, field ownership or existing identity algorithms.
+
+### 2. Canonical quantity dictionary
+
+`nm` denotes the canonical length unit. `U` denotes an abstract concentration-like unit defined by a versioned conversion profile.
+
+| Canonical identifier | Scalar/vector/tensor type | Unit | Domain | Producer | Consumer | Aggregation rule | Unavailable semantics | Forbidden conflation |
+|---|---|---|---|---|---|---|---|---|
+| `distance_nm` | Scalar | nm | Finite, ≥0 | F01 | Geometry report | None | Null + reason | Distance ≠ feasibility |
+| `spatial_density` | Scalar evaluation / sampled tensor | nm⁻³ | Finite, ≥0 | F02 | F02 | None | Null + reason | Density ≠ integrated measure |
+| `pointwise_scalar_u` | Scalar | U | Finite, ≥0 | F02 | Measurement envelope | Per-pair first; explicit mean only | Null + reason | Point evaluation ≠ overlap integral |
+| `pairwise_overlap_scalar_u` | Scalar | U | Profile-defined | Source-A reference | None enabled | None | Not evaluated | Overlap integral ≠ point evaluation |
+| `capture_region_average_u` | Scalar | U | Profile-defined | Source-A reference | None enabled | None | Not evaluated | Region average ≠ pointwise scalar |
+| `reach_rms_nm` | Scalar | nm | Finite, >0 | F02 | Measurement envelope | Explicit mean across identified records | Null + reason | RMS span ≠ maximum span or region radius |
+| `occupancy_vector` | Vector | Profile-defined | Dimension and domain unresolved | Source-B reference | None enabled | None | Not evaluated | State vector ≠ spatial measurement |
+| `ensemble_summary` | Structured scalars/vector | Same as input | Finite eligible subset | F03 | Summary/export | Declared min/median/max | Empty subset → null + counts | Sample summary ≠ distributional weight |
+| `imported_score_component` | Scalar / named vector | Declared source unit | Profile-defined | F04 | Reference export | None | Null + reason | Score ≠ geometry or cross-source common scale |
+
+### 3. Mathematical formulation cards
+
+**F01 — Deterministic geometry**
+
+- **formulation_id:** `deterministic_geometry_v1`
+- **Abstract purpose:** Evaluate explicit spatial separations and permitted span conditions.
+- **Equations:**
+  \[
+  d=\|\mathbf{x}-\mathbf{y}\|_2,\qquad
+  D_{\max}=\sum_e b_e,
+  \]
+  \[
+  D_{\min}=\max\!\left(0,\max_e\left[a_e-\sum_{f\ne e}b_f\right]\right).
+  \]
+  Existing comparison:
+  \[
+  D_{\min}-\varepsilon\le d\le D_{\max}+\varepsilon.
+  \]
+- **Inputs and units:** Explicit points, frame, element spans \(0\le a_e\le b_e\), tolerance; nm.
+- **Outputs and units:** Distance, span limits and permitted predicate diagnostics; nm/dimensionless.
+- **Assumptions:** Existing unrestricted-junction profile; nonempty element set; authoritative element-membership and placement rules.
+- **Numerical method:** Stable Euclidean norm and finite sums; existing validation order.
+- **Invariants:** \(0\le D_{\min}\le D_{\max}\); declared ordering preserved; no numerical density evaluation.
+- **Edge cases:** Empty elements, unsupported profile, missing frame, nonfinite coordinates: explicit failure. No substitute geometry.
+- **Classification:** Baseline, within the frozen contract only.
+- **Required validation fixture:** Known admissible geometry with independently calculated distance/span limits and absent quantitative payloads.
+
+**F02 — Existing spatial measurement profile**
+
+- **formulation_id:** `pointwise_measurement_v1`
+- **Abstract purpose:** Preserve the existing measurement calculation and its exact aggregation semantics.
+- **Equations:**
+  \[
+  m_i=c\,n_i^\eta,\qquad
+  g_i(d_i)=
+  \left(\frac{3}{2\pi m_i}\right)^{3/2}
+  \exp\!\left(-\frac{3d_i^2}{2m_i}\right),
+  \]
+  \[
+  q_i=\kappa g_i(d_i),\qquad r_i=\sqrt{m_i},
+  \]
+  \[
+  \bar q=\frac1N\sum_iq_i,\qquad
+  \bar r=\frac1N\sum_ir_i.
+  \]
+- **Inputs and units:** Explicit pair distances \(d_i\): nm; \(n_i>0\): dimensionless; \(c\): nm²; \(\eta\): dimensionless; \(\kappa\): U·nm³.
+- **Outputs and units:** Per-pair \(g_i\): nm⁻³; \(q_i,\bar q\): U; \(r_i,\bar r\): nm.
+- **Assumptions:** Existing versioned coefficient profile; explicit pair membership; arithmetic means are declared summaries only.
+- **Numerical method:** Evaluate the existing expression directly or through its algebraically identical logarithmic form. No new normalization.
+- **Invariants:** All records retain pair identity; units converted once; aggregates reproduce their recorded components.
+- **Edge cases:** \(N=0\), invalid lengths, overflow or underflow: unavailable with explicit diagnostic; no clamping or hidden record removal.
+- **Classification:** Experimental-only; Source-A-associated measurement profile. Not an implementation of the full Source-A overlap formulation.
+- **Required validation fixture:** Fixed per-pair inputs, independently checked scalar values, exact aggregate membership and export/reload consistency.
+
+**F03 — Finite sample summary**
+
+- **formulation_id:** `sample_summary_v1`
+- **Abstract purpose:** Summarize comparable deterministic measurements.
+- **Equations:**
+  \[
+  I=\{i:\text{record }i\text{ satisfies the declared eligibility rule}\},
+  \]
+  \[
+  s=(|I|,\min_{i\in I}x_i,\operatorname{median}_{i\in I}x_i,
+       \max_{i\in I}x_i).
+  \]
+- **Inputs and units:** Identified measurement records sharing quantity definition, unit and method profile.
+- **Outputs and units:** Counts: dimensionless; summary values: input unit.
+- **Assumptions:** No implicit weights; explicit eligibility rule; unavailable records remain traceable.
+- **Numerical method:** Stable ordering; declared even-count median convention.
+- **Invariants:** Included + excluded = total; min ≤ median ≤ max; permutation-invariant summary.
+- **Edge cases:** Empty eligible set → null statistics; one record → identical min/median/max; incompatible units/profile → rejection.
+- **Classification:** Baseline for deterministic inputs; experimental inputs retain their lane. Source-D.
+- **Required validation fixture:** Mixed available/unavailable records with exact membership, counts and summary.
+
+**F04 — Immutable score import**
+
+- **formulation_id:** `score_import_reference_v1`
+- **Abstract purpose:** Preserve a source-declared component without reinterpretation.
+- **Equation:**
+  \[
+  s_{\mathrm{exported}}=s_{\mathrm{source}}.
+  \]
+- **Inputs and units:** Named source component, declared unit, mask/denominator metadata where applicable.
+- **Outputs and units:** Unchanged value and unit.
+- **Assumptions:** Exact source profile identified; no cross-profile equivalence.
+- **Numerical method:** Parse and validate only.
+- **Invariants:** No sign reversal, rescaling, averaging or conversion into another quantity.
+- **Edge cases:** Missing definition/unit/mask semantics → unavailable; malformed values → rejection.
+- **Classification:** Reference-only; Source-E. No active baseline ranking dependency.
+- **Required validation fixture:** Exact import/export round trip plus missing-metadata rejection.
+
+**F05 — Identity-preserving value transfer**
+
+- **formulation_id:** `measurement_transfer_v1`
+- **Abstract purpose:** Transfer explicit results without execution-order dependence.
+- **Equations:**
+  \[
+  h(x)=\operatorname{SHA256}(\operatorname{CanonicalSerialize}_v(x)),
+  \]
+  \[
+  (\bar q,\bar r)_{\mathrm{consumed}}
+  =(\bar q,\bar r)_{\mathrm{selected\ producer}}.
+  \]
+- **Inputs and units:** Producer envelope and explicit expected identity tuple.
+- **Outputs and units:** Verified reference and unchanged measurements/units.
+- **Assumptions:** Versioned canonical serialization; explicit selection; immutable snapshots.
+- **Numerical method:** Identity comparison and integrity verification; no scientific arithmetic.
+- **Invariants:** Full identity match required; no lane promotion; no latest-result lookup.
+- **Edge cases:** Missing result, stale run, mismatched configuration/artifact/mapping/payload → dependent execution blocked.
+- **Classification:** Baseline transport mechanism; transported calculations retain their classification.
+- **Required validation fixture:** Missing result, stale run, mismatched config and valid linked transfer.
+
+### 4. Software interface contracts
+
+**Shared envelope requirements**
+
+- **Typed input envelope:** `schema_version: string`; explicit input records; immutable configuration snapshot; expected upstream references.
+- **Typed output envelope:** `availability`, `lane`, `quantity_definition_id`, typed `values`, explicit `units`, `diagnostics`, immutable provenance. Proposed envelope fields remain outside frozen-core records.
+- **Required provenance:** `pipeline_run_id`, `execution_id`, `producer_result_id`, `payload_sha256`, `artifact_id`, `artifact_sha256`, `mapping_hash`, `producer_config_hash`, `method_id`, `method_version`, `source_hash`, `canonicalization_version`, runtime versions.
+- **Identity separation:** Run/execution IDs identify executions. Content hashes identify immutable content. Core identity algorithms remain unchanged.
+- **Serialization:** Strict JSON; finite numbers only; explicit nulls; ordered record arrays; canonical key handling. Timestamps cannot establish freshness or replace hashes.
+
+**Per-formulation requirements**
+
+- **F01:** Input points, frames, span elements and frozen-contract reference; output diagnostics and permitted geometry only. Validate profile applicability before evaluation. Preserve existing core failure patterns. No inferred frame, tolerance or element membership.
+- **F02:** Input explicit pair list and complete coefficient profile; output per-pair records plus declared aggregates. Validate positive lengths, finite distances and unit conversion. No omitted coefficients, empty-set mean, last-successful value or partial aggregate presented as complete.
+- **F03:** Input homogeneous quantity records and eligibility policy; output statistics, included IDs, excluded IDs/reasons and counts. Reject incompatible definitions. No unavailable→zero conversion or silent sample deletion.
+- **F04:** Input source artifact plus exact component definition; output unchanged component with source locator. Reject malformed values; incomplete semantics remain unavailable. No implicit score direction or normalization.
+- **F05:** Input explicit producer reference and consumer expectations; output verified reference or orchestration failure. Compare active run, expected producer configuration, artifact, mapping, method and payload. Consumer configuration has its own hash; it is not required to equal producer configuration. No automatic relabeling of stale results.
+
+**No-hidden-default invariant**
+
+A linked execution uses the selected result or stops. Explicit manual mode, if later specified, must have separate provenance and cannot silently combine with linked measurements.
+
+### 5. Colab cell contract map
+
+| Group | Input → output | Strict prohibitions |
+|---|---|---|
+| `00_config_and_identity` | Explicit configuration, run selection, contract references → frozen snapshots and expected identities | No inferred profile, automatic source selection or amendment of core defaults |
+| `10_input_normalization` | Explicit artifacts, units, mappings → normalized typed inputs and conversion trace | No guessed frame/order/unit; no silent repair |
+| `20_deterministic_geometry` | Validated geometry inputs → F01 outputs and existing core diagnostics | No density, score compensation or quantitative payload inferred from a passed predicate |
+| `30_measurement_envelope` | Explicit producer outputs/references → typed envelopes and F05 validation | No hidden globals, latest-result lookup, empty-set aggregate or stale-value reuse |
+| `40_optional_experimental` | Explicit opt-in and complete F02 inputs → separately classified measurements | No automatic activation, baseline field writes or Source-B/Source-C/Source-F execution |
+| `50_summary_and_ranking` | Eligible deterministic records → F03 summaries and explicitly configured ordering | No mixed-unit/profile ranking, missing-value imputation or invented composite score |
+| `60_export_and_trace` | Immutable results and verified dependency references → serialized report and complete trace | No dropping exclusions, replacing nulls, changing lane or presenting transfer validation as mathematical validation |
+
+### 6. Claude-safe implementation vocabulary
+
+- **Recommended identifiers:** `point_id`, `pair_id`, `frame_id`, `span_elements`, `distance_nm`, `reach_rms_nm`, `pointwise_scalar_u`, `quantity_definition_id`, `aggregation_method`, `expected_producer_config_hash`, `availability`, `lane`.
+- **Avoid identifiers:** `success_probability`, `universal_score`, `automatic_acceptance`, `latest_result`, `default_value`, `optimal_design`, `effective_value` without a quantity definition.
+- **Class examples:** `GeometryInputEnvelope`, `MeasurementEnvelope`, `DependencyReference`, `AggregationPolicy`, `TraceRecord`.
+- **Function examples:** `validate_geometry_input`, `evaluate_declared_span`, `collect_pair_measurements`, `verify_dependency_identity`, `summarize_eligible_records`, `export_trace`.
+- **Exception examples:** `MissingUpstreamResultError`, `RunIdentityMismatchError`, `ConfigIdentityMismatchError`, `ArtifactIntegrityError`, `QuantityDefinitionMismatchError`, `UnsupportedProfileError`.
+- **Test examples:** `test_contract_contradiction_is_not_evaluated`, `test_geometry_has_no_quantitative_payload`, `test_missing_upstream_rejects_globals`, `test_stale_run_is_rejected`, `test_config_mismatch_is_rejected`, `test_linked_transfer_preserves_values_and_trace`.
+
+Exact next prompt

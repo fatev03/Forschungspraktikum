@@ -1,0 +1,38 @@
+target_id: technical_validation_ubiquitin_1ubq
+purpose: technical_validation_only
+
+query_record_id: ubiquitin_query_1ubq_A
+query_sequence: MQIFVKTLTGKTITLEVEPSDTIENVKAKIQDKEGIPPDQQRLIFAGKQLEDGRTLSDYNIQKESTLHLVLRLRGG
+query_sequence_length: 76
+query_sequence_sha256: 233b4b0b8c4616095bc3249f9375fc345d32af7deaef07117d0383c51d6f19aa
+
+alignment_file: 1UBQ_receptor_homologs.a3m
+alignment_format: a3m
+alignment_profile: a3m_match_columns_v1
+alignment_path_relative_to_project: local inputs/technical validation/derived/1UBQ_receptor_homologs.a3m
+
+msa_tool: ColabFold/MMseqs2 web output
+msa_search_engine: MMseqs2
+msa_mode: unknown
+pair_mode: unpaired_or_not_applicable_for_single_query
+generation_date: 2026-09-18
+generation_timezone: CEST
+
+search_execution: user-initiated external server run
+upstream_execution_verified: false
+producer_version: unknown
+producer_version_reason: not captured from the external interface
+source_database_or_mode: unknown
+source_database_or_mode_reason: not captured from the external interface
+
+query_source: RCSB PDB 1UBQ chain A / UniProt P62988
+query_source_status: caller-supplied technical-validation reference
+
+biological_homology_claim: not evaluated by this technical audit
+evolutionary_interpretation: not performed
+coevolution_claim: prohibited
+biological_binding_claim: prohibited
+affinity_claim: prohibited
+receptor_biology_claim: prohibited
+
+notes: A3M retained as a supplied external homolog-search output solely for receptor_msa_audit_adapter parsing, explicit query/map linkage, and provenance behavior. No prediction or structure-generation result is asserted by this record. Unknown settings are intentionally preserved as unknown rather than inferred.

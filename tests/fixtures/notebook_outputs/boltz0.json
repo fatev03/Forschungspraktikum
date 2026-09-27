@@ -1,0 +1,8 @@
+{
+  "confidence_score": 0.7,
+  "iptm": 0.2,
+  "complex_plddt": 0.9,
+  "pair_chains_iptm": {"0": {"1": 0.4}, "1": {"0": 0.6}},
+  "nested_confidence": {"scores": [0.2, null], "a/b": {"x~y": true}},
+  "fixture_note": "Synthetic scalar and nested field bookkeeping only"
+}

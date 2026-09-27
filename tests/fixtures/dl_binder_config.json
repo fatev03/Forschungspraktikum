@@ -1,0 +1,7 @@
+{
+  "profile": "dl_binder_design_sc_v1",
+  "prediction_mode": "complex",
+  "initial_guess": true,
+  "recycles": 3,
+  "upstream_snapshot": null
+}

@@ -1,0 +1,204 @@
+{
+  "cases": [
+    {
+      "name": "available",
+      "source_file": "source.a3m",
+      "artifact": {
+        "artifact_id": "syn-alignment-fixture",
+        "sha256": "15138278372045134fc4b33f5f0bbe7223f7d4814adc582fd3c695ec06a312d2",
+        "format": "a3m",
+        "source_kind": "caller_declared_colabfold_mmseqs2_style_a3m",
+        "source_kind_status": "caller_supplied_not_verified",
+        "producer": {
+          "name": null,
+          "version": null,
+          "database": null,
+          "database_version": null,
+          "search_settings": null,
+          "missing_reasons": {
+            "name": "not declared by the synthetic fixture",
+            "version": "not declared by the synthetic fixture",
+            "database": "not declared by the synthetic fixture",
+            "database_version": "not declared by the synthetic fixture",
+            "search_settings": "not declared by the synthetic fixture"
+          }
+        },
+        "provenance": {
+          "details": null,
+          "missing_reason": "synthetic fixture; no producer history"
+        }
+      },
+      "config": {
+        "profile_id": "colabfold_a3m_lossless_v1",
+        "profile_version": "1.0",
+        "profile_selection": "explicit_only",
+        "expected_artifact_sha256": "15138278372045134fc4b33f5f0bbe7223f7d4814adc582fd3c695ec06a312d2",
+        "query_selector": {
+          "record_occurrence_id": "record:0@header_line:1"
+        },
+        "canonical_query_sequence": "ACG",
+        "canonical_query_sequence_sha256": "77ef74518ccd6437d9f93ad907bf0bd990f86c2611175f3472aab7852bb1d0e4",
+        "query_gap_policy": "preserve_and_map_to_null",
+        "lowercase_x_policy": {
+          "handling": "retain_with_locator_and_anchor",
+          "match_column_contribution": "none",
+          "coverage_contribution": "none",
+          "match_denominator_contribution": "none",
+          "frequency_entropy_contribution": "none"
+        },
+        "unknown_tokens": [],
+        "unknown_policy": "reject"
+      }
+    },
+    {
+      "name": "unavailable",
+      "source_file": "absent.a3m",
+      "artifact": {
+        "artifact_id": "syn-alignment-fixture",
+        "sha256": "15138278372045134fc4b33f5f0bbe7223f7d4814adc582fd3c695ec06a312d2",
+        "format": "a3m",
+        "source_kind": "caller_declared_colabfold_mmseqs2_style_a3m",
+        "source_kind_status": "caller_supplied_not_verified",
+        "producer": {
+          "name": null,
+          "version": null,
+          "database": null,
+          "database_version": null,
+          "search_settings": null,
+          "missing_reasons": {
+            "name": "not declared by the synthetic fixture",
+            "version": "not declared by the synthetic fixture",
+            "database": "not declared by the synthetic fixture",
+            "database_version": "not declared by the synthetic fixture",
+            "search_settings": "not declared by the synthetic fixture"
+          }
+        },
+        "provenance": {
+          "details": null,
+          "missing_reason": "synthetic fixture; no producer history"
+        }
+      },
+      "config": {
+        "profile_id": "colabfold_a3m_lossless_v1",
+        "profile_version": "1.0",
+        "profile_selection": "explicit_only",
+        "expected_artifact_sha256": "15138278372045134fc4b33f5f0bbe7223f7d4814adc582fd3c695ec06a312d2",
+        "query_selector": {
+          "record_occurrence_id": "record:0@header_line:1"
+        },
+        "canonical_query_sequence": "ACG",
+        "canonical_query_sequence_sha256": "77ef74518ccd6437d9f93ad907bf0bd990f86c2611175f3472aab7852bb1d0e4",
+        "query_gap_policy": "preserve_and_map_to_null",
+        "lowercase_x_policy": {
+          "handling": "retain_with_locator_and_anchor",
+          "match_column_contribution": "none",
+          "coverage_contribution": "none",
+          "match_denominator_contribution": "none",
+          "frequency_entropy_contribution": "none"
+        },
+        "unknown_tokens": [],
+        "unknown_policy": "reject"
+      }
+    },
+    {
+      "name": "unsupported",
+      "source_file": "source.a3m",
+      "artifact": {
+        "artifact_id": "syn-alignment-fixture",
+        "sha256": "15138278372045134fc4b33f5f0bbe7223f7d4814adc582fd3c695ec06a312d2",
+        "format": "a3m",
+        "source_kind": "caller_declared_colabfold_mmseqs2_style_a3m",
+        "source_kind_status": "caller_supplied_not_verified",
+        "producer": {
+          "name": null,
+          "version": null,
+          "database": null,
+          "database_version": null,
+          "search_settings": null,
+          "missing_reasons": {
+            "name": "not declared by the synthetic fixture",
+            "version": "not declared by the synthetic fixture",
+            "database": "not declared by the synthetic fixture",
+            "database_version": "not declared by the synthetic fixture",
+            "search_settings": "not declared by the synthetic fixture"
+          }
+        },
+        "provenance": {
+          "details": null,
+          "missing_reason": "synthetic fixture; no producer history"
+        }
+      },
+      "config": {
+        "profile_id": "colabfold_a3m_lossless_v1",
+        "profile_version": "2.0",
+        "profile_selection": "explicit_only",
+        "expected_artifact_sha256": "15138278372045134fc4b33f5f0bbe7223f7d4814adc582fd3c695ec06a312d2",
+        "query_selector": {
+          "record_occurrence_id": "record:0@header_line:1"
+        },
+        "canonical_query_sequence": "ACG",
+        "canonical_query_sequence_sha256": "77ef74518ccd6437d9f93ad907bf0bd990f86c2611175f3472aab7852bb1d0e4",
+        "query_gap_policy": "preserve_and_map_to_null",
+        "lowercase_x_policy": {
+          "handling": "retain_with_locator_and_anchor",
+          "match_column_contribution": "none",
+          "coverage_contribution": "none",
+          "match_denominator_contribution": "none",
+          "frequency_entropy_contribution": "none"
+        },
+        "unknown_tokens": [],
+        "unknown_policy": "reject"
+      }
+    },
+    {
+      "name": "rejected",
+      "source_file": "source.a3m",
+      "artifact": {
+        "artifact_id": "syn-alignment-fixture",
+        "sha256": "15138278372045134fc4b33f5f0bbe7223f7d4814adc582fd3c695ec06a312d2",
+        "format": "a3m",
+        "source_kind": "caller_declared_colabfold_mmseqs2_style_a3m",
+        "source_kind_status": "caller_supplied_not_verified",
+        "producer": {
+          "name": null,
+          "version": null,
+          "database": null,
+          "database_version": null,
+          "search_settings": null,
+          "missing_reasons": {
+            "name": "not declared by the synthetic fixture",
+            "version": "not declared by the synthetic fixture",
+            "database": "not declared by the synthetic fixture",
+            "database_version": "not declared by the synthetic fixture",
+            "search_settings": "not declared by the synthetic fixture"
+          }
+        },
+        "provenance": {
+          "details": null,
+          "missing_reason": "synthetic fixture; no producer history"
+        }
+      },
+      "config": {
+        "profile_id": "colabfold_a3m_lossless_v1",
+        "profile_version": "1.0",
+        "profile_selection": "explicit_only",
+        "expected_artifact_sha256": "15138278372045134fc4b33f5f0bbe7223f7d4814adc582fd3c695ec06a312d2",
+        "query_selector": {
+          "record_occurrence_id": "record:1@header_line:4"
+        },
+        "canonical_query_sequence": "ACG",
+        "canonical_query_sequence_sha256": "77ef74518ccd6437d9f93ad907bf0bd990f86c2611175f3472aab7852bb1d0e4",
+        "query_gap_policy": "preserve_and_map_to_null",
+        "lowercase_x_policy": {
+          "handling": "retain_with_locator_and_anchor",
+          "match_column_contribution": "none",
+          "coverage_contribution": "none",
+          "match_denominator_contribution": "none",
+          "frequency_entropy_contribution": "none"
+        },
+        "unknown_tokens": [],
+        "unknown_policy": "reject"
+      }
+    }
+  ]
+}

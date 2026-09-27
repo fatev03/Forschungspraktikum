@@ -1,0 +1,25 @@
+# --- macOS ---
+.DS_Store
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+build/
+dist/
+
+# --- Output of structure_audit runs (README: audit_runs/...) ---
+audit_runs/
+
+# --- Too large for GitHub (3 GB AlphaFold3 outputs, one file 835 MB) ---
+external_artifacts/
+
+# --- Third-party papers and code (1.6 GB, not our own work) ---
+literature/
+
+# --- Separate Helmholtz GitLab repo (owner: M. Grosshauser), kept out of this repo ---
+2026-07-28_Cell_Surface_Universe/

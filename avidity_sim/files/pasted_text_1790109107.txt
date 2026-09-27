@@ -1,0 +1,225 @@
+Three-domain geometry module: implementation red-team and silent-failure checklist
+Companion to revision 2 of the analytical specification. Revision 2 is fixed and authoritative. Nothing here changes the model, equations, statuses, defaults, tests or API. This document exists to catch implementations that conform superficially and diverge numerically.
+
+Scope of concern: failures that produce finite, in-range, plausibly shaped output. Crashes are not the threat. A p_joint of 0.031 that should be 0.0004 is.
+
+1. Silent-failure catalogue
+F1. Unit conversion applied twice
+What goes wrong. NM3_TO_MM applied inside ChainDensity.density_at and again at output assembly, or applied once in ceff and once in ceff_avg via a shared helper. Why it looks plausible. Concentrations remain positive, finite, and monotone in every direction the model predicts. A reader without a reference value has no anchor, and tethered effective concentrations legitimately span six orders of magnitude, so 10^6 mM does not obviously look wrong. Caught by. T11 (pins the closed form including the factor). Residual risk. T11 exercises only the ideal branch with steric_mode = "none". A double conversion applied only on the WLC path, or only in ceff_avg, escapes. See A1.
+
+F2. Contour gate evaluated after density construction
+What goes wrong. C3 is checked, but only after ChainDensity is constructed, or the check is folded into the integral limits rather than into the status logic. Why it looks plausible. The returned numbers are still zero, because the WLC support forces them to zero. Status may even be correct. The violation is purely one of ordering and is invisible in the output record. Caught by. T2 (spy on ChainDensity records zero evaluations), T16 (same for C1). Residual risk. If the spy is implemented as a call counter on density_at only, a construction-only violation escapes. Instrument the constructor as well.
+
+F3. Ideal branch evaluated past contour length
+What goes wrong. C3 is gated on the WLC branch, where the support makes it redundant, but skipped or loosened on the ideal branch, where the Gaussian happily returns finite density at r = 3L. Why it looks plausible. Output is a small positive probability rather than zero. It looks like a taut but achievable geometry. This is the single most dangerous failure in the module, because it converts "impossible" into "unlikely but worth pursuing". Caught by. T2, which is required to pass for both chain_model values. Residual risk. None if T2 is run on both branches as specified. High if an implementer parameterizes T2 over one branch only.
+
+F4. Separate density objects for P_reach and ceff
+What goes wrong. ceff computed from a freshly constructed density, or from a closed-form expression written inline, while P_reach uses the cached grid object. The two then disagree in A_j, in the quadrature normalization, or in the X_MAX cap. Why it looks plausible. Both quantities are individually reasonable. The disagreement only shows as a ratio inconsistency, which nobody inspects unless they look for it. Caught by. T10 (small-Rc consistency between P_reach/volume and G(d)). Residual risk. T10 uses rel(1e-2). A normalization discrepancy under 1% escapes and then compounds when ceff is used downstream as a ratio.
+
+F5. WLC normalization recomputed per call
+What goes wrong. A_j computed inside density_at or inside the integrand. Why it looks plausible. Results are correct, just slow. But under a coarse adaptive quadrature the recomputed A_j can differ between calls by more than the reported residual, introducing a jitter that breaks monotonicity tests intermittently rather than deterministically. Caught by. T9 partially, T3 and T1 intermittently. Residual risk. High. Intermittent monotonicity failures get retried and dismissed as flakiness. Treat any flaky T3 as an A_j caching bug until proven otherwise.
+
+F6. Shadow aggregation converted to product transmission
+What goes wrong. 1 - sum_m f_m replaced by prod_m (1 - f_m). Why it looks plausible. It is more physically defensible at first glance, it is bounded in [0,1] without clamping, it never triggers S_MIN, and it preserves every monotonicity the specification requires. A reviewer is likely to approve it as an improvement. Caught by. Nothing in the current suite. T4 passes under both forms. Residual risk. Total. This is the highest-priority addition in section 4 (A2).
+
+F7. Joint computed from marginals, both measured from e_1
+What goes wrong. P_reach_3 computed with the linker23 span measured from e_1 or from the anchor, rather than from e_2 = p_2 + s_2. Equivalently, the conditional structure collapses into two independent marginals. Why it looks plausible. p_joint stays in [0,1], stays below both marginals, and satisfies the Fréchet bound. Every bound assertion in T8 passes. Caught by. Partially T5, if the symmetric configuration is constructed so that the two origins differ. Not reliably. Residual risk. High, and it is the most consequential modeling error available. See A3.
+
+F8. joint_is_approximation set conditionally
+What goes wrong. Flag set to false when chi = 1, on the reasoning that no correction was applied. Why it looks plausible. It reads as informative rather than deceptive. chi = 1 genuinely means no empirical correction, so the flag looks like it is tracking the correction, not the approximation. Caught by. T8 explicitly, including at chi = 1. Residual risk. Low, provided T8 is not weakened to skip the chi = 1 case.
+
+F9. Vetoed numerics returned as null or omitted
+What goes wrong. infeasible or unreachable returns drop the numeric fields, or set them to null. Why it looks plausible. It reads as cleaner API design. The caller has a status, so the numbers are redundant. Caught by. T2 and T4 check exact 0.0 on specific fields. Residual risk. Moderate. The tests check a subset of fields. A null in ceff_2_avg_mM specifically, or in steric.*, escapes and then propagates as a null into any downstream aggregation, usually surfacing much later as a zero-length array or a silently skipped row.
+
+F10. infeasible and unreachable merged
+What goes wrong. Both mapped to a single failure status, or to feasible = false with an undifferentiated message. Why it looks plausible. Both mean "no". The numeric payload is identical. The distinction appears to be cosmetic. Caught by. T2 checks unreachable, T4 checks infeasible, so the merge is caught if both assert the exact string. Residual risk. Low if statuses are asserted exactly, high if tests assert only feasible == false. Audit the assertions, not just the test names.
+
+F11. Pose inferred from approach normal
+What goes wrong. With no pose supplied, the implementation constructs a rotation aligning s_i with n_k or with p_k - t_k, reasoning that identity is an unrealistic placeholder. Why it looks plausible. It is more physical. It produces smoothly varying spans. It removes an obviously crude default. And it changes e_1 and e_2, hence both spans, hence everything downstream, by an amount comparable to |s_i|. Caught by. Nothing directly. T5's rigid-invariance test passes under any consistent convention. Residual risk. Total. See A4.
+
+F12. d <= EPS_D branch omitted
+What goes wrong. The degenerate-span branch in capture_integral dropped because d = 0 is judged unreachable in practice. Why it looks plausible. It never fires in typical geometries. When it does, phi divides by d and yields Inf, which some implementations then clamp to 1, producing P_reach = 1 at exactly the geometry where the answer should be a bounded sub-unit value. Caught by. T7 includes d -> 0. Residual risk. Low if T7 tests true zero rather than a small positive d. Specify the test input as exactly 0.0.
+
+F13. r_lo lower bound wrong when Rc > d
+What goes wrong. r_lo = max(0, d - Rc) used without the Rc - d term, so the shell integral double-counts the region already covered by inner. Why it looks plausible. P_reach increases, stays below 1 after clamping, and remains monotone in Rc. T3 passes. Caught by. T7 includes Rc > d, but only as a finiteness check. Residual risk. High. The overcount is bounded by the clamp, so it manifests as P_reach saturating at 1 too early. See A5.
+
+F14. Uniform quadrature grid on the WLC branch
+What goes wrong. Grid uniform in r rather than Gauss-Legendre or the sin substitution. For stiff chains the density is a thin shell near r = L and the grid misses it. Why it looks plausible. Normalization error is reported, but if A_j is fitted to the same bad grid, the residual comes out near zero by construction. The density is then self-consistently wrong. Caught by. T9 only if the verification integral uses a different, denser grid than the one used to fit A_j. Residual risk. High. Mandate that T9's check integral be independent of the production grid. This is easy to get wrong and it defeats the test.
+
+F15. Clamping at forbidden sites
+What goes wrong. G(r), rho_k or ceff_* clamped to some ceiling to avoid large numbers, or d_j clamped to L_j instead of triggering C3. Why it looks plausible. Output becomes better behaved. Extreme concentrations disappear. Nothing raises. The clamped values are still monotone. Caught by. T11 catches a ceff ceiling only if the test geometry exceeds it. Residual risk. High for d_j clamped to L_j, which silently converts every unreachable into a taut but valid geometry. See A6.
+
+F16. Defaults resolved but not echoed
+What goes wrong. diagnostics.effective_config populated from the raw model_config rather than from the resolved one, so it reports absences rather than applied defaults. Why it looks plausible. The field exists and is populated. Only a key-by-key comparison reveals that the defaults are missing. Caught by. T13 exactly. Residual risk. Low if T13 enumerates every key in section 4.2 rather than spot-checking.
+
+F17. Warnings suppressed because output is in range
+What goes wrong. Warning emission made conditional on the value being out of range, or on the clamp actually changing the value, rather than on the condition being met. Why it looks plausible. It reduces noise. A warning that fires on every call is treated as a bug. And the outputs really are in range. Caught by. T14 for four specific conditions. Residual risk. Moderate. The omega = 1 upper-bound warning is the likeliest casualty, because it fires on nearly every realistic call and looks like pure noise. Losing it means every result is silently an upper bound.
+
+F18. Clamp #4 masking an upstream error
+What goes wrong. The final [0,1] clamp fires routinely, absorbing an error in the integrand, the normalization, or the shadow sum. The specified warning on a clamp displacement above 1e-9 is not implemented. Why it looks plausible. Probabilities are always in range, which is exactly what a reviewer checks for. Caught by. Nothing. The warning requirement is in section 3.4 of the specification but no test asserts it. Residual risk. Total. See A7.
+
+F19. S_MIN returned as a plausible survival value
+What goes wrong. The buried-start-point early return yields S = 1e-6, which propagates into a tiny but nonzero P_reach and ceff. Why it looks plausible. A very small number reads as "geometrically hard", not as "start point is inside an obstacle, this configuration is nonsense". Caught by. Nothing. S_MIN is a legitimate specified value. Residual risk. Moderate. Mitigate by logging (section 5), not by changing the API.
+
+F20. Rigid-transform invariance broken only for the plane
+What goes wrong. The rigid-invariance test applies a transform to positions and poses but the implementation treats z_min as an absolute rather than transforming the plane with everything else. Why it looks plausible. Most transforms used in testing are pure translations in the plane or rotations about z, which leave the wall term unchanged. Caught by. T5(b), only if the test transform includes a rotation that tilts z and a translation along z. Residual risk. Moderate. Specify the T5 transform to include both.
+
+F21. Orientation factor applied twice
+What goes wrong. omega_k folded into ChainDensity or into capture_integral and also multiplied at the P_reach assembly step. Why it looks plausible. omega^2 is still in [0,1], still monotone in theta, and the resulting stricter numbers look conservative, which reviewers rarely challenge. Caught by. Nothing. T11 sets omega = 1, where the squaring is invisible. Residual risk. Total. See A8. The same hazard applies to S_k.
+
+2. Invariant audit list
+Usable during code review, in order of how cheaply each can be checked.
+
+Units and constants
+
+ NM3_TO_MM appears exactly once in the codebase, at output assembly.
+ No Angstrom anywhere, in parsing, in constants, in test fixtures.
+ diagnostics.units is emitted unconditionally, including on invalid_input.
+Layering
+
+ No ChainDensity construction or evaluation on any path where C1, C2, C3 or C4 has failed.
+ The deterministic checks produce boolean or exact 0.0, never a soft score.
+ Status resolution follows the order in specification section 4.7, first match wins.
+Statuses
+
+ infeasible and unreachable are distinct string values and never merged.
+ Vetoed numeric fields are exact 0.0, not null, not absent.
+ invalid_input returns still carry the section 4.5 non-negotiable fields.
+ No exception escapes the public entry point.
+Density
+
+ A_j computed once per linker at construction and cached.
+ P_reach and ceff obtain their density from the same object instance.
+ WLC evaluated in log space, x capped at X_MAX, exact zero for x >= 1.
+ Ideal branch uses the closed form as authoritative, with no numerical normalization constant.
+ Quadrature grid is Gauss-Legendre or the sin substitution, never uniform in r.
+Integrals
+
+ r_lo = max(0, d - Rc, Rc - d) includes all three terms.
+ inner term present and only applied when Rc > d.
+ d <= EPS_D branch present and reachable.
+ P_reach integrates a product, never differences two cumulative integrals.
+Factors
+
+ Shadow aggregation is 1 - sum_m f_m, not a product of transmissions.
+ S_k and omega_k each multiplied exactly once, at P_reach assembly and at rho_k.
+ Buried start point returns S_MIN immediately without evaluating further obstacles.
+Joint
+
+ P_reach_3_given_2 uses a span measured from e_2 = p_2 + s_2.
+ joint_is_approximation is a literal true, not a computed expression.
+ p_joint <= min(marginals) and >= p_joint_lower asserted in production, not only in tests.
+Clamping
+
+ Exactly four clamp sites: phi, S, omega, final probabilities.
+ No clamp on G, rho, ceff, d, L, R2, or any input.
+ Clamp #4 emits a warning when it displaces a value by more than 1e-9.
+Diagnostics
+
+ effective_config built from resolved values, not from the raw input.
+ Every warning condition in section 4.7 emits unconditionally when its condition holds, independent of whether the output is in range.
+3. Reviewer spot-check protocol
+Six checks, roughly twenty minutes, without reading the full implementation. Each is chosen because it is a single grep or a single run and because failing it implies a class of defects rather than an isolated one.
+
+Check 1: units. Grep for 1660. Exactly one occurrence outside tests. If there are two, stop and treat everything downstream as suspect. Then grep for 1e-10, 0.1, 10.0 near any length parsing, looking for an Angstrom conversion that should not exist.
+
+Check 2: status ordering. Read the entry function top to bottom without following calls. The sequence of guard clauses must be: validation, defaults, derived scalars, C1/C2/C4, C3, then density. If any density construction appears above the C3 guard, the layering invariant is broken regardless of what the tests say.
+
+Check 3: contour gating on both branches. Find the C3 check. Confirm it is unconditional and not inside a if chain_model == "wlc" block, and not expressed only as an integration limit. Then run one case with chain_model = "ideal" and d = 1.5 * L and confirm exact 0.0, status unreachable. This is the highest-value single manual run in the protocol.
+
+Check 4: same density object. Find where ceff is computed. Trace the density reference back. It must be the same variable as the one passed to capture_integral. If ceff uses an inline closed form, or constructs anything, that is F4 regardless of whether T10 currently passes.
+
+Check 5: WLC normalization. Confirm A_j is assigned in the constructor and never reassigned. Then confirm the T9 verification integral uses a grid independent of the production grid. If it reuses the production grid, T9 is self-confirming and proves nothing.
+
+Check 6: joint labeling and origin. Confirm joint_is_approximation is a constant true with no branch. Then confirm the linker23 span is computed from e_2, which must itself derive from p_2. If the span derives from e_1, from the anchor, or from p_1, the conditional structure has collapsed and p_joint is meaningless even though every bound holds.
+
+4. Additional optional tests
+Only failures not already well covered. These extend the suite; they do not modify the revision-2 tests.
+
+A1. Unit factor on every concentration path. High value. Runs T11's assertion against all four concentration fields, on both chain models, with steric_mode = "shadow" and omega < 1. Covers F1 residual.
+
+A2. Shadow aggregation form. High value. Construct two obstacles with f_1 = f_2 = 0.3. Assert S == 0.4 exactly, which distinguishes the sum form from the product form (0.49). Covers F6, currently uncovered.
+
+A3. Conditional origin of the second span. High value. Set s_2 to a large nonzero vector, hold everything else fixed, and assert p_reach_3_given_2 changes. An implementation measuring from e_1 gives an unchanged value. Covers F7, currently uncovered.
+
+A4. Pose default is identity. High value. Supply s_i in laboratory frame with an approach_normal deliberately anti-parallel to it. Assert e_1 == p_1 + s_1 exactly. Any inferred rotation fails. Covers F11, currently uncovered.
+
+A5. Capture ball containing the origin. High value. With Rc = 2*d, assert P_reach equals the direct integral of 4 pi r^2 G(r) over [0, Rc - d] plus the shell term, and separately assert P_reach < 1 strictly for a chain with sqrt(R2) >> Rc. Covers F13.
+
+A6. Forbidden clamp detection. High value. Supply d = 1.2 * L and assert derived.span_12 is reported as 1.2 * L, not as L. An implementation clamping the span reports L and returns ok. Covers F15.
+
+A7. Clamp displacement warning. Medium value. Inject a density that integrates to 1.05 and assert a warning is emitted when the final clamp fires. Requires a test seam on ChainDensity. Covers F18.
+
+A8. Factors applied once. Medium value. With omega_2 = 0.25 and everything else fixed, assert P_reach_2 is exactly one quarter of the omega_2 = 1 value. Squaring gives one sixteenth. Repeat for S_2 with a single obstacle. Covers F21.
+
+A9. Full rigid transform including the plane. Medium value. Extend T5(b) with a transform combining a rotation tilting z by 0.7 rad and a translation of +3 nm along z, with z_min transformed consistently. Covers F20.
+
+A10. Vetoed-field completeness. Low value. On infeasible and on unreachable, assert every field listed in specification section 4.5 is present and, where numeric, exactly 0.0. Enumerate rather than spot-check. Covers F9.
+
+5. Logging and diagnostics guidance
+Internal only. None of this enters the public output schema. Gated behind a debug flag that is off by default and that does not appear in model_config.
+
+Log at construction of each ChainDensity:
+
+L, lp, t, R2, A (WLC only), node count, grid rule name, normalization residual computed on an independent grid.
+Log per reachability evaluation:
+
+d, Rc before and after the V11 clamp, r_lo, r_hi, the inner and shell contributions separately, and the number of integrand evaluations.
+Splitting inner from shell is the single most useful log line in the module. F13 shows up immediately as a nonzero inner where Rc < d, and F12 shows as an inner that equals the whole result.
+
+Log per survival evaluation:
+
+each obstacle's label, D_m, rho_m, f_m, the running sum, and an explicit marker when the buried-start early return fires. F19 is undiagnosable without that marker, because S_MIN is indistinguishable from a legitimately tiny survival in the output.
+Log per call:
+
+e_1, e_2, s_1, s_2, and the rotation actually applied. If the rotation is not identity and no pose was supplied, that is F11 visible in one line.
+rho_2, rho_3 in nm^-3 before conversion, alongside the converted values. F1 is a visible factor of 1660 between the pair.
+clamp displacement at each of the four permitted sites, as a signed delta. Any displacement above 1e-9 at site 4 is F18.
+Log at status resolution:
+
+which rule in section 4.7 matched, by number, and the full list of conditions evaluated before it. This makes ordering violations auditable from a log rather than from the source.
+Retention: these logs contain no caller data beyond the geometry already supplied. There is no reason to redact them, and there is a strong reason to keep them attached to any result that gets reported upstream.
+
+6. Code review traps
+Refactors that will be proposed in good faith and must be rejected. Each is listed with the argument that will accompany it, because the argument is what makes it dangerous.
+
+"Product transmission is more physical than the sum." It is. It is also not the specified model, it changes every result, and it passes every existing test. Reject. If the shadow model is to be improved, that is a replacement under specification section 8.5, not a refactor.
+
+"Convert to mM once at the source so downstream code is simpler." Moves the conversion into the density layer, where it will be applied again at assembly, or where a second consumer will apply it. Reject. The conversion is specified to occur at output only.
+
+"Compute A lazily so short-lived objects do not pay for it." Lazy is acceptable. Recomputing per call is not, and the two are easy to conflate in review. Require that the memoized value be asserted stable across calls.
+
+"Both failure statuses mean the geometry does not work, so collapse them." The corrective actions differ: infeasible means move the target or shrink a domain, unreachable means lengthen a linker. Collapsing them destroys the only actionable information in a negative result. Reject.
+
+"Identity rotation is unphysical, derive the pose from the approach normal." Plausible, and wrong. The specification fixes R = I with s_i read as laboratory-frame, and explicitly forbids inferring orientation from n_k. If a real pose exists, it is supplied. Reject, and point at open decision 1.
+
+"This warning fires on every call, remove it." Usually aimed at the omega = 1 upper-bound warning. Its firing rate is the point: nearly every result is an upper bound, and the consumer needs to know. Reject. Noise is a presentation problem, not a correctness one.
+
+"The final clamp guarantees the range, so the internal assertions are redundant." The clamp is the last line of defence, not the guarantee. Removing the assertions removes the only signal that it is doing work. Reject.
+
+"Return null instead of zero for fields that were not computed." Cleaner-looking, and it converts a hard zero into a missing value that downstream code will skip, average around, or coalesce to a default. Reject.
+
+"Merge ceff and ceff_avg, they agree anyway." They agree only as Rc -> 0. At realistic capture radii they differ substantially, and the divergence is itself diagnostic. Reject.
+
+"Hoist the d <= EPS_D branch out, it never fires." It fires exactly when a docking position coincides with a linker start point, which is rare and catastrophic. Reject.
+
+"Validate lazily, only what each computation needs." Spreads validation across the pipeline, so some invalid inputs reach numerics and return ok. Validation is specified as a single gate at construction. Reject.
+
+"Reuse the production grid for the normalization check, it is already built." Makes T9 self-confirming. Reject.
+
+7. What the coding model must not reinterpret
+The unit contract: nm, rad, nm^-3 internally, mM at output only, NM3_TO_MM = 1660.5390671 applied exactly once.
+The status taxonomy: invalid_input, infeasible, unreachable, ok, resolved in that order, never merged, never renamed.
+The layering rule: no chain density is constructed or evaluated until C1 to C4 have passed.
+The contour gate: unconditional on both chain models. The ideal branch is not exempt because its density is finite past L.
+Shadow aggregation: 1 - sum_m f_m, clamped to [S_MIN, 1]. Not a product.
+The joint structure: conditional, with the second span measured from e_2 = p_2 + s_2. Not two marginals from a common origin.
+joint_is_approximation: literal true, unconditionally, at every chi.
+Clamping: the four sites in specification section 3.4 and nowhere else, with a warning when site 4 displaces by more than 1e-9.
+Pose default: R = I, s_i read as laboratory-frame. Orientation is never inferred from an approach normal.
+Vetoed numerics: exact 0.0. Never null, never omitted.
+Defaults: resolved once and echoed in effective_config. None applied invisibly.
+Warnings: emitted on the condition, not on whether the output happens to land in range.
+A_j: computed once per linker, cached, shared by every consumer of that density.
+Failures are statuses. No exception reaches the caller.
+Anything not on this list and not in specification section 8.4 is an implementation detail and may be chosen freely.

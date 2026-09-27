@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "target_slot_declaration",
+  "description": "One passive declaration of exactly three ordered, non-interchangeable named target slots. The document carries no value, measurement, statistic or result: order is derived from the module constant TARGET_SLOTS and a caller-supplied order is rejected, execution_status is fixed to DECLARED_NOT_EXECUTABLE, and each slot record restates its own key so that slot identity is never positional. Slot order lives in the order array, never in object key order. A slot is REFERENCED with one opaque external reference_id that is never resolved or read, or ABSENT with one closed absence_reason; an absent slot keeps its key and is never an omitted key or a shortened collection. No evidence, envelope, handoff, adapter or notebook document is quoted or embedded.",
+  "type": "object",
+  "required": [
+    "document_type",
+    "order",
+    "slot_1",
+    "slot_2",
+    "slot_3",
+    "execution_status"
+  ],
+  "properties": {
+    "document_type": {
+      "enum": [
+        "target_slot_declaration/1"
+      ]
+    },
+    "order": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "slot_1",
+          "slot_2",
+          "slot_3"
+        ]
+      }
+    },
+    "slot_1": {
+      "type": "object",
+      "required": [
+        "slot",
+        "presence",
+        "reference_id",
+        "absence_reason"
+      ],
+      "properties": {
+        "slot": {
+          "enum": [
+            "slot_1"
+          ]
+        },
+        "presence": {
+          "enum": [
+            "REFERENCED",
+            "ABSENT"
+          ]
+        },
+        "reference_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,99}$"
+        },
+        "absence_reason": {
+          "enum": [
+            null,
+            "NO_REFERENCE_SUPPLIED",
+            "REFERENCE_NOT_DECLARABLE_IN_THIS_PHASE"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "slot_2": {
+      "type": "object",
+      "required": [
+        "slot",
+        "presence",
+        "reference_id",
+        "absence_reason"
+      ],
+      "properties": {
+        "slot": {
+          "enum": [
+            "slot_2"
+          ]
+        },
+        "presence": {
+          "enum": [
+            "REFERENCED",
+            "ABSENT"
+          ]
+        },
+        "reference_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,99}$"
+        },
+        "absence_reason": {
+          "enum": [
+            null,
+            "NO_REFERENCE_SUPPLIED",
+            "REFERENCE_NOT_DECLARABLE_IN_THIS_PHASE"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "slot_3": {
+      "type": "object",
+      "required": [
+        "slot",
+        "presence",
+        "reference_id",
+        "absence_reason"
+      ],
+      "properties": {
+        "slot": {
+          "enum": [
+            "slot_3"
+          ]
+        },
+        "presence": {
+          "enum": [
+            "REFERENCED",
+            "ABSENT"
+          ]
+        },
+        "reference_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,99}$"
+        },
+        "absence_reason": {
+          "enum": [
+            null,
+            "NO_REFERENCE_SUPPLIED",
+            "REFERENCE_NOT_DECLARABLE_IN_THIS_PHASE"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "execution_status": {
+      "enum": [
+        "DECLARED_NOT_EXECUTABLE"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

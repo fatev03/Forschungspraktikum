@@ -1,0 +1,243 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "value_flow_envelope",
+  "description": "One immutable CEFF_M / ARM_REACH_NM pair with its producer identity, coefficient-profile identity and verified deterministic measurement references. Carries no filesystem path and performs no arithmetic.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "envelope_id",
+    "producer",
+    "configuration",
+    "values",
+    "measurement_references",
+    "identity_checks",
+    "status",
+    "reason",
+    "rules"
+  ],
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "value_flow_envelope/1"
+      ]
+    },
+    "envelope_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "producer": {
+      "type": "object",
+      "required": [
+        "producer_id",
+        "layout",
+        "artifact_sha256",
+        "result_id",
+        "method_id",
+        "method_version",
+        "pipeline_run_id",
+        "execution_id"
+      ],
+      "properties": {
+        "producer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "layout": {
+          "enum": [
+            "pointwise_measurement_v1"
+          ]
+        },
+        "artifact_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "result_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "method_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "method_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pipeline_run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "execution_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "configuration": {
+      "type": "object",
+      "required": [
+        "profile_id",
+        "profile_version",
+        "configuration_hash"
+      ],
+      "properties": {
+        "profile_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "configuration_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "values": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "quantity_id",
+          "quantity_definition_id",
+          "context",
+          "category",
+          "unit",
+          "scale",
+          "value"
+        ],
+        "properties": {
+          "quantity_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "quantity_definition_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "context": {
+            "type": "string",
+            "minLength": 1
+          },
+          "category": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scale": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "measurement_references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "reference_id",
+          "kind",
+          "result_id",
+          "artifact_sha256",
+          "quantity_definition_id",
+          "unit",
+          "value"
+        ],
+        "properties": {
+          "reference_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "f01_coordinate_distance_v1"
+            ]
+          },
+          "result_id": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "artifact_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "quantity_definition_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "identity_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "expected",
+          "observed",
+          "result"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expected": {},
+          "observed": {},
+          "result": {
+            "enum": [
+              "PASSED",
+              "FAILED"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "status": {
+      "enum": [
+        "ACCEPTED",
+        "UNAVAILABLE"
+      ]
+    },
+    "reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

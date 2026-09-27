@@ -1,0 +1,21 @@
+data_synthetic_multimodel
+# Explicit model IDs are different from a run's seed/sample identities.
+loop_
+_atom_site.id
+_atom_site.group_PDB
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_seq_id
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.pdbx_PDB_model_num
+1 ATOM N N . GLY A 1 AA 10 ? 0 0 0 1
+2 ATOM N N . GLY A 1 AA 10 ? 1 0 0 2
+#

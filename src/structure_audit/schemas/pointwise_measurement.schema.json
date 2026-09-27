@@ -1,0 +1,444 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "pointwise_measurement",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "result_id",
+    "formulation",
+    "activation",
+    "declaration",
+    "inputs",
+    "parameters",
+    "intermediates",
+    "outputs",
+    "provenance",
+    "assumptions",
+    "status",
+    "diagnostics"
+  ],
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "pointwise_measurement/1"
+      ]
+    },
+    "result_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "formulation": {
+      "type": "object",
+      "required": [
+        "formulation_id",
+        "formulation_version",
+        "source_card",
+        "evaluation_form",
+        "equations"
+      ],
+      "properties": {
+        "formulation_id": {
+          "enum": [
+            "pointwise_measurement_v1"
+          ]
+        },
+        "formulation_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_card": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evaluation_form": {
+          "enum": [
+            "direct"
+          ]
+        },
+        "equations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "activation": {
+      "type": "object",
+      "required": [
+        "opt_in",
+        "lane"
+      ],
+      "properties": {
+        "opt_in": {
+          "type": "boolean"
+        },
+        "lane": {
+          "enum": [
+            "experimental"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "declaration": {
+      "type": "object",
+      "required": [
+        "pair_id",
+        "context",
+        "category",
+        "scale"
+      ],
+      "properties": {
+        "pair_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "context": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scale": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "quantity_definition_id",
+          "unit",
+          "availability",
+          "unavailable_reason",
+          "value",
+          "value_token"
+        ],
+        "properties": {
+          "quantity_definition_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "availability": {
+            "enum": [
+              "AVAILABLE",
+              "UNAVAILABLE"
+            ]
+          },
+          "unavailable_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "value": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "value_token": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^(nan|inf|-inf|integer_not_exactly_representable|non_numeric:[A-Za-z_][A-Za-z0-9_.]{0,63})$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "parameters": {
+      "type": "object",
+      "required": [
+        "profile_id",
+        "profile_version",
+        "values"
+      ],
+      "properties": {
+        "profile_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "values": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "unit",
+              "value",
+              "value_token"
+            ],
+            "properties": {
+              "unit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "value": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "value_token": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^(nan|inf|-inf|integer_not_exactly_representable|non_numeric:[A-Za-z_][A-Za-z0-9_.]{0,63})$"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "intermediates": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "quantity_definition_id",
+          "unit",
+          "value"
+        ],
+        "properties": {
+          "quantity_definition_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "quantity_id",
+          "quantity_definition_id",
+          "context",
+          "category",
+          "unit",
+          "scale",
+          "domain",
+          "value",
+          "missing_reason"
+        ],
+        "properties": {
+          "quantity_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "quantity_definition_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "context": {
+            "type": "string",
+            "minLength": 1
+          },
+          "category": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scale": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "domain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "missing_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "pipeline_run_id",
+        "execution_id",
+        "method_id",
+        "method_version",
+        "canonicalization_version",
+        "source",
+        "model"
+      ],
+      "properties": {
+        "pipeline_run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "execution_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "method_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "method_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "canonicalization_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "object",
+          "required": [
+            "path",
+            "sha256",
+            "row"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "row": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "model": {
+          "type": "object",
+          "required": [
+            "model_id",
+            "checkpoint_id",
+            "seed"
+          ],
+          "properties": {
+            "model_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "checkpoint_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "seed": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "assumptions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "enum": [
+        "COMPUTED",
+        "UNAVAILABLE",
+        "REJECTED"
+      ]
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "severity",
+          "code",
+          "message"
+        ],
+        "properties": {
+          "severity": {
+            "enum": [
+              "error"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

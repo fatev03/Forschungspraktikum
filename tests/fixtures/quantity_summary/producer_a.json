@@ -1,0 +1,84 @@
+[
+ {
+  "candidate_id": "syn-a1",
+  "conformer_id": null,
+  "metrics": [
+   {
+    "category": "model_confidence",
+    "context": "complex",
+    "missing_reason": null,
+    "name": "syn-a:/iptm",
+    "provenance": {
+     "checkpoint_id": null,
+     "model_id": "synthetic-model",
+     "seed": 0
+    },
+    "raw_value": 0.62,
+    "scale": "0-1",
+    "source": {
+     "path": "/synthetic/producer-a/confidence.json",
+     "row": null,
+     "sha256": "f8546546c0c04ca3c0eabf21e8326077d7792095fb178e9d4b3dd05a3b3a3773"
+    },
+    "unit": null,
+    "value": 0.62
+   }
+  ],
+  "missing_values": {
+   "conformer_id": "synthetic fixture",
+   "sequence_hash": "synthetic fixture"
+  },
+  "provenance": {
+   "checkpoint_id": null,
+   "model_id": "synthetic-model",
+   "seed": 0
+  },
+  "schema_version": "1.0",
+  "sequence_hash": null,
+  "target_id": "syn-target",
+  "warnings": [
+   "synthetic fixture; not evidence"
+  ]
+ },
+ {
+  "candidate_id": "syn-a2",
+  "conformer_id": null,
+  "metrics": [
+   {
+    "category": "model_confidence",
+    "context": "complex",
+    "missing_reason": null,
+    "name": "syn-a:/iptm",
+    "provenance": {
+     "checkpoint_id": null,
+     "model_id": "synthetic-model",
+     "seed": 0
+    },
+    "raw_value": 0.71,
+    "scale": "0-1",
+    "source": {
+     "path": "/synthetic/producer-a/confidence.json",
+     "row": null,
+     "sha256": "f8546546c0c04ca3c0eabf21e8326077d7792095fb178e9d4b3dd05a3b3a3773"
+    },
+    "unit": null,
+    "value": 0.71
+   }
+  ],
+  "missing_values": {
+   "conformer_id": "synthetic fixture",
+   "sequence_hash": "synthetic fixture"
+  },
+  "provenance": {
+   "checkpoint_id": null,
+   "model_id": "synthetic-model",
+   "seed": 0
+  },
+  "schema_version": "1.0",
+  "sequence_hash": null,
+  "target_id": "syn-target",
+  "warnings": [
+   "synthetic fixture; not evidence"
+  ]
+ }
+]

@@ -1,0 +1,2920 @@
+diff --git a/gotne/__init__.py b/gotne/__init__.py
+index 7a5dfec..e1e53ff 100644
+--- a/gotne/__init__.py
++++ b/gotne/__init__.py
+@@ -1,4 +1,4 @@
+-"""GOTNE Phase 1c: schema and pure structural validation for
++"""GOTNE Phase 1c (v0.3.1): schema and pure structural validation for
+ LINEAR_ORDERED_CASSETTE. Contains no geometry, no probability, and no
+ numerical evaluation. Phases 2, 4 and 5 are not implemented here."""
+ 
+@@ -22,17 +22,21 @@ from .cassette_schema import (  # noqa: F401
+     UnresolvedUpstreamPolicy,
+ )
+ from .cassette_topology import (  # noqa: F401
++    GEOMETRY_PRESENCE_ASSUMPTION,
+     Code,
+     Reason,
+     validate_cassette_config,
++    validate_cassette_identity_admissibility,
+     validate_cassette_order_constraints,
+     validate_cassette_policy_fields,
+     validate_cassette_topology,
+ )
+ from .identity import (  # noqa: F401
++    CANONICAL_FORM_VERSION,
+     CanonicalizationError,
+     cache_key,
+     config_identity_hash,
++    noncanonical_values,
+ )
+ from .mode_applicability import (  # noqa: F401
+     ModeApplicability,
+@@ -40,8 +44,11 @@ from .mode_applicability import (  # noqa: F401
+     mode_applicability,
+ )
+ from .status import (  # noqa: F401
++    METHOD_VERSION,
+     DiagnosticRecord,
+     EvaluationResult,
++    Exactness,
++    Provenance,
+     Severity,
+     Status,
+     apply_status_field_pattern,
+diff --git a/gotne/cassette_topology.py b/gotne/cassette_topology.py
+index 774b4c2..13fd0f5 100644
+--- a/gotne/cassette_topology.py
++++ b/gotne/cassette_topology.py
+@@ -11,44 +11,64 @@ This module performs NO geometry and NO numerical computation. It reads:
+ It never reads the components of a position, normal, offset, or length, and it
+ never imports math, numpy, or any GOTNE evaluation module.
+ 
++ENTRY CONTRACT (v0.3.1 §9.2)
++----------------------------
++Every public validator first checks SCHEMA STRUCTURE: the argument must be a
++CassetteConfig, its policy a CassettePolicy, and each of cassettes / anchors /
++modules / tethers / dep_edges a list or tuple of the matching schema class.
++A violation raises TypeError deterministically, before any stage runs.
++Everything else is DECLARED INPUT: no declared value, however malformed, makes
++a public validator raise. It returns a structured EvaluationResult instead.
++
+ EXECUTION ORDER
+ ---------------
+ validate_cassette_config runs, in this order and never reordered:
+-  P0  validate_cassette_policy_fields
+-  P1  validate_cassette_topology            (invariants C1-C14)
+-  P2  validate_cassette_order_constraints   (decision D8)
+-All three run BEFORE the base well-formedness checks WF1-WF7, which belong to
+-the base validator and are untouched here.
++  gate  topology_mode applicability            (v0.3.1 §3.1.1)
++  P0    validate_cassette_policy_fields
++  P1    validate_cassette_topology              (invariants C1-C14, N-1)
++  P2    validate_cassette_order_constraints     (decision D8, N-2)
++  P3    validate_cassette_identity_admissibility (v0.3.1 §17.7)
++A stage runs only if every earlier stage returned VALID; otherwise it is
++recorded as CHECK_SKIPPED. The composed status is VALID iff every executed
++stage is VALID (v0.3.1 §17.8). All run BEFORE WF1-WF7, which belong to the
++base validator and are untouched here.
+ 
+ COMPLETE-DIAGNOSIS POLICY
+ -------------------------
+-Within a stage, every check runs and every violation is reported. There is no
+-early exit. Structural validation is cheap and deterministic, so the caller
+-always receives the full violation set. A check whose prerequisite failed is
+-skipped with an INFO CHECK_SKIPPED diagnostic rather than guessing.
++Within a stage, every check whose own prerequisites hold runs and every
++violation is reported. A check whose prerequisite failed emits an INFO
++CHECK_SKIPPED diagnostic naming the check and the reason; nothing is guessed.
++The only stage-level exits are the mode gate and the prerequisites listed in
++each stage's docstring, and each of them emits CHECK_SKIPPED for what it skips.
+ 
+ Specification references: Addendum A v0.3 sections 17.1, 17.2, 17.4, 17.5,
+-17.6, 18.4, 19.2.1, 19.3.1, 20.6, 11.8.
++17.6, 18.4, 19.2.1, 19.3.1, 20.6, 11.8; v0.3.1 decision record.
+ """
+ 
+ from __future__ import annotations
+ 
+-from typing import Dict, List, Mapping, Optional, Sequence, Set, Tuple
++from enum import Enum
++from typing import Dict, FrozenSet, List, Mapping, Optional, Sequence, Set, Tuple
+ 
+ from .cassette_schema import (
+-    MISSING,
++    AnchorSpec,
+     CassetteConfig,
++    CassettePolicy,
+     CassetteSpec,
++    CompositeDensityMethod,
++    DepEdge,
+     DepEdgeKind,
+-    EngagementOrderPolicy,
+     EngagedPoseResolution,
+-    CompositeDensityMethod,
++    EngagementOrderPolicy,
+     JunctionModel,
+     Missing,
++    ModuleSpec,
+     SUPPORTED_JUNCTION_MODELS_V1,
++    TetherSpec,
+     TopologyMode,
+     UnresolvedUpstreamPolicy,
+ )
++from .identity import noncanonical_values
+ from .status import (
+     DiagnosticRecord,
+     EvaluationResult,
+@@ -63,9 +83,11 @@ __all__ = [
+     "Code",
+     "RUNTIME_ENFORCED_INVARIANTS",
+     "INVARIANT_OF_CODE",
++    "GEOMETRY_PRESENCE_ASSUMPTION",
+     "validate_cassette_policy_fields",
+     "validate_cassette_topology",
+     "validate_cassette_order_constraints",
++    "validate_cassette_identity_admissibility",
+     "validate_cassette_config",
+ ]
+ 
+@@ -82,9 +104,10 @@ class Reason:
+     JUNCTION_UNSUPPORTED = "JUNCTION_MODEL_NOT_SUPPORTED_V1"
+     OK = "ALL_STRUCTURAL_CHECKS_PASSED"
+     NOT_APPLICABLE = "CASSETTE_VALIDATION_NOT_APPLICABLE"
+-    #: [remediation B5, pending spec entry] a stage whose own checks could not
+-    #: run reports NOT_EVALUATED with this reason instead of VALID.
++    #: v0.3.1 §17.4.1: reason of a NOT_EVALUATED stage whose checks could not run.
+     PREREQUISITE_FAILED = "STAGE_PREREQUISITE_FAILED"
++    #: v0.3.1 §17.7: P3 failure.
++    NOT_CANONICALIZABLE = "CONFIG_NOT_CANONICALIZABLE"
+ 
+ 
+ class Code:
+@@ -105,11 +128,11 @@ class Code:
+     # C10a / C10b -- offsets
+     EXIT_OFFSET_MALFORMED = "EXIT_OFFSET_MALFORMED"
+     TERMINAL_EXCLUSION_CENTRE_MISSING = "TERMINAL_EXCLUSION_CENTRE_MISSING"
+-    # C11 / C14 -- membership
++    # C11 / C14 -- membership and declaration integrity
+     INDEX_SEQUENCE_INVALID = "INDEX_SEQUENCE_INVALID"
+     ORPHAN_MODULE = "ORPHAN_MODULE"
+-    #: [remediation B1/B2, pending spec entry] identifier declared more than once
+-    DUPLICATE_IDENTIFIER = "DUPLICATE_IDENTIFIER"
++    DUPLICATE_IDENTIFIER = "DUPLICATE_IDENTIFIER"  # v0.3.1 §17.4.1
++    IDENTIFIER_MALFORMED = "IDENTIFIER_MALFORMED"  # v0.3.1 §17.4.2 (N-1)
+     # C9 -- summary
+     BRANCHING_OR_PARALLEL_TOPOLOGY = "BRANCHING_OR_PARALLEL_TOPOLOGY"
+     # policy
+@@ -122,11 +145,16 @@ class Code:
+     OCCUPANCY_FRACTION_OUT_OF_RANGE = "OCCUPANCY_FRACTION_OUT_OF_RANGE"
+     EXPLICIT_ORDER_MISSING = "EXPLICIT_ORDER_MISSING"
+     EXPLICIT_ORDER_UNEXPECTED = "EXPLICIT_ORDER_UNEXPECTED"
++    EXPLICIT_ORDER_MALFORMED = "EXPLICIT_ORDER_MALFORMED"  # v0.3.1 §20.6.1
++    EXPLICIT_ORDER_INVALID_REFERENCE = "EXPLICIT_ORDER_INVALID_REFERENCE"  # v0.3.1 §20.6.1
+     # order constraints
+     REQUIRES_CYCLE_IN_CASSETTE = "REQUIRES_CYCLE_IN_CASSETTE"
+     ENGAGEMENT_ORDER_CONFLICT = "ENGAGEMENT_ORDER_CONFLICT"
+     REDUNDANT_REQUIRES_EDGE = "REDUNDANT_REQUIRES_EDGE"
+     DEP_EDGE_UNKNOWN_NODE = "DEP_EDGE_UNKNOWN_NODE"
++    DEP_EDGE_MALFORMED = "DEP_EDGE_MALFORMED"  # v0.3.1 §17.4.2 (N-2)
++    # identity admissibility
++    NON_CANONICAL_VALUE = "NON_CANONICAL_VALUE"  # v0.3.1 §17.7
+     # process
+     CHECK_SKIPPED = "CHECK_SKIPPED"
+     MODE_NOT_APPLICABLE = "MODE_NOT_APPLICABLE"
+@@ -153,9 +181,13 @@ INVARIANT_OF_CODE: Mapping[str, str] = {
+     Code.INDEX_SEQUENCE_INVALID: "C11",
+     Code.ORPHAN_MODULE: "C14",
+     Code.DUPLICATE_IDENTIFIER: "C14",
++    Code.IDENTIFIER_MALFORMED: "C14",
+     Code.BRANCHING_OR_PARALLEL_TOPOLOGY: "C9",
+ }
+ 
++#: v0.3.1 §17.6.1: carried by every Phase 1c VALID CONFIG result.
++GEOMETRY_PRESENCE_ASSUMPTION = "geometry_presence_unchecked=entry_offset,capture_offset_vec"
++
+ #: C9 is the union of C1, C2, C3, C4. It is emitted as a summary whenever any
+ #: of its constituents fired.
+ _C9_TRIGGER_CODES = frozenset(
+@@ -187,10 +219,21 @@ _POLICY_REASON_PRIORITY: Tuple[str, ...] = (
+     Reason.POLICY_RANGE,
+ )
+ 
++_SCHEMA_SEQUENCES: Tuple[Tuple[str, type], ...] = (
++    ("cassettes", CassetteSpec),
++    ("anchors", AnchorSpec),
++    ("modules", ModuleSpec),
++    ("tethers", TetherSpec),
++    ("dep_edges", DepEdge),
++)
++
+ _POSITIVE_INFINITY = float("inf")
+ _NEGATIVE_INFINITY = float("-inf")
+ 
+ 
++# --------------------------------------------------------------------------
++# Small pure helpers
++# --------------------------------------------------------------------------
+ def _declared(value: object) -> bool:
+     """True iff the field was declared at all (MISSING means not declared).
+     Explicit null (None) counts as declared."""
+@@ -208,26 +251,55 @@ def _is_real_number(value: object) -> bool:
+ 
+ 
+ def _is_index(value: object) -> bool:
+-    """Strict integer index. bool and float are rejected: True == 1 and
+-    2.0 == 2 would otherwise pass an equality check silently (H1)."""
++    """Strict integer index. bool and float are rejected."""
+     return type(value) is int
+ 
+ 
++def _ident_ok(value: object) -> bool:
++    """v0.3.1 §17.4.2: identifiers are non-empty PLAIN str (no subclasses, so
++    no str-Enum members)."""
++    return type(value) is str and value != ""
++
++
++def _seq_ok(value: object) -> bool:
++    return isinstance(value, (list, tuple))
++
++
++def _type_name(value: object) -> str:
++    return "MISSING" if isinstance(value, Missing) else type(value).__qualname__
++
++
++def _safe(value: object) -> object:
++    """v0.3.1 §9.1.1: JSON-safe, run-independent rendering of a declared value.
++    Never uses repr()."""
++    if isinstance(value, Missing):
++        return "MISSING"
++    if value is None or type(value) in (bool, int, str):
++        return value
++    if type(value) is float:
++        if value != value:
++            return "nan"
++        if value in (_POSITIVE_INFINITY, _NEGATIVE_INFINITY):
++            return "inf" if value > 0 else "-inf"
++        return value
++    if isinstance(value, Enum):
++        return f"{type(value).__qualname__}.{value.name}"
++    return {"type": type(value).__qualname__}
++
++
++def _object_id(cfg: CassetteConfig) -> str:
++    return cfg.id if _ident_ok(cfg.id) else f"<malformed id: {_type_name(cfg.id)}>"
++
++
+ def _err(code: str, message: str, **quantities: object) -> DiagnosticRecord:
+     return DiagnosticRecord(
+-        code=code,
+-        severity=Severity.ERROR,
+-        message=message,
+-        quantities=dict(quantities),
++        code=code, severity=Severity.ERROR, message=message, quantities=dict(quantities)
+     )
+ 
+ 
+ def _info(code: str, message: str, **quantities: object) -> DiagnosticRecord:
+     return DiagnosticRecord(
+-        code=code,
+-        severity=Severity.INFO,
+-        message=message,
+-        quantities=dict(quantities),
++        code=code, severity=Severity.INFO, message=message, quantities=dict(quantities)
+     )
+ 
+ 
+@@ -240,64 +312,12 @@ def _skipped(check: str, because: str) -> DiagnosticRecord:
+     )
+ 
+ 
+-def _not_applicable(object_id: str, mode: object) -> EvaluationResult:
+-    return make_config_result(
+-        object_id=object_id,
+-        status=Status.VALID,
+-        status_reason=Reason.NOT_APPLICABLE,
+-        diagnostics=(
+-            _info(
+-                Code.MODE_NOT_APPLICABLE,
+-                "cassette validation does not apply to this topology mode",
+-                topology_mode=getattr(mode, "value", str(mode)),
+-            ),
+-        ),
+-        declared_assumptions=(f"topology_mode={getattr(mode, 'value', mode)}",),
+-    )
+-
+-
+-def _mode_gate(cfg: CassetteConfig) -> Optional[EvaluationResult]:
+-    """Shared entry gate for P0, P1, P2 (remediation B3).
+-
+-    Returns None when the config is in LINEAR_ORDERED_CASSETTE mode and the
+-    stage must run. A genuine TopologyMode member other than that yields the
+-    not-applicable result. Anything else (MISSING, explicit null, a plain
+-    string, any non-member) is rejected: it is never read as "some other mode".
+-    """
+-    mode = cfg.policy.topology_mode
+-    if mode is TopologyMode.LINEAR_ORDERED_CASSETTE:
+-        return None
+-    if isinstance(mode, TopologyMode):
+-        return _not_applicable(cfg.id, mode)
+-    declared = _declared(mode)
+-    return make_config_result(
+-        object_id=cfg.id,
+-        status=Status.INFEASIBLE,
+-        status_reason=Reason.POLICY_MISSING,
+-        diagnostics=(
+-            _err(
+-                Code.TOPOLOGY_MODE_MISSING,
+-                "topology_mode is REQUIRED, has no default, and must be a "
+-                "TopologyMode member",
+-                field="topology_mode",
+-                declared=declared,
+-                declared_type=type(mode).__qualname__ if declared else None,
+-            ),
+-        ),
+-    )
+-
+-
+-def _not_evaluated(
+-    cfg: CassetteConfig, diagnostics: Sequence[DiagnosticRecord], method_id: str
+-) -> EvaluationResult:
+-    return make_config_result(
+-        object_id=cfg.id,
+-        status=Status.NOT_EVALUATED,
+-        status_reason=Reason.PREREQUISITE_FAILED,
+-        diagnostics=tuple(diagnostics),
+-        declared_assumptions=_assumptions(cfg),
+-        method_id=method_id,
+-    )
++def _assumption_value(value: object) -> str:
++    if isinstance(value, Enum):
++        return str(value.value)
++    if type(value) in (bool, int, float, str):
++        return str(value)
++    return f"<{_type_name(value)}>"
+ 
+ 
+ def _assumptions(cfg: CassetteConfig) -> Tuple[str, ...]:
+@@ -313,25 +333,217 @@ def _assumptions(cfg: CassetteConfig) -> Tuple[str, ...]:
+     ):
+         v = getattr(p, name)
+         if _declared(v):
+-            out.append(f"{name}={getattr(v, 'value', v)}")
+-    out.append(f"tau_spacer={p.tau_spacer}")
+-    out.append(f"pose_marginalization_max_level={p.pose_marginalization_max_level}")
++            out.append(f"{name}={_assumption_value(v)}")
++    out.append(f"tau_spacer={_assumption_value(p.tau_spacer)}")
++    out.append(
++        f"pose_marginalization_max_level={_assumption_value(p.pose_marginalization_max_level)}"
++    )
+     return tuple(out)
+ 
+ 
++def _result(
++    cfg: CassetteConfig,
++    status: Status,
++    reason: str,
++    diagnostics: Sequence[DiagnosticRecord],
++    method_id: str,
++) -> EvaluationResult:
++    assumptions = _assumptions(cfg)
++    if status is Status.VALID:
++        assumptions += (GEOMETRY_PRESENCE_ASSUMPTION,)
++    return make_config_result(
++        object_id=_object_id(cfg),
++        status=status,
++        status_reason=reason,
++        diagnostics=tuple(diagnostics),
++        declared_assumptions=assumptions,
++        method_id=method_id,
++    )
++
++
++def _require_schema(cfg: object) -> None:
++    """v0.3.1 §9.2: the only permitted raise from a public validator."""
++    if not isinstance(cfg, CassetteConfig):
++        raise TypeError(f"expected CassetteConfig, got {type(cfg).__qualname__}")
++    if not isinstance(cfg.policy, CassettePolicy):
++        raise TypeError(
++            f"CassetteConfig.policy must be a CassettePolicy, got {type(cfg.policy).__qualname__}"
++        )
++    for name, cls in _SCHEMA_SEQUENCES:
++        seq = getattr(cfg, name)
++        if not isinstance(seq, (list, tuple)):
++            raise TypeError(
++                f"CassetteConfig.{name} must be a list or tuple of {cls.__name__}, "
++                f"got {type(seq).__qualname__}"
++            )
++        for index, item in enumerate(seq):
++            if not isinstance(item, cls):
++                raise TypeError(
++                    f"CassetteConfig.{name}[{index}] must be a {cls.__name__}, "
++                    f"got {type(item).__qualname__}"
++                )
++
++
++def _mode_gate(
++    cfg: CassetteConfig, method_id: str, skipped: Sequence[str]
++) -> Optional[EvaluationResult]:
++    """Shared entry gate (v0.3.1 §3.1.1). None means: cassette mode, run.
++
++    A TopologyMode member other than LINEAR_ORDERED_CASSETTE yields the
++    NOT_EVALUATED not-applicable contract with exactly one MODE_NOT_APPLICABLE
++    diagnostic. Anything else is rejected as TOPOLOGY_MODE_MISSING, and every
++    check the caller would have run is recorded as CHECK_SKIPPED."""
++    mode = cfg.policy.topology_mode
++    if mode is TopologyMode.LINEAR_ORDERED_CASSETTE:
++        return None
++    if isinstance(mode, TopologyMode):
++        return make_config_result(
++            object_id=_object_id(cfg),
++            status=Status.NOT_EVALUATED,
++            status_reason=Reason.NOT_APPLICABLE,
++            diagnostics=(
++                _info(
++                    Code.MODE_NOT_APPLICABLE,
++                    "cassette validation does not apply to this topology mode",
++                    topology_mode=mode.value,
++                ),
++            ),
++            declared_assumptions=(f"topology_mode={mode.value}",),
++            method_id=method_id,
++        )
++    declared = _declared(mode)
++    diagnostics = [
++        _err(
++            Code.TOPOLOGY_MODE_MISSING,
++            "topology_mode is REQUIRED, has no default, and must be a TopologyMode member",
++            field="topology_mode",
++            declared=declared,
++            declared_type=_type_name(mode) if declared else None,
++        )
++    ]
++    diagnostics.extend(_skipped(check, "topology_mode is invalid") for check in skipped)
++    return _result(cfg, Status.INFEASIBLE, Reason.POLICY_MISSING, diagnostics, method_id)
++
++
++def _ordered_members(cas: CassetteSpec) -> FrozenSet[str]:
++    """Well-formed identifier entries of a well-formed ordered_modules
++    container. A malformed container declares no members."""
++    if not _seq_ok(cas.ordered_modules):
++        return frozenset()
++    return frozenset(m for m in cas.ordered_modules if _ident_ok(m))
++
++
++def _normalize_explicit_order(
++    cas: CassetteSpec, members: FrozenSet[str]
++) -> Tuple[Optional[Tuple[Tuple[str, str], ...]], List[DiagnosticRecord]]:
++    """v0.3.1 §20.6.1. The ONLY reader of a declared explicit_partial_order.
++
++    Returns (pairs, diagnostics). pairs is the deduplicated, declaration-ordered
++    tuple of (a, b) meaning a ≺ b, or None if the declaration violates the
++    contract (then diagnostics explains why). The value must already be
++    DECLARED; MISSING is handled by the caller."""
++    cassette = _safe(cas.id)
++    value = cas.explicit_partial_order
++    diagnostics: List[DiagnosticRecord] = []
++    if not _seq_ok(value):
++        diagnostics.append(
++            _err(
++                Code.EXPLICIT_ORDER_MALFORMED,
++                "explicit_partial_order must be a list or tuple of [from, to] pairs",
++                cassette=cassette,
++                problem="CONTAINER_TYPE",
++                pair_index=None,
++                found_type=_type_name(value),
++            )
++        )
++        diagnostics.append(
++            _skipped("explicit_partial_order entries and references", "container is malformed")
++        )
++        return None, diagnostics
++
++    pairs: List[Tuple[str, str]] = []
++    for index, entry in enumerate(value):
++        if not _seq_ok(entry):
++            diagnostics.append(
++                _err(
++                    Code.EXPLICIT_ORDER_MALFORMED,
++                    "each explicit_partial_order entry must be a list or tuple",
++                    cassette=cassette,
++                    problem="ENTRY_TYPE",
++                    pair_index=index,
++                    found_type=_type_name(entry),
++                )
++            )
++            continue
++        if len(entry) != 2:
++            diagnostics.append(
++                _err(
++                    Code.EXPLICIT_ORDER_MALFORMED,
++                    "each explicit_partial_order entry must have exactly two elements",
++                    cassette=cassette,
++                    problem="ENTRY_ARITY",
++                    pair_index=index,
++                    found_type=_type_name(entry),
++                    arity=len(entry),
++                )
++            )
++            continue
++        a, b = entry[0], entry[1]
++        if type(a) is not str or type(b) is not str:
++            diagnostics.append(
++                _err(
++                    Code.EXPLICIT_ORDER_MALFORMED,
++                    "explicit_partial_order elements must be plain str module ids",
++                    cassette=cassette,
++                    problem="ELEMENT_TYPE",
++                    pair_index=index,
++                    found_type=[_type_name(a), _type_name(b)],
++                )
++            )
++            continue
++        problems = []
++        if a == b:
++            problems.append("SELF_LOOP")
++        if a not in members or b not in members:
++            problems.append("UNKNOWN_MODULE")
++        if problems:
++            diagnostics.append(
++                _err(
++                    Code.EXPLICIT_ORDER_INVALID_REFERENCE,
++                    "explicit_partial_order entry is not a pair of distinct cassette modules",
++                    cassette=cassette,
++                    pair_index=index,
++                    pair=[a, b],
++                    problems=sorted(problems),
++                )
++            )
++            continue
++        if (a, b) not in pairs:  # idempotent duplicates (R_policy is a relation)
++            pairs.append((a, b))
++    if diagnostics:
++        return None, diagnostics
++    return tuple(pairs), diagnostics
++
++
+ # --------------------------------------------------------------------------
+ # P0 -- policy field validation
+ # --------------------------------------------------------------------------
++_P0_CHECKS = ("P0 policy fields",)
++
++
+ def validate_cassette_policy_fields(cfg: CassetteConfig) -> EvaluationResult:
+     """Stage P0. Presence, enum membership, and scalar domain of declared
+-    policy fields. Decisions D2, D3, D4, D5, D8, D9.
++    policy fields; the full explicit_partial_order declaration contract
++    (v0.3.1 §20.6.1). Decisions D2, D3, D4, D5, D8, D9.
+ 
+     No REQUIRED field is ever filled in by this function (MNH14)."""
+-    policy = cfg.policy
+-    gate = _mode_gate(cfg)
++    _require_schema(cfg)
++    method = "validate_cassette_policy_fields"
++    gate = _mode_gate(cfg, method, _P0_CHECKS)
+     if gate is not None:
+         return gate
+ 
++    policy = cfg.policy
+     diagnostics: List[DiagnosticRecord] = []
+     reasons: Set[str] = set()
+ 
+@@ -353,7 +565,8 @@ def validate_cassette_policy_fields(cfg: CassetteConfig) -> EvaluationResult:
+                     Code.POLICY_FIELD_MISSING,
+                     f"{name} is not a member of {enum_cls.__name__}",
+                     field=name,
+-                    declared=repr(value),
++                    declared=_safe(value),
++                    declared_type=_type_name(value),
+                 )
+             )
+             reasons.add(Reason.POLICY_MISSING)
+@@ -389,7 +602,7 @@ def validate_cassette_policy_fields(cfg: CassetteConfig) -> EvaluationResult:
+                 Code.TAU_SPACER_OUT_OF_RANGE,
+                 "tau_spacer must be a finite real in the closed interval [0, 1]",
+                 field="tau_spacer",
+-                declared=repr(tau),
++                declared=_safe(tau),
+                 valid_range="[0.0, 1.0]",
+             )
+         )
+@@ -397,20 +610,19 @@ def validate_cassette_policy_fields(cfg: CassetteConfig) -> EvaluationResult:
+ 
+     # D5: pose marginalization refinement cap.
+     level = policy.pose_marginalization_max_level
+-    if isinstance(level, bool) or not isinstance(level, int) or not (0 <= level <= 6):
++    if not _is_index(level) or not (0 <= level <= 6):
+         diagnostics.append(
+             _err(
+                 Code.POSE_LEVEL_OUT_OF_RANGE,
+                 "pose_marginalization_max_level must be an integer in [0, 6]",
+                 field="pose_marginalization_max_level",
+-                declared=repr(level),
++                declared=_safe(level),
+                 valid_range="[0, 6]",
+             )
+         )
+         reasons.add(Reason.POLICY_RANGE)
+ 
+-    # D4: per-module occupancy fraction, required for every cassette module
+-    # whenever the unresolved-upstream policy is EXCLUDED_SHELL_BOUND.
++    # D4: per-module occupancy fraction under EXCLUDED_SHELL_BOUND.
+     if policy.unresolved_upstream_policy is UnresolvedUpstreamPolicy.EXCLUDED_SHELL_BOUND:
+         for module in cfg.modules:
+             phi = module.unresolved_occupancy_fraction
+@@ -420,7 +632,7 @@ def validate_cassette_policy_fields(cfg: CassetteConfig) -> EvaluationResult:
+                         Code.OCCUPANCY_FRACTION_MISSING,
+                         "unresolved_occupancy_fraction is REQUIRED for every cassette "
+                         "module under EXCLUDED_SHELL_BOUND",
+-                        module=module.id,
++                        module=_safe(module.id),
+                     )
+                 )
+                 reasons.add(Reason.POLICY_MISSING)
+@@ -429,77 +641,74 @@ def validate_cassette_policy_fields(cfg: CassetteConfig) -> EvaluationResult:
+                     _err(
+                         Code.OCCUPANCY_FRACTION_OUT_OF_RANGE,
+                         "unresolved_occupancy_fraction must be a finite real in [0, 1]",
+-                        module=module.id,
+-                        declared=repr(phi),
++                        module=_safe(module.id),
++                        declared=_safe(phi),
+                         valid_range="[0.0, 1.0]",
+                     )
+                 )
+                 reasons.add(Reason.POLICY_RANGE)
+ 
+-    # D8: explicit partial order presence rule.
+-    # Checked for every declared cassette: the rule is per-cassette, so a
+-    # cassette-count problem (reported by P1) is no reason to skip it (H4).
+-    for cas in cfg.cassettes:
+-        declared_order = _declared(cas.explicit_partial_order)
+-        if policy.engagement_order_policy is EngagementOrderPolicy.EXPLICIT_PARTIAL_ORDER:
+-            if not declared_order or cas.explicit_partial_order is None:
++    # D8 + v0.3.1 §20.6.1: explicit partial order, per declared cassette.
++    order_policy = policy.engagement_order_policy
++    if not isinstance(order_policy, EngagementOrderPolicy):
++        diagnostics.append(
++            _skipped("explicit_partial_order contract", "engagement_order_policy is invalid")
++        )
++    else:
++        for cas in cfg.cassettes:
++            declared_order = _declared(cas.explicit_partial_order)
++            if order_policy is EngagementOrderPolicy.EXPLICIT_PARTIAL_ORDER:
++                if not declared_order:
++                    diagnostics.append(
++                        _err(
++                            Code.EXPLICIT_ORDER_MISSING,
++                            "explicit_partial_order is REQUIRED under EXPLICIT_PARTIAL_ORDER",
++                            cassette=_safe(cas.id),
++                            declared=False,
++                        )
++                    )
++                    reasons.add(Reason.POLICY_MISSING)
++                    continue
++                _, order_diags = _normalize_explicit_order(cas, _ordered_members(cas))
++                diagnostics.extend(order_diags)
++                if any(x.severity is Severity.ERROR for x in order_diags):
++                    reasons.add(Reason.POLICY_RANGE)
++            elif declared_order:
++                # Declared null is declared, not MISSING (D7, D8). Shape is not
++                # inspected under a non-explicit policy (v0.3.1 §20.6.1).
+                 diagnostics.append(
+                     _err(
+-                        Code.EXPLICIT_ORDER_MISSING,
+-                        "explicit_partial_order is REQUIRED under EXPLICIT_PARTIAL_ORDER",
+-                        cassette=cas.id,
++                        Code.EXPLICIT_ORDER_UNEXPECTED,
++                        "explicit_partial_order may only be declared under "
++                        "EXPLICIT_PARTIAL_ORDER",
++                        cassette=_safe(cas.id),
++                        engagement_order_policy=order_policy.value,
+                     )
+                 )
+                 reasons.add(Reason.POLICY_MISSING)
+-        elif declared_order:  # declared null is declared, not MISSING (D7, D8)
+-            diagnostics.append(
+-                _err(
+-                    Code.EXPLICIT_ORDER_UNEXPECTED,
+-                    "explicit_partial_order may only be declared under "
+-                    "EXPLICIT_PARTIAL_ORDER",
+-                    cassette=cas.id,
+-                    engagement_order_policy=getattr(
+-                        policy.engagement_order_policy, "value", None
+-                    ),
+-                )
+-            )
+-            reasons.add(Reason.POLICY_MISSING)
+ 
+     if not reasons:
+-        return make_config_result(
+-            object_id=cfg.id,
+-            status=Status.VALID,
+-            status_reason=Reason.OK,
+-            diagnostics=tuple(diagnostics),
+-            declared_assumptions=_assumptions(cfg),
+-            method_id="validate_cassette_policy_fields",
+-        )
+-
++        return _result(cfg, Status.VALID, Reason.OK, diagnostics, method)
+     reason = next(r for r in _POLICY_REASON_PRIORITY if r in reasons)
+-    return make_config_result(
+-        object_id=cfg.id,
+-        status=Status.INFEASIBLE,
+-        status_reason=reason,
+-        diagnostics=tuple(diagnostics),
+-        declared_assumptions=_assumptions(cfg),
+-        method_id="validate_cassette_policy_fields",
+-    )
++    return _result(cfg, Status.INFEASIBLE, reason, diagnostics, method)
+ 
+ 
+ # --------------------------------------------------------------------------
+ # P1 -- topology validation, invariants C1..C14
+ # --------------------------------------------------------------------------
+-def _adjacency(
+-    cfg: CassetteConfig,
+-) -> Tuple[Dict[str, List[str]], Dict[str, List[str]], Dict[Tuple[str, str], str]]:
+-    out: Dict[str, List[str]] = {}
+-    inn: Dict[str, List[str]] = {}
+-    edge_id: Dict[Tuple[str, str], str] = {}
+-    for t in cfg.tethers:
+-        out.setdefault(t.from_node, []).append(t.to_node)
+-        inn.setdefault(t.to_node, []).append(t.from_node)
+-        edge_id[(t.from_node, t.to_node)] = t.id
+-    return out, inn, edge_id
++_P1_CHECKS = ("P1 topology",)
++
++_CASSETTE_DEPENDENT_CHECKS = (
++    "C14", "C11", "C1 root_anchor_id match", "C12", "C2", "C3", "C4", "C13",
++    "segment cardinality", "segment membership", "segment references",
++    "C10a", "C10b",
++)
++_ORDERED_DEPENDENT_CHECKS = (
++    "C14", "C11", "C12", "C2/C3", "C4", "C13", "segment cardinality", "C10a", "C10b",
++)
++_SEGMENT_DEPENDENT_CHECKS = (
++    "segment cardinality", "segment membership", "segment references", "C4 segment/edge match",
++)
+ 
+ 
+ def _count_walks(
+@@ -523,55 +732,107 @@ def _count_walks(
+     return count
+ 
+ 
++def _check_identifier_list(
++    value: object, path: str, d: List[DiagnosticRecord]
++) -> Optional[List[str]]:
++    """Returns the list if the container and every entry are well formed."""
++    if not _seq_ok(value):
++        d.append(
++            _err(
++                Code.IDENTIFIER_MALFORMED,
++                "identifier list must be a list or tuple",
++                path=path,
++                found_type=_type_name(value),
++            )
++        )
++        return None
++    ok = True
++    for index, entry in enumerate(value):
++        if not _ident_ok(entry):
++            d.append(
++                _err(
++                    Code.IDENTIFIER_MALFORMED,
++                    "identifier must be a non-empty plain str",
++                    path=f"{path}[{index}]",
++                    found_type=_type_name(entry),
++                )
++            )
++            ok = False
++    return list(value) if ok else None
++
++
++def _check_identifier(value: object, path: str, d: List[DiagnosticRecord]) -> bool:
++    if _ident_ok(value):
++        return True
++    d.append(
++        _err(
++            Code.IDENTIFIER_MALFORMED,
++            "identifier must be a non-empty plain str",
++            path=path,
++            found_type=_type_name(value),
++        )
++    )
++    return False
++
++
+ def validate_cassette_topology(cfg: CassetteConfig) -> EvaluationResult:
+-    """Stage P1. Invariants C1-C14, §17.5 (v0.3).
++    """Stage P1. Invariants C1-C14, §17.5 (v0.3), plus v0.3.1 §17.4.1/§17.4.2.
+ 
+     Every structural violation reports status INFEASIBLE with the single
+     mandated status_reason TOPOLOGY_NOT_LINEAR_ORDERED_CASSETTE; the specific
+-    invariant is carried by the diagnostic code."""
+-    gate = _mode_gate(cfg)
++    invariant is carried by the diagnostic code.
++
++    Prerequisites, each recorded as CHECK_SKIPPED when it fails:
++      - identifier and duplicate checks: none;
++      - cassette-dependent checks: exactly one declared cassette;
++      - checks reading ordered_modules / ordered_segments: that list is well formed;
++      - C4 walk and C13: a unique root anchor;
++      - C10a/C10b: a valid index sequence (C11).
++    A graph element with a malformed identifier is excluded from every
++    identifier-keyed structure and recorded as CHECK_SKIPPED."""
++    _require_schema(cfg)
++    method = "validate_cassette_topology"
++    gate = _mode_gate(cfg, method, _P1_CHECKS)
+     if gate is not None:
+         return gate
+ 
+     d: List[DiagnosticRecord] = []
+ 
+-    # ---- Stage A: declaration -------------------------------------------
+-    # C1a
+-    if len(cfg.cassettes) != 1:
+-        d.append(
+-            _err(
+-                Code.CASSETTE_COUNT_INVALID,
+-                "LINEAR_ORDERED_CASSETTE requires exactly one declared cassette",
+-                declared=len(cfg.cassettes),
+-                required=1,
+-            )
+-        )
+-        for check in ("C14", "C11", "C1", "C12", "C2", "C3", "C4", "C13", "C10a", "C10b"):
+-            d.append(_skipped(check, "cassette count is not 1"))
+-        return _topology_result(cfg, d)
++    # ---- Stage A: declaration integrity (no prerequisites) ---------------
++    _check_identifier(cfg.id, "id", d)
+ 
+-    cas: CassetteSpec = cfg.cassettes[0]
+-    ordered = list(cas.ordered_modules)
+-    n = len(ordered)
+-
+-    # N >= 1 (decision D9)
+-    if n == 0:
+-        d.append(
+-            _err(
+-                Code.CASSETTE_EMPTY,
+-                "ordered_modules is empty; N must be at least 1",
+-                cassette=cas.id,
+-            )
+-        )
++    anchors: List[AnchorSpec] = []
++    for i, a in enumerate(cfg.anchors):
++        if _check_identifier(a.id, f"anchors[{i}].id", d):
++            anchors.append(a)
++        else:
++            d.append(_skipped(f"graph checks involving anchors[{i}]", "identifier is malformed"))
++    modules: List[ModuleSpec] = []
++    for i, m in enumerate(cfg.modules):
++        if _check_identifier(m.id, f"modules[{i}].id", d):
++            modules.append(m)
++        else:
++            d.append(_skipped(f"graph checks involving modules[{i}]", "identifier is malformed"))
++    named_tethers: List[TetherSpec] = []  # well-formed id
++    graph_tethers: List[TetherSpec] = []  # well-formed id and endpoints
++    for i, t in enumerate(cfg.tethers):
++        id_ok = _check_identifier(t.id, f"tethers[{i}].id", d)
++        from_ok = _check_identifier(t.from_node, f"tethers[{i}].from_node", d)
++        to_ok = _check_identifier(t.to_node, f"tethers[{i}].to_node", d)
++        if id_ok:
++            named_tethers.append(t)
++        if id_ok and from_ok and to_ok:
++            graph_tethers.append(t)
++        else:
++            d.append(_skipped(f"graph checks involving tethers[{i}]", "identifier is malformed"))
+ 
+-    # Duplicate identifiers (B1, B2). Anchors and modules share the graph node
+-    # namespace; tethers have their own. A dict built from a list with a
+-    # repeated key keeps the LAST declaration, so every lookup below would
+-    # silently read one arbitrary copy.
++    # Duplicates. Anchors and modules share the node namespace; tethers have
++    # their own. A dict built from repeated keys keeps the LAST declaration,
++    # so every later lookup would read one arbitrary copy.
+     node_kinds: Dict[str, List[str]] = {}
+-    for a in cfg.anchors:
++    for a in anchors:
+         node_kinds.setdefault(a.id, []).append("anchor")
+-    for m in cfg.modules:
++    for m in modules:
+         node_kinds.setdefault(m.id, []).append("module")
+     for nid in sorted(node_kinds):
+         kinds = node_kinds[nid]
+@@ -587,68 +848,151 @@ def validate_cassette_topology(cfg: CassetteConfig) -> EvaluationResult:
+                 )
+             )
+     tether_counts: Dict[str, int] = {}
+-    for t in cfg.tethers:
++    for t in named_tethers:
+         tether_counts[t.id] = tether_counts.get(t.id, 0) + 1
+-    for tid in sorted(tether_counts):
+-        if tether_counts[tid] > 1:
+-            d.append(
+-                _err(
+-                    Code.DUPLICATE_IDENTIFIER,
+-                    "tether identifier is declared more than once",
+-                    namespace="tether",
+-                    id=tid,
+-                    count=tether_counts[tid],
+-                )
++    duplicate_tethers = {tid for tid, c in tether_counts.items() if c > 1}
++    for tid in sorted(duplicate_tethers):
++        d.append(
++            _err(
++                Code.DUPLICATE_IDENTIFIER,
++                "tether identifier is declared more than once",
++                namespace="tether",
++                id=tid,
++                count=tether_counts[tid],
+             )
++        )
+     duplicate_modules = {
+         nid for nid, kinds in node_kinds.items() if len(kinds) > 1 and "module" in kinds
+     }
+ 
+-    module_by_id = {m.id: m for m in cfg.modules}
+-    anchor_ids = {a.id for a in cfg.anchors}
++    cassette_fields: List[Tuple[bool, Optional[List[str]], Optional[List[str]], bool]] = []
++    for k, cas in enumerate(cfg.cassettes):
++        cas_id_ok = _check_identifier(cas.id, f"cassettes[{k}].id", d)
++        root_ok = _check_identifier(cas.root_anchor_id, f"cassettes[{k}].root_anchor_id", d)
++        ordered_k = _check_identifier_list(
++            cas.ordered_modules, f"cassettes[{k}].ordered_modules", d
++        )
++        segments_k = _check_identifier_list(
++            cas.ordered_segments, f"cassettes[{k}].ordered_segments", d
++        )
++        cassette_fields.append((cas_id_ok, ordered_k, segments_k, root_ok))
++
++    module_by_id = {m.id: m for m in modules}
++    anchor_ids = {a.id for a in anchors}
+ 
+-    # C14: orphan / unknown modules
+-    declared_ids = set(module_by_id)
+-    ordered_set = set(ordered)
+-    for mid in sorted(declared_ids - ordered_set):
++    # Adjacency over well-formed graph tethers only.
++    out_adj: Dict[str, List[str]] = {}
++    in_adj: Dict[str, List[str]] = {}
++    edge_id: Dict[Tuple[str, str], str] = {}
++    for t in graph_tethers:
++        out_adj.setdefault(t.from_node, []).append(t.to_node)
++        in_adj.setdefault(t.to_node, []).append(t.from_node)
++        edge_id[(t.from_node, t.to_node)] = t.id
++
++    # C1 root multiplicity: depends only on anchors and tethers.
++    roots = sorted(a for a in anchor_ids if out_adj.get(a))
++    root: Optional[str] = None
++    if len(roots) == 0:
++        d.append(
++            _err(
++                Code.ROOT_ANCHOR_MISSING,
++                "no surface anchor carries an outgoing tether edge",
++                cassette=_safe(cfg.cassettes[0].id) if len(cfg.cassettes) == 1 else None,
++            )
++        )
++    elif len(roots) > 1:
++        d.append(
++            _err(
++                Code.MULTI_ANCHOR_IN_CASSETTE,
++                "more than one surface anchor carries outgoing tether edges; "
++                "LINEAR_ORDERED_CASSETTE permits exactly one root anchor",
++                anchors=roots,
++                required=1,
++            )
++        )
++    else:
++        root = roots[0]
++
++    # C1a
++    if len(cfg.cassettes) != 1:
+         d.append(
+             _err(
+-                Code.ORPHAN_MODULE,
+-                "module is declared but is not a member of the cassette",
+-                module=mid,
+-                cassette=cas.id,
++                Code.CASSETTE_COUNT_INVALID,
++                "LINEAR_ORDERED_CASSETTE requires exactly one declared cassette",
++                declared=len(cfg.cassettes),
++                required=1,
+             )
+         )
+-    for mid in sorted(ordered_set - declared_ids):
++        for check in _CASSETTE_DEPENDENT_CHECKS:
++            d.append(_skipped(check, "cassette count is not 1"))
++        return _topology_result(cfg, d)
++
++    cas: CassetteSpec = cfg.cassettes[0]
++    cas_id_ok, ordered, segments, root_id_ok = cassette_fields[0]
++    ordered_ok = ordered is not None
++    segments_ok = segments is not None
++    if not ordered_ok:
++        for check in _ORDERED_DEPENDENT_CHECKS:
++            d.append(_skipped(check, "ordered_modules is malformed"))
++    if not segments_ok:
++        for check in _SEGMENT_DEPENDENT_CHECKS:
++            if not (check == "segment cardinality" and not ordered_ok):
++                d.append(_skipped(check, "ordered_segments is malformed"))
++    n = len(ordered) if ordered_ok else 0
++
++    # N >= 1 (decision D9)
++    if ordered_ok and n == 0:
+         d.append(
+             _err(
+-                Code.ORPHAN_MODULE,
+-                "cassette lists a module that is not declared",
+-                module=mid,
+-                cassette=cas.id,
++                Code.CASSETTE_EMPTY,
++                "ordered_modules is empty; N must be at least 1",
++                cassette=_safe(cas.id),
+             )
+         )
+ 
++    # C14: orphan / unknown modules
++    if ordered_ok:
++        declared_ids = set(module_by_id)
++        ordered_set = set(ordered)
++        for mid in sorted(declared_ids - ordered_set):
++            d.append(
++                _err(
++                    Code.ORPHAN_MODULE,
++                    "module is declared but is not a member of the cassette",
++                    module=mid,
++                    cassette=_safe(cas.id),
++                )
++            )
++        for mid in sorted(ordered_set - declared_ids):
++            d.append(
++                _err(
++                    Code.ORPHAN_MODULE,
++                    "cassette lists a module that is not declared",
++                    module=mid,
++                    cassette=_safe(cas.id),
++                )
++            )
++
+     # C11: index sequence 1..N without gaps or repeats, matching position
+-    index_ok = n > 0
+-    if n > 0:
+-        if len(ordered_set) != n:
++    index_ok = ordered_ok and n > 0
++    if ordered_ok and n > 0:
++        if len(set(ordered)) != n:
+             d.append(
+                 _err(
+                     Code.INDEX_SEQUENCE_INVALID,
+                     "ordered_modules contains a repeated module id",
+-                    cassette=cas.id,
++                    cassette=_safe(cas.id),
+                 )
+             )
+             index_ok = False
+-        observed: List[object] = []
++        if not cas_id_ok:
++            d.append(_skipped("module cassette_id consistency", "cassette id is malformed"))
+         for position, mid in enumerate(ordered, start=1):
+             if mid in duplicate_modules:
+                 d.append(_skipped("C11", f"module identifier {mid} is not unique"))
+                 index_ok = False
+                 continue
+             module = module_by_id.get(mid)
+-            observed.append(None if module is None else module.cassette_index)
+             if module is None:
+                 index_ok = False
+                 continue
+@@ -658,50 +1002,27 @@ def validate_cassette_topology(cfg: CassetteConfig) -> EvaluationResult:
+                         Code.INDEX_SEQUENCE_INVALID,
+                         "cassette_index does not match the position in ordered_modules",
+                         module=mid,
+-                        declared_index=module.cassette_index
+-                        if _declared(module.cassette_index)
+-                        else "MISSING",
++                        declared_index=_safe(module.cassette_index),
+                         expected_index=position,
+                     )
+                 )
+                 index_ok = False
+-            if module.cassette_id not in (None, cas.id):
++            if cas_id_ok and not (module.cassette_id is None or module.cassette_id == cas.id):
+                 d.append(
+                     _err(
+                         Code.ORPHAN_MODULE,
+                         "module declares membership in a different cassette",
+                         module=mid,
+-                        declared_cassette=module.cassette_id,
++                        declared_cassette=_safe(module.cassette_id),
+                         expected_cassette=cas.id,
+                     )
+                 )
+ 
+-    out_adj, in_adj, edge_id = _adjacency(cfg)
+-
+     # ---- Stage B: anchoring ---------------------------------------------
+-    roots = sorted(a for a in anchor_ids if out_adj.get(a))
+-    root: Optional[str] = None
+-    if len(roots) == 0:
+-        d.append(
+-            _err(
+-                Code.ROOT_ANCHOR_MISSING,
+-                "no surface anchor carries an outgoing tether edge",
+-                cassette=cas.id,
+-            )
+-        )
+-    elif len(roots) > 1:
+-        d.append(
+-            _err(
+-                Code.MULTI_ANCHOR_IN_CASSETTE,
+-                "more than one surface anchor carries outgoing tether edges; "
+-                "LINEAR_ORDERED_CASSETTE permits exactly one root anchor",
+-                anchors=roots,
+-                required=1,
+-            )
+-        )
+-    else:
+-        root = roots[0]
+-        if cas.root_anchor_id != root:
++    if root is not None:
++        if not root_id_ok:
++            d.append(_skipped("C1 root_anchor_id match", "root_anchor_id is malformed"))
++        elif cas.root_anchor_id != root:
+             d.append(
+                 _err(
+                     Code.ROOT_ANCHOR_MISMATCH,
+@@ -713,24 +1034,25 @@ def validate_cassette_topology(cfg: CassetteConfig) -> EvaluationResult:
+             )
+ 
+     # C12: no secondary surface anchor
+-    first_module = ordered[0] if n > 0 else None
+-    for t in cfg.tethers:
+-        if t.from_node in anchor_ids and t.to_node != first_module:
+-            d.append(
+-                _err(
+-                    Code.SECONDARY_SURFACE_ANCHOR,
+-                    "a surface anchor is tethered to a module other than Module_1",
+-                    tether=t.id,
+-                    anchor=t.from_node,
+-                    module=t.to_node,
+-                    module_1=first_module,
++    if ordered_ok:
++        first_module = ordered[0] if n > 0 else None
++        for t in graph_tethers:
++            if t.from_node in anchor_ids and t.to_node != first_module:
++                d.append(
++                    _err(
++                        Code.SECONDARY_SURFACE_ANCHOR,
++                        "a surface anchor is tethered to a module other than Module_1",
++                        tether=t.id,
++                        anchor=t.from_node,
++                        module=t.to_node,
++                        module_1=first_module,
++                    )
+                 )
+-            )
+ 
+     # ---- Stage C: degrees ------------------------------------------------
+-    if n == 0:
++    if ordered_ok and n == 0:
+         d.append(_skipped("C2/C3", "cassette is empty"))
+-    else:
++    elif ordered_ok:
+         for position, mid in enumerate(ordered, start=1):
+             parents = in_adj.get(mid, [])
+             children = out_adj.get(mid, [])
+@@ -803,27 +1125,63 @@ def validate_cassette_topology(cfg: CassetteConfig) -> EvaluationResult:
+                     )
+                 )
+ 
+-    # ---- Stage D: connectivity ------------------------------------------
+-    # Every declared tether must be a cassette segment (B6). An edge that is not
+-    # on the path either branches (caught by C3) or dangles between nodes the
+-    # walk never visits, which no degree or walk check can see.
+-    segment_ids = set(cas.ordered_segments)
+-    for t in cfg.tethers:
+-        if t.id not in segment_ids:
++    # ---- Stage D: segments (no root prerequisite) --------------------------
++    if segments_ok:
++        # Every declared tether must be a cassette segment (B6).
++        segment_ids = set(segments)
++        for t in named_tethers:
++            if t.id not in segment_ids:
++                d.append(
++                    _err(
++                        Code.SEGMENT_SEQUENCE_INVALID,
++                        "declared tether is not a segment of the cassette",
++                        tether=t.id,
++                        from_node=_safe(t.from_node),
++                        to_node=_safe(t.to_node),
++                    )
++                )
++        if ordered_ok and len(segments) != n:
+             d.append(
+                 _err(
+                     Code.SEGMENT_SEQUENCE_INVALID,
+-                    "declared tether is not a segment of the cassette",
+-                    tether=t.id,
+-                    from_node=t.from_node,
+-                    to_node=t.to_node,
++                    "ordered_segments must contain exactly N entries",
++                    declared=len(segments),
++                    required=n,
+                 )
+             )
++        tether_by_id = {t.id: t for t in named_tethers}
++        for expected_index, sid in enumerate(segments):
++            if sid in duplicate_tethers:
++                d.append(_skipped("segment references", f"tether identifier {sid} is not unique"))
++                continue
++            t = tether_by_id.get(sid)
++            if t is None:
++                d.append(
++                    _err(
++                        Code.SEGMENT_SEQUENCE_INVALID,
++                        "ordered_segments references an undeclared tether",
++                        segment=sid,
++                    )
++                )
++            elif _declared(t.cassette_index) and (
++                not _is_index(t.cassette_index) or t.cassette_index != expected_index
++            ):
++                d.append(
++                    _err(
++                        Code.SEGMENT_SEQUENCE_INVALID,
++                        "tether cassette_index does not match its position in "
++                        "ordered_segments",
++                        segment=sid,
++                        declared_index=_safe(t.cassette_index),
++                        expected_index=expected_index,
++                    )
++                )
+ 
++    # ---- Stage D: connectivity (unique root) ----------------------------
+     if root is None:
+         d.append(_skipped("C4", "root anchor is not unique"))
+         d.append(_skipped("C13", "root anchor is not unique"))
+-    else:
++    elif ordered_ok:
+         walk: List[str] = [root]
+         seen: Set[str] = {root}
+         node = root
+@@ -857,52 +1215,15 @@ def validate_cassette_topology(cfg: CassetteConfig) -> EvaluationResult:
+                     ordered_modules=ordered,
+                 )
+             )
+-
+-        # segment sequence: N segments, sigma_0 .. sigma_{N-1}, matching the walk
+-        walk_edges = [
+-            edge_id.get((walk[i], walk[i + 1])) for i in range(len(walk) - 1)
+-        ]
+-        segments = list(cas.ordered_segments)
+-        if len(segments) != n:
+-            d.append(
+-                _err(
+-                    Code.SEGMENT_SEQUENCE_INVALID,
+-                    "ordered_segments must contain exactly N entries",
+-                    declared=len(segments),
+-                    required=n,
+-                )
+-            )
+-        elif walked_modules == ordered and walk_edges != segments:
+-            d.append(
+-                _err(
+-                    Code.SEGMENT_SEQUENCE_INVALID,
+-                    "ordered_segments does not match the tether edges of the walk",
+-                    walk_edges=walk_edges,
+-                    ordered_segments=segments,
+-                )
+-            )
+-        tether_by_id = {t.id: t for t in cfg.tethers}
+-        for expected_index, sid in enumerate(segments):
+-            t = tether_by_id.get(sid)
+-            if t is None:
+-                d.append(
+-                    _err(
+-                        Code.SEGMENT_SEQUENCE_INVALID,
+-                        "ordered_segments references an undeclared tether",
+-                        segment=sid,
+-                    )
+-                )
+-            elif _declared(t.cassette_index) and (
+-                not _is_index(t.cassette_index) or t.cassette_index != expected_index
+-            ):
++        elif segments_ok and len(segments) == n:
++            walk_edges = [edge_id.get((walk[i], walk[i + 1])) for i in range(len(walk) - 1)]
++            if walk_edges != segments:
+                 d.append(
+                     _err(
+                         Code.SEGMENT_SEQUENCE_INVALID,
+-                        "tether cassette_index does not match its position in "
+-                        "ordered_segments",
+-                        segment=sid,
+-                        declared_index=t.cassette_index,
+-                        expected_index=expected_index,
++                        "ordered_segments does not match the tether edges of the walk",
++                        walk_edges=walk_edges,
++                        ordered_segments=segments,
+                     )
+                 )
+ 
+@@ -920,8 +1241,9 @@ def validate_cassette_topology(cfg: CassetteConfig) -> EvaluationResult:
+ 
+     # ---- Stage E: offsets -------------------------------------------------
+     if not index_ok:
+-        d.append(_skipped("C10a", "index sequence is invalid; terminal module unknown"))
+-        d.append(_skipped("C10b", "index sequence is invalid; terminal module unknown"))
++        if ordered_ok:
++            d.append(_skipped("C10a", "index sequence is invalid; terminal module unknown"))
++            d.append(_skipped("C10b", "index sequence is invalid; terminal module unknown"))
+     else:
+         for position, mid in enumerate(ordered, start=1):
+             module = module_by_id[mid]
+@@ -983,26 +1305,20 @@ def _topology_result(
+             _info(
+                 Code.BRANCHING_OR_PARALLEL_TOPOLOGY,
+                 "C9 summary: the declared tether graph is not a single anchored path",
+-                constituent_codes=sorted(
+-                    {x.code for x in errors if x.code in _C9_TRIGGER_CODES}
+-                ),
++                constituent_codes=sorted({x.code for x in errors if x.code in _C9_TRIGGER_CODES}),
+             )
+         )
+     status = Status.INFEASIBLE if errors else Status.VALID
+     reason = Reason.TOPOLOGY if errors else Reason.OK
+-    return make_config_result(
+-        object_id=cfg.id,
+-        status=status,
+-        status_reason=reason,
+-        diagnostics=tuple(out),
+-        declared_assumptions=_assumptions(cfg),
+-        method_id="validate_cassette_topology",
+-    )
++    return _result(cfg, status, reason, out, "validate_cassette_topology")
+ 
+ 
+ # --------------------------------------------------------------------------
+ # P2 -- engagement-order constraint satisfiability (decision D8)
+ # --------------------------------------------------------------------------
++_P2_CHECKS = ("P2 order constraints",)
++
++
+ def _find_cycle(
+     nodes: Sequence[str], edges: Mapping[str, Sequence[str]]
+ ) -> Optional[List[str]]:
+@@ -1052,25 +1368,69 @@ def validate_cassette_order_constraints(cfg: CassetteConfig) -> EvaluationResult
+     This stage never uses status_reason TOPOLOGY_NOT_LINEAR_ORDERED_CASSETTE:
+     connectivity and order are different failures (audit item L21).
+ 
+-    A check this stage owns but cannot run makes the stage NOT_EVALUATED,
+-    never VALID (B5)."""
+-    gate = _mode_gate(cfg)
++    Standalone prerequisites (in the composed flow P0/P1 already guarantee
++    them): exactly one cassette; ordered_modules a list of unique well-formed
++    identifiers; a valid engagement_order_policy; and, under
++    EXPLICIT_PARTIAL_ORDER, an explicit order satisfying §20.6.1. The raw
++    explicit order is only ever read through _normalize_explicit_order. A
++    check this stage owns but cannot run makes it NOT_EVALUATED, never VALID."""
++    _require_schema(cfg)
++    method = "validate_cassette_order_constraints"
++    gate = _mode_gate(cfg, method, _P2_CHECKS)
+     if gate is not None:
+         return gate
+ 
+     d: List[DiagnosticRecord] = []
+     if len(cfg.cassettes) != 1:
+         d.append(_skipped("order constraints", "cassette count is not 1"))
+-        return _not_evaluated(cfg, d, "validate_cassette_order_constraints")
++        return _result(cfg, Status.NOT_EVALUATED, Reason.PREREQUISITE_FAILED, d, method)
+ 
+     cas = cfg.cassettes[0]
+-    ordered = list(cas.ordered_modules)
+-    position_of = {mid: i + 1 for i, mid in enumerate(ordered)}
++    ordered_raw = cas.ordered_modules
++    if (
++        not _seq_ok(ordered_raw)
++        or not all(_ident_ok(m) for m in ordered_raw)
++        or len(set(ordered_raw)) != len(ordered_raw)
++    ):
++        d.append(_skipped("order constraints", "ordered_modules is malformed"))
++        return _result(cfg, Status.NOT_EVALUATED, Reason.PREREQUISITE_FAILED, d, method)
+     policy = cfg.policy.engagement_order_policy
++    if not isinstance(policy, EngagementOrderPolicy):
++        d.append(_skipped("order constraints", "engagement_order_policy is invalid"))
++        return _result(cfg, Status.NOT_EVALUATED, Reason.PREREQUISITE_FAILED, d, method)
+ 
++    ordered = list(ordered_raw)
++    position_of = {mid: i + 1 for i, mid in enumerate(ordered)}
++
++    # N-2: malformed dependency edges are reported, never silently dropped.
+     requires: List[Tuple[str, str]] = []
+-    for e in cfg.dep_edges:
+-        if e.kind is not DepEdgeKind.REQUIRES:
++    for index, e in enumerate(cfg.dep_edges):
++        malformed = False
++        if not isinstance(e.kind, DepEdgeKind):
++            d.append(
++                _err(
++                    Code.DEP_EDGE_MALFORMED,
++                    "dependency edge kind must be a DepEdgeKind member",
++                    edge_index=index,
++                    field="kind",
++                    found_type=_type_name(e.kind),
++                )
++            )
++            malformed = True
++        for field_name in ("from_node", "to_node"):
++            endpoint = getattr(e, field_name)
++            if not _ident_ok(endpoint):
++                d.append(
++                    _err(
++                        Code.DEP_EDGE_MALFORMED,
++                        "dependency edge endpoint must be a non-empty plain str",
++                        edge_index=index,
++                        field=field_name,
++                        found_type=_type_name(endpoint),
++                    )
++                )
++                malformed = True
++        if malformed or e.kind is not DepEdgeKind.REQUIRES:
+             continue
+         if e.from_node not in position_of or e.to_node not in position_of:
+             d.append(
+@@ -1124,22 +1484,20 @@ def validate_cassette_order_constraints(cfg: CassetteConfig) -> EvaluationResult
+                     )
+                 )
+     elif policy is EngagementOrderPolicy.EXPLICIT_PARTIAL_ORDER:
+-        explicit = cas.explicit_partial_order
+-        union_adj: Dict[str, List[str]] = {k: list(v) for k, v in req_adj.items()}
+-        if _declared(explicit) and explicit:
+-            for pair in explicit:
+-                a, b = pair[0], pair[1]
+-                if a not in position_of or b not in position_of:
+-                    d.append(
+-                        _err(
+-                            Code.DEP_EDGE_UNKNOWN_NODE,
+-                            "explicit_partial_order references a node outside the cassette",
+-                            from_node=a,
+-                            to_node=b,
+-                        )
+-                    )
+-                    has_error = True
+-                    continue
++        pairs: Optional[Tuple[Tuple[str, str], ...]] = None
++        if _declared(cas.explicit_partial_order):
++            pairs, _ = _normalize_explicit_order(cas, frozenset(ordered))
++        if pairs is None:
++            d.append(
++                _skipped(
++                    "union cycle check",
++                    "explicit_partial_order is missing or violates §20.6.1",
++                )
++            )
++            owned_check_skipped = True
++        else:
++            union_adj: Dict[str, List[str]] = {k: list(v) for k, v in req_adj.items()}
++            for a, b in pairs:
+                 union_adj.setdefault(a, []).append(b)
+             union_cycle = _find_cycle(ordered, union_adj)
+             if union_cycle is not None and cycle is None:
+@@ -1152,86 +1510,92 @@ def validate_cassette_order_constraints(cfg: CassetteConfig) -> EvaluationResult
+                     )
+                 )
+                 has_error = True
+-        else:
+-            d.append(_skipped("union cycle check", "explicit_partial_order not declared"))
+-            owned_check_skipped = True
+     # ANY_ORDER contributes no policy edges; only REQUIRES cycles can conflict.
+ 
+-    if not has_error and owned_check_skipped:
+-        return _not_evaluated(cfg, d, "validate_cassette_order_constraints")
+-    status = Status.INFEASIBLE if has_error else Status.VALID
+-    reason = Reason.ORDER if has_error else Reason.OK
+-    return make_config_result(
+-        object_id=cfg.id,
+-        status=status,
+-        status_reason=reason,
+-        diagnostics=tuple(d),
+-        declared_assumptions=_assumptions(cfg),
+-        method_id="validate_cassette_order_constraints",
+-    )
++    if has_error:
++        return _result(cfg, Status.INFEASIBLE, Reason.ORDER, d, method)
++    if owned_check_skipped:
++        return _result(cfg, Status.NOT_EVALUATED, Reason.PREREQUISITE_FAILED, d, method)
++    return _result(cfg, Status.VALID, Reason.OK, d, method)
+ 
+ 
+ # --------------------------------------------------------------------------
+-# Composition
++# P3 -- identity admissibility (v0.3.1 §17.7)
+ # --------------------------------------------------------------------------
+-def validate_cassette_config(cfg: CassetteConfig) -> EvaluationResult:
+-    """Run P0, P1, P2 in the locked order. Runs before WF1-WF7.
++_P3_CHECKS = ("P3 identity admissibility",)
+ 
+-    A stage is skipped with an INFO CHECK_SKIPPED diagnostic when an earlier
+-    stage failed, because its inputs are no longer trustworthy. The returned
+-    status is the precedence-minimum over the executed stages, and the
+-    status_reason is taken from the first stage that failed."""
+-    diagnostics: List[DiagnosticRecord] = []
+-    statuses: List[Status] = []
+-    failing_reason: Optional[str] = None
+-
+-    p0 = validate_cassette_policy_fields(cfg)
+-    if p0.status_reason == Reason.NOT_APPLICABLE:
+-        return p0
+-    diagnostics.extend(p0.diagnostics)
+-    statuses.append(p0.status)
+-    if p0.status is not Status.VALID:
+-        failing_reason = p0.status_reason
+-        diagnostics.append(_skipped("P1 topology", "policy field validation failed"))
+-        diagnostics.append(_skipped("P2 order constraints", "policy field validation failed"))
+-        return make_config_result(
+-            object_id=cfg.id,
+-            status=precedence(*statuses),
+-            status_reason=failing_reason,
+-            diagnostics=tuple(diagnostics),
+-            declared_assumptions=_assumptions(cfg),
+-        )
+ 
+-    p1 = validate_cassette_topology(cfg)
+-    diagnostics.extend(p1.diagnostics)
+-    statuses.append(p1.status)
+-    if p1.status is not Status.VALID:
+-        failing_reason = p1.status_reason
+-        diagnostics.append(_skipped("P2 order constraints", "topology validation failed"))
+-        return make_config_result(
+-            object_id=cfg.id,
+-            status=precedence(*statuses),
+-            status_reason=failing_reason,
+-            diagnostics=tuple(diagnostics),
+-            declared_assumptions=_assumptions(cfg),
++def validate_cassette_identity_admissibility(cfg: CassetteConfig) -> EvaluationResult:
++    """Stage P3. The configuration must be canonicalizable by
++    config_identity_hash. Uses the SAME canonicalizer (identity._canon via
++    noncanonical_values); there is no parallel type whitelist."""
++    _require_schema(cfg)
++    method = "validate_cassette_identity_admissibility"
++    gate = _mode_gate(cfg, method, _P3_CHECKS)
++    if gate is not None:
++        return gate
++    d = [
++        _err(
++            Code.NON_CANONICAL_VALUE,
++            "declared value has no canonical identity form",
++            path=path,
++            found_type=type_name,
+         )
++        for path, type_name in noncanonical_values(cfg)
++    ]
++    if d:
++        return _result(cfg, Status.INFEASIBLE, Reason.NOT_CANONICALIZABLE, d, method)
++    return _result(cfg, Status.VALID, Reason.OK, d, method)
+ 
+-    p2 = validate_cassette_order_constraints(cfg)
+-    diagnostics.extend(p2.diagnostics)
+-    statuses.append(p2.status)
+-    if p2.status is not Status.VALID:
+-        failing_reason = p2.status_reason
+-
+-    # §3.3 ranks VALID above NOT_EVALUATED, so precedence() alone would turn a
+-    # not-evaluated stage into an overall VALID. A composed VALID requires every
+-    # executed stage to be VALID (B5).
+-    status = precedence(*statuses)
+-    if status is Status.VALID and any(x is not Status.VALID for x in statuses):
+-        status = Status.NOT_EVALUATED
+-    return make_config_result(
+-        object_id=cfg.id,
+-        status=status,
+-        status_reason=failing_reason or Reason.OK,
+-        diagnostics=tuple(diagnostics),
+-        declared_assumptions=_assumptions(cfg),
+-    )
++
++# --------------------------------------------------------------------------
++# Composition (v0.3.1 §17.8)
++# --------------------------------------------------------------------------
++_STAGES: Tuple[Tuple[str, str], ...] = (
++    ("P0 policy fields", "validate_cassette_policy_fields"),
++    ("P1 topology", "validate_cassette_topology"),
++    ("P2 order constraints", "validate_cassette_order_constraints"),
++    ("P3 identity admissibility", "validate_cassette_identity_admissibility"),
++)
++
++
++def _compose(
++    cfg: CassetteConfig,
++    executed: Sequence[EvaluationResult],
++    diagnostics: Sequence[DiagnosticRecord],
++) -> EvaluationResult:
++    """THE composition rule, used by every composed return path: VALID iff
++    every executed stage is VALID; otherwise the §3.3 precedence minimum over
++    the non-VALID stage statuses, with the reason of the first such stage."""
++    failing = [r for r in executed if r.status is not Status.VALID]
++    if not failing:
++        return _result(cfg, Status.VALID, Reason.OK, diagnostics, "validate_cassette_config")
++    status = precedence(*(r.status for r in failing))
++    return _result(cfg, status, failing[0].status_reason, diagnostics, "validate_cassette_config")
++
++
++def validate_cassette_config(cfg: CassetteConfig) -> EvaluationResult:
++    """Run the gate and P0, P1, P2, P3 in the locked order. Runs before WF1-WF7.
++
++    A stage runs only if every earlier stage returned VALID; each stage not
++    run is recorded as CHECK_SKIPPED. A composed VALID implies that
++    config_identity_hash(cfg) succeeds."""
++    _require_schema(cfg)
++    gate = _mode_gate(cfg, "validate_cassette_config", tuple(name for name, _ in _STAGES))
++    if gate is not None:
++        return gate
++
++    # Stages are resolved through module globals at call time, so the
++    # composition rule is exercised identically when a stage is replaced.
++    module_globals = globals()
++    diagnostics: List[DiagnosticRecord] = []
++    executed: List[EvaluationResult] = []
++    for index, (_, function_name) in enumerate(_STAGES):
++        if executed and executed[-1].status is not Status.VALID:
++            for skipped_name, _ in _STAGES[index:]:
++                diagnostics.append(_skipped(skipped_name, f"{_STAGES[index - 1][0]} is not VALID"))
++            break
++        result = module_globals[function_name](cfg)
++        executed.append(result)
++        diagnostics.extend(result.diagnostics)
++    return _compose(cfg, executed, diagnostics)
+diff --git a/gotne/identity.py b/gotne/identity.py
+index a1d3721..5598ff0 100644
+--- a/gotne/identity.py
++++ b/gotne/identity.py
+@@ -28,7 +28,7 @@ import hashlib
+ import json
+ from dataclasses import fields, is_dataclass
+ from enum import Enum
+-from typing import Any
++from typing import Any, List, Optional, Tuple
+ 
+ from .cassette_schema import CassetteConfig, Missing, TopologyMode
+ 
+@@ -36,6 +36,7 @@ __all__ = [
+     "CANONICAL_FORM_VERSION",
+     "CanonicalizationError",
+     "canonical_form",
++    "noncanonical_values",
+     "config_identity_hash",
+     "cache_key",
+ ]
+@@ -53,15 +54,24 @@ def _json(payload: Any) -> str:
+     return json.dumps(payload, sort_keys=True, separators=(",", ":"), allow_nan=False)
+ 
+ 
+-def canonical_form(obj: Any) -> Any:
+-    """Deterministic, type-tagged, JSON-serializable projection. Raises
+-    CanonicalizationError for any type without a canonical form."""
++_INVALID = ["invalid"]  # placeholder used only while collecting failures
++
++
++def _child(path: str, name: str) -> str:
++    return name if not path else f"{path}.{name}"
++
++
++def _canon(obj: Any, path: str, errors: Optional[List[Tuple[str, str]]]) -> Any:
++    """THE canonicalizer. With errors=None it raises on the first value that
++    has no canonical form; with a list it records (path, type name) for every
++    such value and keeps going. Both modes share every branch, so the
++    admissibility gate (P3) and config_identity_hash can never disagree."""
+     if isinstance(obj, Missing):
+         return ["missing"]
+     if obj is None:
+         return ["null"]
+     if isinstance(obj, Enum):  # before str: str-Enums are str instances
+-        return ["enum", type(obj).__qualname__, canonical_form(obj.value)]
++        return ["enum", type(obj).__qualname__, _canon(obj.value, path, errors)]
+     if isinstance(obj, bool):  # before int: bool is an int subclass
+         return ["bool", obj]
+     if isinstance(obj, int):
+@@ -69,29 +79,53 @@ def canonical_form(obj: Any) -> Any:
+     if isinstance(obj, float):
+         return ["float", float(obj).hex()]  # exact, and finite-JSON-safe for nan/inf
+     if isinstance(obj, str):
+-        return ["str", str(obj)]
++        return ["str", str.__str__(obj)]
+     if is_dataclass(obj) and not isinstance(obj, type):
+         return [
+             "dataclass",
+             type(obj).__qualname__,
+             [
+-                [f.name, canonical_form(getattr(obj, f.name))]
++                [f.name, _canon(getattr(obj, f.name), _child(path, f.name), errors)]
+                 for f in sorted(fields(obj), key=lambda x: x.name)
+             ],
+         ]
+     if isinstance(obj, dict):
+-        items = [[canonical_form(k), canonical_form(v)] for k, v in obj.items()]
++        items = []
++        for index, (k, v) in enumerate(obj.items()):
++            key = _canon(k, f"{path}[key#{index}]", errors)
++            if key is _INVALID:
++                label = f"key#{index}"
++            elif key[0] == "str":
++                label = json.dumps(key[1])
++            else:
++                label = _json(key)
++            items.append([key, _canon(v, f"{path}[{label}]", errors)])
+         items.sort(key=lambda kv: _json(kv[0]))
+-        keys = [_json(k) for k, _ in items]
+-        if len(set(keys)) != len(keys):  # pragma: no cover - dict keys are unique
+-            raise CanonicalizationError("dict keys collide after canonicalization")
+         return ["dict", items]
+     if isinstance(obj, (list, tuple)):
+-        return ["seq", [canonical_form(x) for x in obj]]
+-    raise CanonicalizationError(
+-        f"no canonical form for type {type(obj).__qualname__}; "
+-        "declare the value as a sequence, mapping, scalar, enum or dataclass"
+-    )
++        return ["seq", [_canon(x, f"{path}[{i}]", errors) for i, x in enumerate(obj)]]
++    type_name = type(obj).__qualname__
++    if errors is None:
++        raise CanonicalizationError(
++            f"no canonical form for type {type_name} at {path or '<root>'}; "
++            "declare the value as a sequence, mapping, scalar, enum or dataclass"
++        )
++    errors.append((path or "<root>", type_name))
++    return _INVALID
++
++
++def canonical_form(obj: Any) -> Any:
++    """Deterministic, type-tagged, JSON-serializable projection. Raises
++    CanonicalizationError for any type without a canonical form."""
++    return _canon(obj, "", None)
++
++
++def noncanonical_values(obj: Any) -> List[Tuple[str, str]]:
++    """Every (path, type name) that canonical_form would reject, in
++    deterministic traversal order. Empty iff canonical_form(obj) succeeds."""
++    errors: List[Tuple[str, str]] = []
++    _canon(obj, "", errors)
++    return errors
+ 
+ 
+ def _digest(payload: Any) -> str:
+diff --git a/gotne/status.py b/gotne/status.py
+index 0aa360f..b14c91c 100644
+--- a/gotne/status.py
++++ b/gotne/status.py
+@@ -16,6 +16,7 @@ from __future__ import annotations
+ 
+ from dataclasses import dataclass, field
+ from enum import Enum
++from types import MappingProxyType
+ from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
+ 
+ __all__ = [
+@@ -31,6 +32,7 @@ __all__ = [
+     "ProvenanceRecord",
+     "EvaluationResult",
+     "apply_status_field_pattern",
++    "METHOD_VERSION",
+     "PROBABILITY_LIKE_FIELDS",
+     "MEASURE_LIKE_FIELDS",
+     "DENSITY_LIKE_FIELDS",
+@@ -69,6 +71,10 @@ class Provenance(str, Enum):
+ 
+     EXACT_CLOSED_FORM = "EXACT_CLOSED_FORM"
+     EXACT_GEOMETRIC_VETO = "EXACT_GEOMETRIC_VETO"
++    #: v0.3.1 §6.3: veto decided from declarations/graph structure only.
++    #: Every Phase 1c veto carries this label; GEOMETRIC is reserved for
++    #: vetoes derived from a geometric evaluation (Phase 2+).
++    EXACT_STRUCTURAL_VETO = "EXACT_STRUCTURAL_VETO"
+     ANALYTIC_APPROXIMATION = "ANALYTIC_APPROXIMATION"
+     NUMERICAL_QUADRATURE = "NUMERICAL_QUADRATURE"
+     CACHED_INTERPOLATION = "CACHED_INTERPOLATION"
+@@ -140,6 +146,14 @@ CANONICAL_UNITS: Mapping[str, str] = {
+ }
+ 
+ 
++#: v0.3.1 §17.4.1: method_version carried by every config-level result.
++METHOD_VERSION = "0.3.1"
++
++
++def _read_only(mapping: Optional[Mapping[str, Any]]) -> Mapping[str, Any]:
++    return MappingProxyType(dict(mapping or {}))
++
++
+ @dataclass(frozen=True)
+ class DiagnosticRecord:
+     code: str
+@@ -148,6 +162,9 @@ class DiagnosticRecord:
+     quantities: Mapping[str, Any] = field(default_factory=dict)
+     remediation: Optional[str] = None
+ 
++    def __post_init__(self) -> None:
++        object.__setattr__(self, "quantities", _read_only(self.quantities))
++
+     def as_dict(self) -> Dict[str, Any]:
+         return {
+             "code": self.code,
+@@ -242,6 +259,64 @@ class EvaluationResult:
+     result_id: Optional[str] = None
+     supersedes: Optional[str] = None
+ 
++    def __post_init__(self) -> None:
++        """Construction-time enforcement of §10.1 / §3.6 / §10.8 (v0.3.1).
++
++        Runs for direct construction AND for dataclasses.replace(), which
++        re-invokes __init__. A result whose payload or flags disagree with its
++        status cannot exist. The three mappings are stored read-only."""
++        if not isinstance(self.status, Status):
++            raise TypeError("status must be a Status member")
++        if not isinstance(self.exact_or_approximate, Exactness):
++            raise TypeError("exact_or_approximate must be an Exactness member")
++        if not isinstance(self.provenance, ProvenanceRecord):
++            raise TypeError("provenance must be a ProvenanceRecord")
++        for name in ("object_kind", "object_id", "status_reason"):
++            if type(getattr(self, name)) is not str:
++                raise TypeError(f"{name} must be a plain str")
++
++        values = dict(self.values)
++        intervals = dict(self.value_intervals)
++        units = dict(self.units)
++        for label, mapping in (("values", values), ("value_intervals", intervals), ("units", units)):
++            unknown = sorted(set(mapping) - _KNOWN_VALUE_FIELDS)
++            if unknown:
++                raise ValueError(f"{label} contains fields not classified by §10.1: {unknown}")
++
++        for k, v in values.items():
++            if v is not None and (isinstance(v, bool) or not isinstance(v, (int, float))):
++                raise TypeError(f"value field {k} must be a real number or None")
++        expected, zeroed, nulled = apply_status_field_pattern(self.status, values)
++        if values.keys() != expected.keys() or any(
++            (values[k] is None) != (expected[k] is None) or values[k] != expected[k]
++            for k in expected
++        ):
++            raise ValueError(
++                f"values violate the §10.1 field pattern for status {self.status.value}"
++            )
++        if (self.zeroed_due_to_status, self.nulled_due_to_status) != (zeroed, nulled):
++            raise ValueError(
++                f"zeroed/nulled flags violate the §10.1 field pattern for status "
++                f"{self.status.value}"
++            )
++        if self.status in VETO_SET or self.status in UNKNOWN_SET:
++            populated = sorted(k for k, v in intervals.items() if v is not None)
++            if populated:
++                raise ValueError(
++                    f"status {self.status.value} forbids populated value_intervals: {populated}"
++                )
++        if (
++            self.object_kind == "CONFIG"
++            and self.exact_or_approximate is Exactness.EXACT
++            and all(values.get(k) is None for k in CANONICAL_VALUE_FIELDS)
++        ):
++            raise ValueError("§10.8: a CONFIG result with no numeric payload cannot claim EXACT")
++
++        object.__setattr__(self, "values", _read_only(values))
++        object.__setattr__(self, "value_intervals", _read_only(intervals))
++        object.__setattr__(self, "units", _read_only(units))
++        object.__setattr__(self, "diagnostics", tuple(self.diagnostics))
++
+     def codes(self) -> List[str]:
+         """Diagnostic codes present, in emission order. Tests assert membership,
+         never exclusivity (see the Phase 1c complete-diagnosis policy)."""
+@@ -281,24 +356,23 @@ def make_config_result(
+     diagnostics: Sequence[DiagnosticRecord],
+     declared_assumptions: Sequence[str] = (),
+     method_id: str = "validate_cassette_config",
+-    method_version: str = "0.3.0",
++    method_version: str = METHOD_VERSION,
+ ) -> EvaluationResult:
+     """Construct a config-level result with the §10.1 pattern applied.
+ 
+-    Phase 1c never produces a numeric value, so VALID results carry the
+-    canonical field set as typed nulls with no zeroed/nulled flag set: the
+-    absence of a value here reflects 'not applicable at this layer', which is
+-    why status VALID is not in UNKNOWN_SET.
++    Phase 1c never produces a numeric value. Veto results carry exact zeroed
++    fields, so they are EXACT with provenance EXACT_STRUCTURAL_VETO (v0.3.1
++    §6.3, §10.8). VALID and NOT_EVALUATED results carry no numeric payload, so
++    they are UNDEFINED with provenance NOT_COMPUTED. Exactness describes the
++    payload, not the verdict.
+     """
+     values, zeroed, nulled = apply_status_field_pattern(status, None)
+-    provenance_label = (
+-        Provenance.EXACT_GEOMETRIC_VETO
+-        if status in VETO_SET
+-        else Provenance.NOT_COMPUTED
+-    )
+-    exactness = Exactness.EXACT if status in VETO_SET else Exactness.UNDEFINED
+-    if status is Status.VALID:
++    if status in VETO_SET:
++        provenance_label = Provenance.EXACT_STRUCTURAL_VETO
+         exactness = Exactness.EXACT
++    else:
++        provenance_label = Provenance.NOT_COMPUTED
++        exactness = Exactness.UNDEFINED
+     return EvaluationResult(
+         object_kind="CONFIG",
+         object_id=object_id,
+diff --git a/tests/test_cassette_topology.py b/tests/test_cassette_topology.py
+index 68e649c..5b144e0 100644
+--- a/tests/test_cassette_topology.py
++++ b/tests/test_cassette_topology.py
+@@ -2,7 +2,10 @@
+ 
+ Mandated tests: T34, T35, T36, T37, T38, T55, T56.
+ Additional Phase 1c tests from the v0.3 decision record: T59, T60, T61, T62,
+-T67, T68, T69, T70, T71, T72, T73, T74, T76, T78.
++T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T78.
++
++v0.3.1: T55's cassette-validator expectation changed from VALID to the
++§3.1.1 NOT_EVALUATED contract; the veto helper asserts §6.3/§10.8.
+ 
+ Assertion style: diagnostic-code MEMBERSHIP, never exclusivity. Phase 1c uses
+ the complete-diagnosis policy, so a malformed config legitimately reports
+@@ -39,9 +42,11 @@ from gotne.cassette_schema import (  # noqa: E402
+     UnresolvedUpstreamPolicy,
+ )
+ from gotne.cassette_topology import (  # noqa: E402
++    GEOMETRY_PRESENCE_ASSUMPTION,
+     Code,
+     Reason,
+     validate_cassette_config,
++    validate_cassette_identity_admissibility,
+     validate_cassette_order_constraints,
+     validate_cassette_policy_fields,
+     validate_cassette_topology,
+@@ -52,7 +57,13 @@ from gotne.mode_applicability import (  # noqa: E402
+     applicability_marker,
+     mode_applicability,
+ )
+-from gotne.status import Severity, Status  # noqa: E402
++from gotne.status import (  # noqa: E402
++    CANONICAL_VALUE_FIELDS,
++    Exactness,
++    Provenance,
++    Severity,
++    Status,
++)
+ 
+ 
+ # --------------------------------------------------------------------------
+@@ -138,6 +149,9 @@ class CassetteTestCase(unittest.TestCase):
+         self.assertEqual(result.values["survival_correction"], 0.0)
+         self.assertEqual(result.values["joint_score"], 0.0)
+         self.assertIsNone(result.values["effective_local_concentration"])
++        # v0.3.1 §6.3 / §10.8
++        self.assertIs(result.provenance.worst_label, Provenance.EXACT_STRUCTURAL_VETO)
++        self.assertIs(result.exact_or_approximate, Exactness.EXACT)
+ 
+ 
+ # --------------------------------------------------------------------------
+@@ -313,6 +327,11 @@ class T38ValidChain(CassetteTestCase):
+         self.assertEqual(result.error_codes(), [])
+         self.assertFalse(result.zeroed_due_to_status)
+         self.assertFalse(result.nulled_due_to_status)
++        # v0.3.1 §10.8, §17.4.1, §17.6.1
++        self.assertIs(result.exact_or_approximate, Exactness.UNDEFINED)
++        self.assertIs(result.provenance.worst_label, Provenance.NOT_COMPUTED)
++        self.assertEqual(result.provenance.method_version, "0.3.1")
++        self.assertIn(GEOMETRY_PRESENCE_ASSUMPTION, result.provenance.declared_assumptions)
+ 
+     def test_declared_assumptions_recorded(self):
+         result = validate_cassette_config(ref_cassette_3())
+@@ -345,14 +364,33 @@ class T55ModeApplicability(CassetteTestCase):
+         self.assertNotIn("SKIP", marker)
+ 
+     def test_cassette_validator_is_inert_in_general_dag(self):
++        """v0.3.1 §3.1.1 replaces the former VALID expectation: a validator
++        that ran no check must not report a pass (L11)."""
+         cfg = replace(
+             ref_cassette_3(),
+             policy=base_policy(topology_mode=TopologyMode.GENERAL_DAG),
+         )
+-        result = validate_cassette_topology(cfg)
+-        self.assertIs(result.status, Status.VALID)
+-        self.assertEqual(result.status_reason, Reason.NOT_APPLICABLE)
+-        self.assertCode(result, Code.MODE_NOT_APPLICABLE)
++        for validator in (
++            validate_cassette_policy_fields,
++            validate_cassette_topology,
++            validate_cassette_order_constraints,
++            validate_cassette_identity_admissibility,
++            validate_cassette_config,
++        ):
++            with self.subTest(validator=validator.__name__):
++                result = validator(cfg)
++                self.assertIs(result.status, Status.NOT_EVALUATED)
++                self.assertEqual(result.status_reason, Reason.NOT_APPLICABLE)
++                self.assertEqual(
++                    dict(result.values), {k: None for k in CANONICAL_VALUE_FIELDS}
++                )
++                self.assertEqual(dict(result.value_intervals), {})
++                self.assertFalse(result.zeroed_due_to_status)
++                self.assertTrue(result.nulled_due_to_status)
++                self.assertIs(result.provenance.worst_label, Provenance.NOT_COMPUTED)
++                self.assertIs(result.exact_or_approximate, Exactness.UNDEFINED)
++                self.assertEqual(result.codes(), [Code.MODE_NOT_APPLICABLE])
++                self.assertIs(result.diagnostics[0].severity, Severity.INFO)
+ 
+ 
+ # --------------------------------------------------------------------------
+@@ -505,7 +543,11 @@ class PolicyFieldTests(CassetteTestCase):
+             )
+         )
+         result = validate_cassette_policy_fields(cfg)
++        self.assertIs(result.status, Status.INFEASIBLE)
++        self.assertEqual(result.status_reason, Reason.POLICY_MISSING)
+         self.assertCode(result, Code.EXPLICIT_ORDER_MISSING)
++        d = next(x for x in result.diagnostics if x.code == Code.EXPLICIT_ORDER_MISSING)
++        self.assertIs(d.quantities["declared"], False)
+ 
+     def test_missing_required_field(self):
+         cfg = replace(ref_cassette_3(), policy=base_policy(junction_model=MISSING))
+diff --git a/tests/test_phase1c_closure.py b/tests/test_phase1c_closure.py
+new file mode 100644
+index 0000000..a04eef0
+--- /dev/null
++++ b/tests/test_phase1c_closure.py
+@@ -0,0 +1,865 @@
++"""Phase 1c closure tests for the v0.3.1 decision record.
++
++Covers S-1/S-2/S-3/S-5/S-6/S-11/S-12, N-1, N-2, C-1, the §17.8 composition
++rule, EvaluationResult integrity, complete diagnosis, determinism, and direct
++coverage of every live diagnostic code.
++
++Assertion style: diagnostic-code MEMBERSHIP, never exclusivity, except where
++v0.3.1 fixes an exact diagnostic set (the not-applicable contract).
++"""
++
++from __future__ import annotations
++
++import json
++import os
++import pathlib
++import random
++import subprocess
++import sys
++import unittest
++from dataclasses import fields, replace
++from unittest import mock
++
++ROOT = pathlib.Path(__file__).resolve().parents[1]
++TESTS = pathlib.Path(__file__).resolve().parent
++sys.path.insert(0, str(ROOT))
++sys.path.insert(0, str(TESTS))
++
++from gotne import cassette_topology  # noqa: E402
++from gotne.cassette_schema import (  # noqa: E402
++    MISSING,
++    AnchorSpec,
++    CassetteConfig,
++    CassetteSpec,
++    DepEdge,
++    DepEdgeKind,
++    EngagementOrderPolicy,
++    JunctionModel,
++    TetherSpec,
++    TopologyMode,
++    UnresolvedUpstreamPolicy,
++)
++from gotne.cassette_topology import (  # noqa: E402
++    GEOMETRY_PRESENCE_ASSUMPTION,
++    Code,
++    Reason,
++    validate_cassette_config,
++    validate_cassette_identity_admissibility,
++    validate_cassette_order_constraints,
++    validate_cassette_policy_fields,
++    validate_cassette_topology,
++)
++from gotne.identity import config_identity_hash  # noqa: E402
++from gotne.status import (  # noqa: E402
++    EvaluationResult,
++    Exactness,
++    Provenance,
++    Status,
++    make_config_result,
++)
++from test_cassette_topology import (  # noqa: E402
++    CassetteTestCase,
++    T34ThreeArmStar,
++    T35IndependentAnchors,
++    base_policy,
++    module,
++    ref_cassette_3,
++)
++
++VALIDATORS = (
++    validate_cassette_policy_fields,
++    validate_cassette_topology,
++    validate_cassette_order_constraints,
++    validate_cassette_identity_admissibility,
++    validate_cassette_config,
++)
++STAGE_NAMES = (
++    "validate_cassette_policy_fields",
++    "validate_cassette_topology",
++    "validate_cassette_order_constraints",
++    "validate_cassette_identity_admissibility",
++)
++EXPLICIT = base_policy(engagement_order_policy=EngagementOrderPolicy.EXPLICIT_PARTIAL_ORDER)
++STRICT = base_policy(engagement_order_policy=EngagementOrderPolicy.STRICT_PROXIMAL_TO_DISTAL)
++
++
++class _Opaque:
++    pass
++
++
++def with_cassette(cfg, **changes):
++    return replace(cfg, cassettes=(replace(cfg.cassettes[0], **changes),))
++
++
++def with_order(order, policy=EXPLICIT, dep_edges=()):
++    return with_cassette(ref_cassette_3(policy=policy, dep_edges=dep_edges), explicit_partial_order=order)
++
++
++def with_module(cfg, index, **changes):
++    mods = list(cfg.modules)
++    mods[index] = replace(mods[index], **changes)
++    return replace(cfg, modules=tuple(mods))
++
++
++def with_tether(cfg, index, **changes):
++    ts = list(cfg.tethers)
++    ts[index] = replace(ts[index], **changes)
++    return replace(cfg, tethers=tuple(ts))
++
++
++def single_module_cfg():
++    return CassetteConfig(
++        id="cfg-n1",
++        policy=base_policy(),
++        cassettes=(
++            CassetteSpec(id="cas1", root_anchor_id="a0", ordered_modules=("D1",), ordered_segments=("s0",)),
++        ),
++        anchors=(AnchorSpec(id="a0"),),
++        modules=(module("D1", 1, terminal=True, exclusion_centre=(0.3, 0.0, 0.0)),),
++        tethers=(TetherSpec(id="s0", from_node="a0", to_node="D1", cassette_index=0),),
++    )
++
++
++def valid_fixtures():
++    return {
++        "ref": ref_cassette_3(),
++        "n1": single_module_cfg(),
++        "strict_redundant": ref_cassette_3(
++            policy=STRICT, dep_edges=(DepEdge("D1", "D2", DepEdgeKind.REQUIRES),)
++        ),
++        "explicit_empty": with_order([]),
++        "explicit_order": with_order([["D1", "D2"], ("D2", "D3")]),
++        "shell_bound": replace(
++            ref_cassette_3(
++                policy=base_policy(
++                    unresolved_upstream_policy=UnresolvedUpstreamPolicy.EXCLUDED_SHELL_BOUND
++                )
++            ),
++            modules=tuple(
++                replace(m, unresolved_occupancy_fraction=0.5) for m in ref_cassette_3().modules
++            ),
++        ),
++    }
++
++
++def to_json(result):
++    return json.dumps(result.as_dict(), sort_keys=True, allow_nan=False)
++
++
++def run_with_seed(code, seed):
++    env = dict(os.environ, PYTHONHASHSEED=str(seed))
++    prefix = f"import sys; sys.path[:0]=[{str(ROOT)!r},{str(TESTS)!r}]\n"
++    return subprocess.run(
++        [sys.executable, "-c", prefix + code], env=env, capture_output=True, text=True, check=True
++    ).stdout
++
++
++# --------------------------------------------------------------------------
++# S-2 / S-3: exactness and provenance
++# --------------------------------------------------------------------------
++class S2S3ExactnessAndProvenance(CassetteTestCase):
++    def test_valid_config_exactness_undefined(self):
++        for validator in VALIDATORS:
++            with self.subTest(validator=validator.__name__):
++                result = validator(ref_cassette_3())
++                self.assertIs(result.status, Status.VALID)
++                self.assertIs(result.exact_or_approximate, Exactness.UNDEFINED)
++                self.assertIs(result.provenance.worst_label, Provenance.NOT_COMPUTED)
++                self.assertEqual(result.provenance.method_version, "0.3.1")
++
++    def test_veto_config_exactness_exact(self):
++        cfg = replace(ref_cassette_3(), policy=base_policy(tau_spacer=2.0))
++        result = validate_cassette_config(cfg)
++        self.assertIs(result.status, Status.INFEASIBLE)
++        self.assertIs(result.exact_or_approximate, Exactness.EXACT)
++
++    def test_not_evaluated_exactness_undefined(self):
++        cfg = ref_cassette_3()
++        cfg = replace(cfg, cassettes=cfg.cassettes * 2)
++        result = validate_cassette_order_constraints(cfg)
++        self.assertIs(result.status, Status.NOT_EVALUATED)
++        self.assertIs(result.exact_or_approximate, Exactness.UNDEFINED)
++        self.assertIs(result.provenance.worst_label, Provenance.NOT_COMPUTED)
++
++    def test_phase1c_vetoes_use_structural_provenance(self):
++        cases = {
++            "P0": (validate_cassette_policy_fields, replace(ref_cassette_3(), policy=base_policy(tau_spacer=2.0))),
++            "P1": (validate_cassette_topology, T34ThreeArmStar().build()),
++            "P2": (
++                validate_cassette_order_constraints,
++                ref_cassette_3(dep_edges=(DepEdge("D1", "D2", DepEdgeKind.REQUIRES), DepEdge("D2", "D1", DepEdgeKind.REQUIRES))),
++            ),
++            "P3": (validate_cassette_identity_admissibility, with_module(ref_cassette_3(), 1, entry_offset={1})),
++        }
++        for stage, (validator, cfg) in cases.items():
++            with self.subTest(stage=stage):
++                result = validator(cfg)
++                self.assertIs(result.status, Status.INFEASIBLE)
++                self.assertVetoFieldPattern(result)
++
++    def test_no_phase1c_result_uses_geometric_veto(self):
++        rejects = [
++            T34ThreeArmStar().build(),
++            T35IndependentAnchors().build(),
++            replace(ref_cassette_3(), policy=base_policy(junction_model=JunctionModel.RESTRICTED_CONE)),
++            with_order("bad"),
++            with_module(ref_cassette_3(), 1, entry_offset=_Opaque()),
++        ]
++        for cfg in rejects:
++            for validator in VALIDATORS:
++                result = validator(cfg)
++                self.assertIsNot(result.provenance.worst_label, Provenance.EXACT_GEOMETRIC_VETO)
++
++
++# --------------------------------------------------------------------------
++# S-5: geometry-bearing fields are not Phase 1c requirements
++# --------------------------------------------------------------------------
++class S5GeometryFields(CassetteTestCase):
++    def test_missing_geometry_fields_do_not_fail_phase1c(self):
++        for value in (MISSING, None):
++            cfg = with_module(ref_cassette_3(), 1, entry_offset=value, capture_offset_vec=value)
++            result = validate_cassette_config(cfg)
++            self.assertIs(result.status, Status.VALID)
++            self.assertIn(GEOMETRY_PRESENCE_ASSUMPTION, result.provenance.declared_assumptions)
++
++    def test_missing_geometry_fields_hash_distinctly(self):
++        base = ref_cassette_3()
++        hashes = {
++            config_identity_hash(with_module(base, 1, entry_offset=v))
++            for v in (MISSING, None, (0.0, 0.0, 0.0))
++        }
++        self.assertEqual(len(hashes), 3)
++
++    def test_non_valid_results_do_not_claim_the_assumption_scope(self):
++        result = validate_cassette_config(T34ThreeArmStar().build())
++        self.assertNotIn(GEOMETRY_PRESENCE_ASSUMPTION, result.provenance.declared_assumptions)
++
++
++# --------------------------------------------------------------------------
++# S-6: explicit_partial_order declaration contract (§20.6.1)
++# --------------------------------------------------------------------------
++class S6ExplicitOrderContract(CassetteTestCase):
++    def order_diags(self, result, code):
++        return [x for x in result.diagnostics if x.code == code]
++
++    def test_explicit_order_container_types(self):
++        for value in ("D1D2", b"D1", {("D1", "D2")}, {"D1": "D2"}, 5, True, None, _Opaque(), TopologyMode.GENERAL_DAG):
++            with self.subTest(value=type(value).__name__):
++                cfg = with_order(value)
++                p0 = validate_cassette_policy_fields(cfg)
++                self.assertIs(p0.status, Status.INFEASIBLE)
++                self.assertEqual(p0.status_reason, Reason.POLICY_RANGE)
++                d = self.order_diags(p0, Code.EXPLICIT_ORDER_MALFORMED)
++                self.assertEqual(len(d), 1)
++                self.assertEqual(d[0].quantities["problem"], "CONTAINER_TYPE")
++                self.assertIsNone(d[0].quantities["pair_index"])
++                self.assertIsInstance(d[0].quantities["found_type"], str)
++                self.assertCode(p0, Code.CHECK_SKIPPED)
++                self.assertIs(validate_cassette_config(cfg).status, Status.INFEASIBLE)
++                self.assertIs(validate_cassette_order_constraints(cfg).status, Status.NOT_EVALUATED)
++
++    def test_explicit_order_entry_shape(self):
++        cases = [
++            ([("D1", "D2", "D3")], "ENTRY_ARITY", 0),
++            ([("D1",)], "ENTRY_ARITY", 0),
++            (["D1D2"], "ENTRY_TYPE", 0),
++            ([("D1", "D2"), ("D1", 2)], "ELEMENT_TYPE", 1),
++            ([(TopologyMode.GENERAL_DAG, "D1")], "ELEMENT_TYPE", 0),
++            ([("D1", "D2"), {"D1", "D2"}], "ENTRY_TYPE", 1),
++        ]
++        for order, problem, index in cases:
++            with self.subTest(order=str(order)):
++                p0 = validate_cassette_policy_fields(with_order(order))
++                self.assertIs(p0.status, Status.INFEASIBLE)
++                d = self.order_diags(p0, Code.EXPLICIT_ORDER_MALFORMED)
++                self.assertEqual([x.quantities["problem"] for x in d], [problem])
++                self.assertEqual(d[0].quantities["pair_index"], index)
++
++    def test_arity_reported_for_arity_errors(self):
++        p0 = validate_cassette_policy_fields(with_order([("D1", "D2", "D3")]))
++        d = self.order_diags(p0, Code.EXPLICIT_ORDER_MALFORMED)[0]
++        self.assertEqual(d.quantities["arity"], 3)
++
++    def test_every_malformed_entry_is_diagnosed(self):
++        p0 = validate_cassette_policy_fields(with_order([("D1",), ("D1", "D2"), "x", ("D1", "D1")]))
++        indices = sorted(
++            x.quantities["pair_index"]
++            for x in p0.diagnostics
++            if x.code in (Code.EXPLICIT_ORDER_MALFORMED, Code.EXPLICIT_ORDER_INVALID_REFERENCE)
++        )
++        self.assertEqual(indices, [0, 2, 3])
++
++    def test_explicit_order_empty_is_evaluated(self):
++        for empty in ([], ()):
++            with self.subTest(empty=type(empty).__name__):
++                cfg = with_order(empty)
++                self.assertIs(validate_cassette_config(cfg).status, Status.VALID)
++                p2 = validate_cassette_order_constraints(cfg)
++                self.assertIs(p2.status, Status.VALID)
++                self.assertNotIn(Code.CHECK_SKIPPED, p2.codes())
++
++    def test_explicit_order_unknown_module_in_p0(self):
++        cfg = with_order([("D1", "DX")])
++        p0 = validate_cassette_policy_fields(cfg)
++        self.assertIs(p0.status, Status.INFEASIBLE)
++        self.assertEqual(p0.status_reason, Reason.POLICY_RANGE)
++        d = self.order_diags(p0, Code.EXPLICIT_ORDER_INVALID_REFERENCE)[0]
++        self.assertEqual(d.quantities["problems"], ["UNKNOWN_MODULE"])
++        self.assertEqual(d.quantities["pair"], ["D1", "DX"])
++        composed = validate_cassette_config(cfg)
++        self.assertEqual(composed.status_reason, Reason.POLICY_RANGE)
++        self.assertNotIn(Code.DEP_EDGE_UNKNOWN_NODE, composed.codes())
++        skipped = {x.quantities["check"] for x in composed.diagnostics if x.code == Code.CHECK_SKIPPED}
++        self.assertIn("P2 order constraints", skipped)
++
++    def test_explicit_order_self_loop(self):
++        d = self.order_diags(validate_cassette_policy_fields(with_order([("D1", "D1")])), Code.EXPLICIT_ORDER_INVALID_REFERENCE)
++        self.assertEqual(d[0].quantities["problems"], ["SELF_LOOP"])
++        d = self.order_diags(validate_cassette_policy_fields(with_order([("DX", "DX")])), Code.EXPLICIT_ORDER_INVALID_REFERENCE)
++        self.assertEqual(d[0].quantities["problems"], ["SELF_LOOP", "UNKNOWN_MODULE"])
++
++    def test_explicit_order_direction(self):
++        requires = (DepEdge("D1", "D2", DepEdgeKind.REQUIRES),)
++        conflict = validate_cassette_config(with_order([("D2", "D1")], dep_edges=requires))
++        self.assertIs(conflict.status, Status.INFEASIBLE)
++        self.assertEqual(conflict.status_reason, Reason.ORDER)
++        self.assertCode(conflict, Code.ENGAGEMENT_ORDER_CONFLICT)
++        agree = validate_cassette_config(with_order([("D1", "D2")], dep_edges=requires))
++        self.assertIs(agree.status, Status.VALID)
++
++    def test_explicit_order_duplicate_pairs_idempotent(self):
++        once = validate_cassette_config(with_order([("D1", "D2")]))
++        twice = validate_cassette_config(with_order([("D1", "D2"), ["D1", "D2"]]))
++        self.assertIs(twice.status, Status.VALID)
++        self.assertEqual(once.codes(), twice.codes())
++
++    def test_malformed_order_under_non_explicit_policy_is_only_unexpected(self):
++        for value in ("x", {("D1", "D2")}, None, [], [("D1",)], _Opaque()):
++            with self.subTest(value=type(value).__name__):
++                result = validate_cassette_policy_fields(with_order(value, policy=base_policy()))
++                self.assertEqual(result.error_codes(), [Code.EXPLICIT_ORDER_UNEXPECTED])
++
++    def test_p2_standalone_malformed_order_not_evaluated(self):
++        for value in ("x", [("D1",)], [("D1", "DX")], None):
++            with self.subTest(value=str(value)):
++                result = validate_cassette_order_constraints(with_order(value))
++                self.assertIs(result.status, Status.NOT_EVALUATED)
++                self.assertEqual(result.status_reason, Reason.PREREQUISITE_FAILED)
++                self.assertCode(result, Code.CHECK_SKIPPED)
++
++
++# --------------------------------------------------------------------------
++# §17.8 composition on every return path (H-2)
++# --------------------------------------------------------------------------
++class CompositionGuard(CassetteTestCase):
++    def test_composition_guard_all_paths(self):
++        cfg = ref_cassette_3()
++        for index, stage in enumerate(STAGE_NAMES):
++            with self.subTest(stage=stage):
++                double = make_config_result(
++                    object_id=cfg.id,
++                    status=Status.NOT_EVALUATED,
++                    status_reason=Reason.PREREQUISITE_FAILED,
++                    diagnostics=(),
++                )
++                with mock.patch.object(cassette_topology, stage, return_value=double):
++                    result = cassette_topology.validate_cassette_config(cfg)
++                self.assertIs(result.status, Status.NOT_EVALUATED)
++                self.assertEqual(result.status_reason, Reason.PREREQUISITE_FAILED)
++                skipped = [x for x in result.diagnostics if x.code == Code.CHECK_SKIPPED]
++                self.assertEqual(len(skipped), len(STAGE_NAMES) - index - 1)
++
++    def test_veto_beats_not_evaluated_is_not_reachable_by_promotion(self):
++        cfg = replace(ref_cassette_3(), policy=base_policy(tau_spacer=2.0))
++        self.assertIs(validate_cassette_config(cfg).status, Status.INFEASIBLE)
++
++
++# --------------------------------------------------------------------------
++# H-3: EvaluationResult integrity
++# --------------------------------------------------------------------------
++class ResultIntegrity(unittest.TestCase):
++    def setUp(self):
++        self.veto = validate_cassette_config(T34ThreeArmStar().build())
++        self.valid = validate_cassette_config(ref_cassette_3())
++        cfg = ref_cassette_3()
++        self.unknown = validate_cassette_order_constraints(replace(cfg, cassettes=cfg.cassettes * 2))
++
++    def test_evaluation_result_rejects_pattern_violation(self):
++        bad = [
++            (self.veto, dict(values={**self.veto.values, "conditional_probability": 0.7})),
++            (self.veto, dict(zeroed_due_to_status=False)),
++            (self.veto, dict(values={**self.veto.values, "effective_local_concentration": 1.0})),
++            (self.veto, dict(value_intervals={"conditional_probability": [0.1, 0.2]})),
++            (self.unknown, dict(values={**self.unknown.values, "joint_score": 0.0})),
++            (self.unknown, dict(nulled_due_to_status=False)),
++            (self.valid, dict(values={**self.valid.values, "bogus": 1.0})),
++            (self.valid, dict(status=Status.INFEASIBLE)),
++            (self.valid, dict(exact_or_approximate=Exactness.EXACT)),
++            (self.valid, dict(units={"bogus": "1"})),
++            (self.valid, dict(values={**self.valid.values, "joint_score": "0.5"})),
++            (self.valid, dict(values={**self.valid.values, "joint_score": float("nan")})),
++        ]
++        for result, change in bad:
++            with self.subTest(change=sorted(change)):
++                with self.assertRaises((ValueError, TypeError)):
++                    replace(result, **change)
++
++    def test_non_status_rejected_at_construction(self):
++        with self.assertRaises(TypeError):
++            replace(self.valid, status="VALID")
++
++    def test_faithful_replace_still_allowed(self):
++        self.assertEqual(replace(self.veto).as_dict(), self.veto.as_dict())
++
++    def test_result_values_read_only(self):
++        for mapping in (
++            self.veto.values,
++            self.veto.value_intervals,
++            self.veto.units,
++            self.veto.diagnostics[0].quantities,
++        ):
++            with self.assertRaises(TypeError):
++                mapping["conditional_probability"] = 0.5  # type: ignore[index]
++
++
++# --------------------------------------------------------------------------
++# S-11: P3 identity admissibility
++# --------------------------------------------------------------------------
++class S11IdentityAdmissibility(CassetteTestCase):
++    def test_noncanonical_opaque_value_rejected(self):
++        for value in ({1, 2}, _Opaque(), b"xy", frozenset()):
++            with self.subTest(value=type(value).__name__):
++                cfg = with_module(ref_cassette_3(), 1, entry_offset=value)
++                for validator in (validate_cassette_identity_admissibility, validate_cassette_config):
++                    result = validator(cfg)
++                    self.assertIs(result.status, Status.INFEASIBLE)
++                    self.assertEqual(result.status_reason, Reason.NOT_CANONICALIZABLE)
++                    d = next(x for x in result.diagnostics if x.code == Code.NON_CANONICAL_VALUE)
++                    self.assertEqual(d.quantities["path"], "modules[1].entry_offset")
++                    self.assertEqual(d.quantities["found_type"], type(value).__qualname__)
++
++    def test_one_diagnostic_per_offending_value(self):
++        cfg = with_module(with_module(ref_cassette_3(), 0, rho=_Opaque()), 2, exclusion_centre=[{1}, b"x"])
++        paths = [
++            x.quantities["path"]
++            for x in validate_cassette_identity_admissibility(cfg).diagnostics
++            if x.code == Code.NON_CANONICAL_VALUE
++        ]
++        self.assertEqual(
++            paths, ["modules[0].rho", "modules[2].exclusion_centre[0]", "modules[2].exclusion_centre[1]"]
++        )
++
++    def test_valid_implies_canonicalizable(self):
++        for name, cfg in valid_fixtures().items():
++            with self.subTest(fixture=name):
++                self.assertIs(validate_cassette_config(cfg).status, Status.VALID)
++                self.assertEqual(len(config_identity_hash(cfg)), 64)
++
++    def test_p3_skipped_when_earlier_stage_fails(self):
++        cfg = with_module(
++            replace(ref_cassette_3(), policy=base_policy(junction_model=JunctionModel.RESTRICTED_CONE)),
++            1,
++            entry_offset={1},
++        )
++        result = validate_cassette_config(cfg)
++        self.assertEqual(result.status_reason, Reason.JUNCTION_UNSUPPORTED)
++        self.assertNotIn(Code.NON_CANONICAL_VALUE, result.codes())
++        skipped = {x.quantities["check"] for x in result.diagnostics if x.code == Code.CHECK_SKIPPED}
++        self.assertIn("P3 identity admissibility", skipped)
++
++
++# --------------------------------------------------------------------------
++# S-12: totality of public validators, schema-structure TypeError
++# --------------------------------------------------------------------------
++HOSTILE = (
++    None, MISSING, 0, 5, -1, 1.5, True, float("nan"), float("inf"), "", "x", "D1",
++    [], (), {}, set(), frozenset({"a"}), _Opaque(), b"x", TopologyMode.GENERAL_DAG,
++    ["D1"], [["D1", "D2"]], ("D1", "D2", "D3"),
++)
++
++
++def mutations(cfg):
++    """Every declared (non-schema-structure) field of cfg, as setter closures."""
++    out = [("id", lambda v: replace(cfg, id=v))]
++    for f in fields(cfg.policy):
++        out.append((f"policy.{f.name}", lambda v, n=f.name: replace(cfg, policy=replace(cfg.policy, **{n: v}))))
++    for f in fields(cfg.cassettes[0]):
++        out.append((f"cassettes[0].{f.name}", lambda v, n=f.name: with_cassette(cfg, **{n: v})))
++    for coll, idx in (("modules", 1), ("modules", 2), ("anchors", 0), ("tethers", 1), ("dep_edges", 0)):
++        items = getattr(cfg, coll)
++        if len(items) <= idx:
++            continue
++        for f in fields(items[idx]):
++            def setter(v, c=coll, i=idx, n=f.name):
++                seq = list(getattr(cfg, c))
++                seq[i] = replace(seq[i], **{n: v})
++                return replace(cfg, **{c: tuple(seq)})
++            out.append((f"{coll}[{idx}].{f.name}", setter))
++    return out
++
++
++class S12ValidatorTotality(unittest.TestCase):
++    BASES = {
++        "any_order_requires": ref_cassette_3(dep_edges=(DepEdge("D1", "D2", DepEdgeKind.REQUIRES),)),
++        "explicit": with_order([("D1", "D2")], dep_edges=(DepEdge("D2", "D3", DepEdgeKind.REQUIRES),)),
++        "shell_bound": valid_fixtures()["shell_bound"],
++    }
++
++    def test_validators_never_raise_on_declared_input(self):
++        calls = 0
++        for base_name, base in self.BASES.items():
++            for path, setter in mutations(base):
++                for value in HOSTILE:
++                    cfg = setter(value)
++                    for validator in VALIDATORS:
++                        try:
++                            result = validator(cfg)
++                            payload = to_json(result)
++                        except Exception as exc:  # pragma: no cover - failure path
++                            self.fail(
++                                f"{validator.__name__} raised {type(exc).__name__} for "
++                                f"{base_name}:{path}={type(value).__qualname__}: {exc}"
++                            )
++                        self.assertIsInstance(result, EvaluationResult)
++                        self.assertNotRegex(payload, r" at 0x[0-9a-f]+")
++                        if validator is validate_cassette_config and result.status is Status.VALID:
++                            config_identity_hash(cfg)  # S-11: VALID implies hashable
++                        calls += 1
++        self.assertGreater(calls, 10000)
++
++    def test_schema_structure_errors_raise_type_error(self):
++        base = ref_cassette_3()
++        bad = [
++            None,
++            "cfg",
++            replace(base, policy=None),
++            replace(base, cassettes=None),
++            replace(base, modules=({},)),
++            replace(base, anchors=[AnchorSpec(id="a0"), "a1"]),
++            replace(base, tethers={"s0"}),
++            replace(base, dep_edges=(("D1", "D2"),)),
++        ]
++        for cfg in bad:
++            for validator in VALIDATORS:
++                with self.subTest(cfg=type(cfg).__name__, validator=validator.__name__):
++                    with self.assertRaises(TypeError) as first:
++                        validator(cfg)
++                    with self.assertRaises(TypeError) as second:
++                        validator(cfg)
++                    self.assertEqual(str(first.exception), str(second.exception))
++
++
++# --------------------------------------------------------------------------
++# N-1 / N-2
++# --------------------------------------------------------------------------
++class N1MalformedIdentifiers(CassetteTestCase):
++    def test_malformed_identifier_rejected(self):
++        base = ref_cassette_3()
++        cases = {
++            "modules[1].id": lambda v: with_module(base, 1, id=v),
++            "anchors[0].id": lambda v: replace(base, anchors=(replace(base.anchors[0], id=v),)),
++            "tethers[1].from_node": lambda v: with_tether(base, 1, from_node=v),
++            "cassettes[0].root_anchor_id": lambda v: with_cassette(base, root_anchor_id=v),
++            "cassettes[0].ordered_modules[1]": lambda v: with_cassette(base, ordered_modules=("D1", v, "D3")),
++            "id": lambda v: replace(base, id=v),
++        }
++        for path, build in cases.items():
++            for value in (5, None, ["x"], "", TopologyMode.GENERAL_DAG):
++                with self.subTest(path=path, value=type(value).__name__):
++                    result = validate_cassette_topology(build(value))
++                    self.assertTopologyRejection(result, Code.IDENTIFIER_MALFORMED)
++                    d = [x for x in result.diagnostics if x.code == Code.IDENTIFIER_MALFORMED]
++                    self.assertIn(path, [x.quantities["path"] for x in d])
++                    self.assertIs(validate_cassette_config(build(value)).status, Status.INFEASIBLE)
++
++    def test_malformed_container_rejected_and_dependents_skipped(self):
++        result = validate_cassette_topology(with_cassette(ref_cassette_3(), ordered_modules="D1D2D3"))
++        self.assertTopologyRejection(result, Code.IDENTIFIER_MALFORMED)
++        skipped = {x.quantities["check"] for x in result.diagnostics if x.code == Code.CHECK_SKIPPED}
++        self.assertTrue({"C11", "C2/C3", "C10a", "C10b"} <= skipped)
++
++    def test_malformed_config_id_gives_safe_object_id(self):
++        result = validate_cassette_config(replace(ref_cassette_3(), id=_Opaque()))
++        self.assertEqual(result.object_id, "<malformed id: _Opaque>")
++
++
++class N2DepEdgeKind(CassetteTestCase):
++    def test_string_dep_edge_kind_rejected(self):
++        cfg = ref_cassette_3(
++            dep_edges=(DepEdge("D1", "D2", "REQUIRES"), DepEdge("D2", "D1", "REQUIRES"))
++        )
++        result = validate_cassette_config(cfg)
++        self.assertIs(result.status, Status.INFEASIBLE)
++        self.assertEqual(result.status_reason, Reason.ORDER)
++        d = [x for x in result.diagnostics if x.code == Code.DEP_EDGE_MALFORMED]
++        self.assertEqual([(x.quantities["edge_index"], x.quantities["field"]) for x in d], [(0, "kind"), (1, "kind")])
++
++    def test_malformed_dep_edge_endpoint_rejected(self):
++        for value in (5, None, "", ["D1"]):
++            with self.subTest(value=type(value).__name__):
++                cfg = ref_cassette_3(dep_edges=(DepEdge(value, "D2", DepEdgeKind.REQUIRES),))
++                result = validate_cassette_order_constraints(cfg)
++                self.assertIs(result.status, Status.INFEASIBLE)
++                d = next(x for x in result.diagnostics if x.code == Code.DEP_EDGE_MALFORMED)
++                self.assertEqual(d.quantities["field"], "from_node")
++
++
++# --------------------------------------------------------------------------
++# C-1: diagnostics JSON-safe and seed-stable
++# --------------------------------------------------------------------------
++_HOSTILE_DIAG_CFG = """
++from dataclasses import replace
++from test_cassette_topology import ref_cassette_3, base_policy, module
++from gotne.cassette_schema import MISSING, UnresolvedUpstreamPolicy, DepEdge, DepEdgeKind
++class Opaque: pass
++cfg = ref_cassette_3(policy=base_policy(junction_model=Opaque(), tau_spacer=float("nan"),
++      unresolved_upstream_policy=UnresolvedUpstreamPolicy.EXCLUDED_SHELL_BOUND))
++cfg = replace(cfg, modules=(module("D1", 1, cassette_id=MISSING, unresolved_occupancy_fraction=Opaque()),) + cfg.modules[1:])
++topo = replace(ref_cassette_3(), modules=(module("D1", 1, cassette_id=MISSING),) + ref_cassette_3().modules[1:])
++cyc = ref_cassette_3(dep_edges=(DepEdge("D1","D2",DepEdgeKind.REQUIRES), DepEdge("D2","D1",DepEdgeKind.REQUIRES)))
++"""
++
++
++class C1DiagnosticsSerializable(unittest.TestCase):
++    def test_diagnostics_json_serializable_and_seed_stable(self):
++        code = _HOSTILE_DIAG_CFG + (
++            "import json\n"
++            "from gotne.cassette_topology import *\n"
++            "out = [validate_cassette_policy_fields(cfg), validate_cassette_topology(topo), "
++            "validate_cassette_config(cyc), validate_cassette_config(ref_cassette_3())]\n"
++            "print(json.dumps([r.as_dict() for r in out], sort_keys=True, allow_nan=False))\n"
++        )
++        outputs = {run_with_seed(code, seed) for seed in (0, 1, 42, 999)}
++        self.assertEqual(len(outputs), 1)
++        payload = outputs.pop()
++        self.assertNotRegex(payload, r" at 0x[0-9a-f]+")
++        self.assertIn('"MISSING"', payload)
++
++
++# --------------------------------------------------------------------------
++# H-5: complete diagnosis
++# --------------------------------------------------------------------------
++class H5CompleteDiagnosis(CassetteTestCase):
++    def test_duplicates_reported_with_invalid_cassette_count(self):
++        cfg = ref_cassette_3()
++        two = replace(cfg, cassettes=cfg.cassettes * 2, modules=cfg.modules + (cfg.modules[0],))
++        result = validate_cassette_topology(two)
++        self.assertCode(result, Code.CASSETTE_COUNT_INVALID)
++        self.assertCode(result, Code.DUPLICATE_IDENTIFIER)
++        zero = replace(cfg, cassettes=(), anchors=cfg.anchors * 2)
++        result = validate_cassette_topology(zero)
++        self.assertCode(result, Code.CASSETTE_COUNT_INVALID)
++        self.assertCode(result, Code.DUPLICATE_IDENTIFIER)
++
++    def test_root_multiplicity_reported_with_invalid_cassette_count(self):
++        cfg = T35IndependentAnchors().build()
++        result = validate_cassette_topology(replace(cfg, cassettes=cfg.cassettes * 2))
++        self.assertCode(result, Code.MULTI_ANCHOR_IN_CASSETTE)
++
++    def test_segment_checks_independent_of_root(self):
++        cfg = ref_cassette_3()
++        cfg = replace(
++            cfg,
++            anchors=cfg.anchors + (AnchorSpec(id="a1"),),
++            tethers=cfg.tethers + (TetherSpec(id="sx", from_node="a1", to_node="D1", cassette_index=9),),
++        )
++        cfg = with_cassette(cfg, ordered_segments=("s0", "s1", "s2", "sx", "s9"))
++        result = validate_cassette_topology(cfg)
++        self.assertCode(result, Code.MULTI_ANCHOR_IN_CASSETTE)
++        messages = {x.message for x in result.diagnostics if x.code == Code.SEGMENT_SEQUENCE_INVALID}
++        self.assertIn("ordered_segments must contain exactly N entries", messages)
++        self.assertIn("ordered_segments references an undeclared tether", messages)
++        self.assertIn("tether cassette_index does not match its position in ordered_segments", messages)
++
++    def test_mode_gate_marks_skipped_checks(self):
++        cfg = replace(ref_cassette_3(), policy=base_policy(topology_mode=None, junction_model=MISSING))
++        composed = validate_cassette_config(cfg)
++        skipped = [x.quantities["check"] for x in composed.diagnostics if x.code == Code.CHECK_SKIPPED]
++        self.assertEqual(
++            skipped,
++            ["P0 policy fields", "P1 topology", "P2 order constraints", "P3 identity admissibility"],
++        )
++        p0 = validate_cassette_policy_fields(cfg)
++        self.assertEqual(
++            [x.quantities["check"] for x in p0.diagnostics if x.code == Code.CHECK_SKIPPED],
++            ["P0 policy fields"],
++        )
++
++
++# --------------------------------------------------------------------------
++# Direct coverage for previously uncovered or indirectly covered branches
++# --------------------------------------------------------------------------
++class DirectCoverage(CassetteTestCase):
++    def test_root_anchor_missing(self):
++        cfg = replace(ref_cassette_3(), tethers=ref_cassette_3().tethers[1:])
++        cfg = with_cassette(cfg, ordered_segments=("s1", "s2"))
++        result = validate_cassette_topology(cfg)
++        self.assertTopologyRejection(result, Code.ROOT_ANCHOR_MISSING)
++        skipped = {x.quantities["check"] for x in result.diagnostics if x.code == Code.CHECK_SKIPPED}
++        self.assertTrue({"C4", "C13"} <= skipped)
++
++    def test_root_anchor_mismatch(self):
++        result = validate_cassette_topology(with_cassette(ref_cassette_3(), root_anchor_id="a9"))
++        self.assertTopologyRejection(result, Code.ROOT_ANCHOR_MISMATCH)
++
++    def test_multipath_connectivity_and_parallel_tethers(self):
++        cfg = ref_cassette_3()
++        cfg = replace(cfg, tethers=cfg.tethers + (TetherSpec(id="s1b", from_node="D1", to_node="D2"),))
++        result = validate_cassette_topology(cfg)
++        self.assertTopologyRejection(result, Code.MULTIPATH_CONNECTIVITY)
++        self.assertCode(result, Code.CHILD_COUNT_INVALID)
++        self.assertCode(result, Code.PARENT_COUNT_INVALID)
++        flagged = {x.quantities["module"] for x in result.diagnostics if x.code == Code.MULTIPATH_CONNECTIVITY}
++        self.assertEqual(flagged, {"D2", "D3"})
++
++    def test_orphan_module_variants(self):
++        cfg = ref_cassette_3()
++        cases = [
++            replace(cfg, modules=cfg.modules + (module("D9", 4),)),
++            with_cassette(cfg, ordered_modules=("D1", "D2", "D3", "D4")),
++            with_module(cfg, 1, cassette_id="cas-other"),
++        ]
++        for case in cases:
++            self.assertTopologyRejection(validate_cassette_topology(case), Code.ORPHAN_MODULE)
++
++    def test_pose_level_out_of_range(self):
++        for level in (-1, 7, True, 2.0, None):
++            with self.subTest(level=level):
++                result = validate_cassette_policy_fields(
++                    replace(ref_cassette_3(), policy=base_policy(pose_marginalization_max_level=level))
++                )
++                self.assertEqual(result.status_reason, Reason.POLICY_RANGE)
++                self.assertCode(result, Code.POSE_LEVEL_OUT_OF_RANGE)
++
++    def test_tau_spacer_non_finite(self):
++        for tau in (float("nan"), float("inf"), True, "0.2"):
++            with self.subTest(tau=str(tau)):
++                result = validate_cassette_policy_fields(replace(ref_cassette_3(), policy=base_policy(tau_spacer=tau)))
++                self.assertCode(result, Code.TAU_SPACER_OUT_OF_RANGE)
++
++    def test_required_policy_field_non_member(self):
++        result = validate_cassette_policy_fields(
++            replace(ref_cassette_3(), policy=base_policy(junction_model="FREE_SWIVEL"))
++        )
++        self.assertIs(result.status, Status.INFEASIBLE)
++        self.assertCode(result, Code.POLICY_FIELD_MISSING)  # deferred S-9 labelling
++
++    def test_occupancy_fraction_declared_null_nan_bool(self):
++        policy = base_policy(unresolved_upstream_policy=UnresolvedUpstreamPolicy.EXCLUDED_SHELL_BOUND)
++        for value, code in ((None, Code.OCCUPANCY_FRACTION_MISSING), (float("nan"), Code.OCCUPANCY_FRACTION_OUT_OF_RANGE), (True, Code.OCCUPANCY_FRACTION_OUT_OF_RANGE)):
++            with self.subTest(value=str(value)):
++                cfg = replace(
++                    ref_cassette_3(policy=policy),
++                    modules=tuple(replace(m, unresolved_occupancy_fraction=value) for m in ref_cassette_3().modules),
++                )
++                self.assertCode(validate_cassette_policy_fields(cfg), code)
++
++    def test_t61_spec_setup_only_d2_missing(self):
++        policy = base_policy(unresolved_upstream_policy=UnresolvedUpstreamPolicy.EXCLUDED_SHELL_BOUND)
++        mods = tuple(replace(m, unresolved_occupancy_fraction=0.5) for m in ref_cassette_3().modules)
++        cfg = replace(ref_cassette_3(policy=policy), modules=mods)
++        cfg = with_module(cfg, 1, unresolved_occupancy_fraction=MISSING)
++        result = validate_cassette_policy_fields(cfg)
++        self.assertEqual(result.status_reason, Reason.POLICY_MISSING)
++        flagged = {x.quantities["module"] for x in result.diagnostics if x.code == Code.OCCUPANCY_FRACTION_MISSING}
++        self.assertEqual(flagged, {"D2"})
++
++    def test_t59_no_topology_diagnostics_emitted(self):
++        cfg = replace(ref_cassette_3(), policy=base_policy(junction_model=JunctionModel.RESTRICTED_CONE))
++        result = validate_cassette_config(cfg)
++        p1_codes = {v for k, v in vars(Code).items() if not k.startswith("_")} & set(
++            cassette_topology.INVARIANT_OF_CODE
++        )
++        self.assertFalse(p1_codes & set(result.codes()))
++        self.assertIn(
++            "P1 topology",
++            {x.quantities["check"] for x in result.diagnostics if x.code == Code.CHECK_SKIPPED},
++        )
++
++    def test_ordered_segment_repeat_rejected(self):
++        result = validate_cassette_topology(with_cassette(ref_cassette_3(), ordered_segments=("s0", "s1", "s1")))
++        self.assertTopologyRejection(result, Code.SEGMENT_SEQUENCE_INVALID)
++
++    def test_explicit_order_unexpected_non_empty(self):
++        result = validate_cassette_policy_fields(with_order([("D1", "D2")], policy=base_policy()))
++        self.assertCode(result, Code.EXPLICIT_ORDER_UNEXPECTED)
++
++    def test_explicit_union_conflict_via_explicit_order_alone(self):
++        result = validate_cassette_order_constraints(with_order([("D1", "D2"), ("D2", "D3"), ("D3", "D1")]))
++        self.assertIs(result.status, Status.INFEASIBLE)
++        self.assertCode(result, Code.ENGAGEMENT_ORDER_CONFLICT)
++
++    def test_every_live_code_has_a_direct_test(self):
++        sources = "".join(p.read_text(encoding="utf-8") for p in TESTS.glob("test_*.py"))
++        missing = [
++            name
++            for name, value in vars(Code).items()
++            if not name.startswith("_") and isinstance(value, str) and f"Code.{name}" not in sources
++        ]
++        self.assertEqual(missing, [])
++
++
++# --------------------------------------------------------------------------
++# Determinism
++# --------------------------------------------------------------------------
++class Determinism(unittest.TestCase):
++    RICH = (
++        "from dataclasses import replace\n"
++        "from test_cassette_topology import ref_cassette_3, base_policy, module\n"
++        "from gotne.cassette_schema import *\n"
++        "c = ref_cassette_3(policy=base_policy(engagement_order_policy=EngagementOrderPolicy.EXPLICIT_PARTIAL_ORDER),"
++        " dep_edges=(DepEdge('D1','D3',DepEdgeKind.REQUIRES),))\n"
++        "c = replace(c, cassettes=(replace(c.cassettes[0], explicit_partial_order=[('D1','D2')]),),"
++        " modules=(module('D1', 1, rho={'b': 1.0, 'a': 2, 'c': None}),) + c.modules[1:])\n"
++    )
++
++    def test_hash_stable_across_seeds_rich_config(self):
++        code = self.RICH + "from gotne.identity import config_identity_hash\nprint(config_identity_hash(c))\n"
++        self.assertEqual(len({run_with_seed(code, s) for s in (0, 1, 42, 999)}), 1)
++
++    def test_result_as_dict_stable_across_seeds(self):
++        code = self.RICH + (
++            "import json\nfrom gotne.cassette_topology import validate_cassette_config\n"
++            "cyc = ref_cassette_3(dep_edges=(DepEdge('D1','D2',DepEdgeKind.REQUIRES), DepEdge('D2','D3',DepEdgeKind.REQUIRES), DepEdge('D3','D1',DepEdgeKind.REQUIRES)))\n"
++            "print(json.dumps([validate_cassette_config(x).as_dict() for x in (c, cyc)], sort_keys=True))\n"
++        )
++        self.assertEqual(len({run_with_seed(code, s) for s in (0, 1, 42, 999)}), 1)
++
++    def test_verdict_invariant_under_declaration_permutation(self):
++        base = ref_cassette_3()
++        configs = [
++            base,
++            T34ThreeArmStar().build(),
++            T35IndependentAnchors().build(),
++            replace(
++                base,
++                modules=base.modules + (base.modules[1],),
++                anchors=base.anchors + (AnchorSpec(id="D3"),),
++                tethers=base.tethers + (TetherSpec(id="s1", from_node="D1", to_node="D3"), TetherSpec(id="q", from_node="x", to_node="y")),
++            ),
++            ref_cassette_3(
++                policy=STRICT,
++                dep_edges=(DepEdge("D3", "D1", DepEdgeKind.REQUIRES), DepEdge("D1", "D2", DepEdgeKind.REQUIRES), DepEdge("D2", "DX", DepEdgeKind.REQUIRES)),
++            ),
++        ]
++        rng = random.Random(20260923)
++
++        def signature(cfg):
++            r = validate_cassette_config(cfg)
++            return r.status, r.status_reason, frozenset(r.error_codes())
++
++        for cfg in configs:
++            expected = signature(cfg)
++            for _ in range(150):
++                shuffled = replace(
++                    cfg,
++                    modules=tuple(rng.sample(list(cfg.modules), len(cfg.modules))),
++                    anchors=tuple(rng.sample(list(cfg.anchors), len(cfg.anchors))),
++                    tethers=tuple(rng.sample(list(cfg.tethers), len(cfg.tethers))),
++                    dep_edges=tuple(rng.sample(list(cfg.dep_edges), len(cfg.dep_edges))),
++                )
++                self.assertEqual(signature(shuffled), expected, cfg.id)
++
++
++if __name__ == "__main__":
++    unittest.main(verbosity=2)
+diff --git a/tests/test_phase1c_remediation.py b/tests/test_phase1c_remediation.py
+index ce23b32..c4c77b4 100644
+--- a/tests/test_phase1c_remediation.py
++++ b/tests/test_phase1c_remediation.py
+@@ -165,7 +165,9 @@ class B3TopologyModeFailClosed(CassetteTestCase):
+         )
+         for stage in ALL_STAGES:
+             with self.subTest(stage=stage.__name__):
+-                self.assertEqual(stage(cfg).status_reason, Reason.NOT_APPLICABLE)
++                result = stage(cfg)
++                self.assertEqual(result.status_reason, Reason.NOT_APPLICABLE)
++                self.assertIs(result.status, Status.NOT_EVALUATED)  # v0.3.1 §3.1.1
+ 
+ 
+ # --------------------------------------------------------------------------

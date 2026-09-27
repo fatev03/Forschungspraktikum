@@ -1,0 +1,12 @@
+{
+  "synthetic_only": true,
+  "states": [
+    "pass",
+    "warn",
+    "fail",
+    "missing",
+    "not_run",
+    "error",
+    "unsupported"
+  ]
+}

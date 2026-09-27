@@ -1,0 +1,514 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "value_flow_demo_summary",
+  "description": "A stable presentation of one completed value-flow transfer. Every field is copied verbatim from a value_flow_envelope/1 and its value_flow_receipt/1; the document contains no filesystem path, timestamp, environment value or derived numeric result.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "summary_id",
+    "sources",
+    "status",
+    "identity_chain",
+    "quantities",
+    "integrity",
+    "rules"
+  ],
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "value_flow_demo_summary/1"
+      ]
+    },
+    "summary_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "sources": {
+      "type": "object",
+      "required": [
+        "envelope_contract",
+        "receipt_contract",
+        "receipt_id"
+      ],
+      "properties": {
+        "envelope_contract": {
+          "enum": [
+            null,
+            "value_flow_envelope/1"
+          ]
+        },
+        "receipt_contract": {
+          "enum": [
+            "value_flow_receipt/1"
+          ]
+        },
+        "receipt_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "status": {
+      "type": "object",
+      "required": [
+        "outcome",
+        "reason",
+        "detail"
+      ],
+      "properties": {
+        "outcome": {
+          "enum": [
+            "ACCEPTED",
+            "UNAVAILABLE",
+            "REJECTED"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "detail": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "identity_chain": {
+      "type": "object",
+      "required": [
+        "producer_result_id",
+        "envelope_id",
+        "consumer_id",
+        "export_id",
+        "f01_reference_result_ids",
+        "profile_id",
+        "profile_version",
+        "configuration_hash"
+      ],
+      "properties": {
+        "producer_result_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "envelope_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "consumer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "export_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "f01_reference_result_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "profile_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "profile_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "configuration_hash": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "quantities": {
+      "type": "object",
+      "required": [
+        "ceff_m",
+        "arm_reach_nm",
+        "referenced_distance_nm"
+      ],
+      "properties": {
+        "ceff_m": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "quantity_id",
+            "quantity_definition_id",
+            "context",
+            "category",
+            "unit",
+            "scale",
+            "value"
+          ],
+          "properties": {
+            "quantity_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "quantity_definition_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "context": {
+              "type": "string",
+              "minLength": 1
+            },
+            "category": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unit": {
+              "type": "string",
+              "minLength": 1
+            },
+            "scale": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "value": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        },
+        "arm_reach_nm": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "quantity_id",
+            "quantity_definition_id",
+            "context",
+            "category",
+            "unit",
+            "scale",
+            "value"
+          ],
+          "properties": {
+            "quantity_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "quantity_definition_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "context": {
+              "type": "string",
+              "minLength": 1
+            },
+            "category": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unit": {
+              "type": "string",
+              "minLength": 1
+            },
+            "scale": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "value": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        },
+        "referenced_distance_nm": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "reference_id",
+              "kind",
+              "result_id",
+              "quantity_definition_id",
+              "unit",
+              "value"
+            ],
+            "properties": {
+              "reference_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kind": {
+                "type": "string",
+                "minLength": 1
+              },
+              "result_id": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "quantity_definition_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "unit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "integrity": {
+      "type": "object",
+      "required": [
+        "stage_checks",
+        "identity_checks",
+        "expected",
+        "observed"
+      ],
+      "properties": {
+        "stage_checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "stage",
+              "result"
+            ],
+            "properties": {
+              "stage": {
+                "type": "string",
+                "minLength": 1
+              },
+              "result": {
+                "enum": [
+                  "PASSED",
+                  "FAILED",
+                  "NOT_REACHED"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "identity_checks": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "expected",
+              "observed",
+              "result"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "expected": {},
+              "observed": {},
+              "result": {
+                "enum": [
+                  "PASSED",
+                  "FAILED"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "expected": {
+          "type": "object",
+          "required": [
+            "producer_result_id",
+            "configuration",
+            "quantities"
+          ],
+          "properties": {
+            "producer_result_id": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "configuration": {
+              "type": "object",
+              "required": [
+                "profile_id",
+                "profile_version"
+              ],
+              "properties": {
+                "profile_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "profile_version": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "quantities": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "required": [
+                  "quantity_id",
+                  "quantity_definition_id",
+                  "context",
+                  "category",
+                  "unit",
+                  "scale"
+                ],
+                "properties": {
+                  "quantity_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "quantity_definition_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "context": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "category": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "unit": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "scale": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "minLength": 1
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "observed": {
+          "type": "object",
+          "required": [
+            "result_id",
+            "method_id",
+            "method_version",
+            "pipeline_run_id",
+            "execution_id",
+            "profile_id",
+            "profile_version",
+            "status"
+          ],
+          "properties": {
+            "result_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "method_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "method_version": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "pipeline_run_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "execution_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "profile_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "profile_version": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "status": {
+              "enum": [
+                null,
+                "COMPUTED",
+                "UNAVAILABLE",
+                "REJECTED"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

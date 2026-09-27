@@ -1,0 +1,1479 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "f01_coordinate_distance",
+  "description": "Canonical result of amendment F01-coordinate-admission-v1: nm-only coordinate admission and the F01 point distance. Every later check of a failed admission is recorded as NOT_REACHED; no check is omitted.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "result_id",
+    "input_contract_id",
+    "canonicalization_version",
+    "formulation",
+    "activation",
+    "request",
+    "observation",
+    "payload",
+    "payload_sha256",
+    "output_metric",
+    "checks",
+    "status",
+    "diagnostic",
+    "rules"
+  ],
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "f01_coordinate_distance/1"
+      ]
+    },
+    "result_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "input_contract_id": {
+      "enum": [
+        "F01-coordinate-admission-v1"
+      ]
+    },
+    "canonicalization_version": {
+      "enum": [
+        "coordinate-json-v1"
+      ]
+    },
+    "formulation": {
+      "type": "object",
+      "required": [
+        "formulation_id",
+        "formulation_version",
+        "equation"
+      ],
+      "properties": {
+        "formulation_id": {
+          "enum": [
+            "deterministic_geometry_v1"
+          ]
+        },
+        "formulation_version": {
+          "enum": [
+            "1"
+          ]
+        },
+        "equation": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "activation": {
+      "type": "object",
+      "required": [
+        "opt_in",
+        "lane"
+      ],
+      "properties": {
+        "opt_in": {
+          "type": "boolean"
+        },
+        "lane": {
+          "enum": [
+            "experimental"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "request": {
+      "type": "object",
+      "required": [
+        "activation",
+        "artifact",
+        "coordinate_declaration",
+        "endpoints",
+        "locator_profile",
+        "source_admission",
+        "output_declaration",
+        "producer_configuration",
+        "prior_declaration_binding"
+      ],
+      "properties": {
+        "activation": {
+          "type": "object",
+          "required": [
+            "opt_in",
+            "lane"
+          ],
+          "properties": {
+            "opt_in": {
+              "type": "boolean"
+            },
+            "lane": {
+              "enum": [
+                "experimental"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "artifact": {
+          "type": "object",
+          "required": [
+            "artifact_id",
+            "expected_sha256",
+            "layout",
+            "selected_model_id"
+          ],
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "expected_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "layout": {
+              "enum": [
+                "structure_v1"
+              ]
+            },
+            "selected_model_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "coordinate_declaration": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": true
+        },
+        "endpoints": {
+          "type": "object",
+          "required": [
+            "x",
+            "y"
+          ],
+          "properties": {
+            "x": {
+              "type": "object",
+              "required": [
+                "point_id",
+                "frame_id",
+                "frame_kind",
+                "locator"
+              ],
+              "properties": {
+                "point_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "frame_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "frame_kind": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "locator": {
+                  "type": "object",
+                  "required": [
+                    "model_id",
+                    "chain_id",
+                    "segment",
+                    "group",
+                    "residue_id",
+                    "insertion_code",
+                    "residue_name",
+                    "atom_name",
+                    "altloc"
+                  ],
+                  "properties": {
+                    "model_id": {
+                      "type": "string"
+                    },
+                    "chain_id": {
+                      "type": "string"
+                    },
+                    "segment": {
+                      "type": "integer"
+                    },
+                    "group": {
+                      "type": "string"
+                    },
+                    "residue_id": {
+                      "type": "integer"
+                    },
+                    "insertion_code": {
+                      "type": "string"
+                    },
+                    "residue_name": {
+                      "type": "string"
+                    },
+                    "atom_name": {
+                      "type": "string"
+                    },
+                    "altloc": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            },
+            "y": {
+              "type": "object",
+              "required": [
+                "point_id",
+                "frame_id",
+                "frame_kind",
+                "locator"
+              ],
+              "properties": {
+                "point_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "frame_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "frame_kind": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "locator": {
+                  "type": "object",
+                  "required": [
+                    "model_id",
+                    "chain_id",
+                    "segment",
+                    "group",
+                    "residue_id",
+                    "insertion_code",
+                    "residue_name",
+                    "atom_name",
+                    "altloc"
+                  ],
+                  "properties": {
+                    "model_id": {
+                      "type": "string"
+                    },
+                    "chain_id": {
+                      "type": "string"
+                    },
+                    "segment": {
+                      "type": "integer"
+                    },
+                    "group": {
+                      "type": "string"
+                    },
+                    "residue_id": {
+                      "type": "integer"
+                    },
+                    "insertion_code": {
+                      "type": "string"
+                    },
+                    "residue_name": {
+                      "type": "string"
+                    },
+                    "atom_name": {
+                      "type": "string"
+                    },
+                    "altloc": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "locator_profile": {
+          "type": "object",
+          "required": [
+            "profile_id",
+            "profile_version"
+          ],
+          "properties": {
+            "profile_id": {
+              "enum": [
+                "structure_atom_locator"
+              ]
+            },
+            "profile_version": {
+              "enum": [
+                "1"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "source_admission": {
+          "type": "object",
+          "required": [
+            "prior_normalization_pass_count",
+            "prior_conversion_count"
+          ],
+          "properties": {
+            "prior_normalization_pass_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "prior_conversion_count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "output_declaration": {
+          "type": "object",
+          "required": [
+            "context",
+            "category",
+            "scale"
+          ],
+          "properties": {
+            "context": {
+              "type": "string",
+              "minLength": 1
+            },
+            "category": {
+              "type": "string",
+              "minLength": 1
+            },
+            "scale": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "producer_configuration": {
+          "type": "object",
+          "required": [
+            "producer_configuration",
+            "producer_configuration_hash",
+            "producer_configuration_missing_reason"
+          ],
+          "properties": {
+            "producer_configuration": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "producer_configuration_hash": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "producer_configuration_missing_reason": {
+              "enum": [
+                null,
+                "not_declared"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "prior_declaration_binding": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "coordinate_declaration_id",
+            "coordinate_declaration_sha256"
+          ],
+          "properties": {
+            "coordinate_declaration_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "coordinate_declaration_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "observation": {
+      "type": "object",
+      "required": [
+        "observed_artifact_sha256",
+        "observed_model_id",
+        "read_status",
+        "resolution"
+      ],
+      "properties": {
+        "observed_artifact_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "observed_model_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "read_status": {
+          "enum": [
+            "PARSED",
+            "LAYOUT_UNSUPPORTED",
+            "LAYOUT_MALFORMED",
+            "MODEL_NOT_PRESENT",
+            "BYTES_CHANGED_DURING_ADMISSION"
+          ]
+        },
+        "resolution": {
+          "type": "object",
+          "required": [
+            "x",
+            "y"
+          ],
+          "properties": {
+            "x": {
+              "type": "object",
+              "required": [
+                "match_count",
+                "source_coordinates"
+              ],
+              "properties": {
+                "match_count": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "source_coordinates": {
+                  "type": [
+                    "array",
+                    "null"
+                  ],
+                  "items": {
+                    "type": [
+                      "number",
+                      "string"
+                    ],
+                    "pattern": "^(nan|inf|-inf)$"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "y": {
+              "type": "object",
+              "required": [
+                "match_count",
+                "source_coordinates"
+              ],
+              "properties": {
+                "match_count": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "source_coordinates": {
+                  "type": [
+                    "array",
+                    "null"
+                  ],
+                  "items": {
+                    "type": [
+                      "number",
+                      "string"
+                    ],
+                    "pattern": "^(nan|inf|-inf)$"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "payload": {
+      "type": "object",
+      "required": [
+        "formulation_id",
+        "formulation_version",
+        "coordinate_declaration",
+        "coordinate_declaration_sha256",
+        "endpoints",
+        "endpoint_mapping",
+        "endpoint_mapping_sha256",
+        "producer_configuration",
+        "producer_configuration_hash",
+        "producer_configuration_missing_reason",
+        "distance_nm",
+        "unit"
+      ],
+      "properties": {
+        "formulation_id": {
+          "enum": [
+            "deterministic_geometry_v1"
+          ]
+        },
+        "formulation_version": {
+          "enum": [
+            "1"
+          ]
+        },
+        "coordinate_declaration": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": true
+        },
+        "coordinate_declaration_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "endpoints": {
+          "type": "object",
+          "required": [
+            "x",
+            "y"
+          ],
+          "properties": {
+            "x": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "required": [
+                "point_id",
+                "coordinates_nm",
+                "coordinate_unit",
+                "frame_id",
+                "frame_kind",
+                "artifact_id",
+                "artifact_sha256",
+                "selected_model_id",
+                "endpoint_locator",
+                "coordinate_declaration_id",
+                "coordinate_declaration_sha256",
+                "normalization_profile_id",
+                "normalization_profile_version",
+                "normalization_trace",
+                "normalization_trace_sha256"
+              ],
+              "properties": {
+                "point_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "coordinates_nm": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "coordinate_unit": {
+                  "enum": [
+                    "nm"
+                  ]
+                },
+                "frame_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "frame_kind": {
+                  "enum": [
+                    "cartesian_3d"
+                  ]
+                },
+                "artifact_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "artifact_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "selected_model_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "endpoint_locator": {
+                  "type": "object",
+                  "required": [
+                    "model_id",
+                    "chain_id",
+                    "segment",
+                    "group",
+                    "residue_id",
+                    "insertion_code",
+                    "residue_name",
+                    "atom_name",
+                    "altloc"
+                  ],
+                  "properties": {
+                    "model_id": {
+                      "type": "string"
+                    },
+                    "chain_id": {
+                      "type": "string"
+                    },
+                    "segment": {
+                      "type": "integer"
+                    },
+                    "group": {
+                      "type": "string"
+                    },
+                    "residue_id": {
+                      "type": "integer"
+                    },
+                    "insertion_code": {
+                      "type": "string"
+                    },
+                    "residue_name": {
+                      "type": "string"
+                    },
+                    "atom_name": {
+                      "type": "string"
+                    },
+                    "altloc": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "coordinate_declaration_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "coordinate_declaration_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "normalization_profile_id": {
+                  "enum": [
+                    "coordinate-nm-identity"
+                  ]
+                },
+                "normalization_profile_version": {
+                  "enum": [
+                    "1"
+                  ]
+                },
+                "normalization_trace": {
+                  "type": "object",
+                  "required": [
+                    "artifact_id",
+                    "artifact_sha256",
+                    "selected_model_id",
+                    "endpoint_locator",
+                    "coordinate_declaration_id",
+                    "coordinate_declaration_sha256",
+                    "normalization_profile_id",
+                    "normalization_profile_version",
+                    "source_unit",
+                    "target_unit",
+                    "source_coordinates",
+                    "normalized_coordinates",
+                    "operation",
+                    "normalization_pass_count",
+                    "conversion_count",
+                    "conversion_applied",
+                    "factor",
+                    "formula",
+                    "canonicalization_version"
+                  ],
+                  "properties": {
+                    "artifact_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "artifact_sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "selected_model_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "endpoint_locator": {
+                      "type": "object",
+                      "required": [
+                        "model_id",
+                        "chain_id",
+                        "segment",
+                        "group",
+                        "residue_id",
+                        "insertion_code",
+                        "residue_name",
+                        "atom_name",
+                        "altloc"
+                      ],
+                      "properties": {
+                        "model_id": {
+                          "type": "string"
+                        },
+                        "chain_id": {
+                          "type": "string"
+                        },
+                        "segment": {
+                          "type": "integer"
+                        },
+                        "group": {
+                          "type": "string"
+                        },
+                        "residue_id": {
+                          "type": "integer"
+                        },
+                        "insertion_code": {
+                          "type": "string"
+                        },
+                        "residue_name": {
+                          "type": "string"
+                        },
+                        "atom_name": {
+                          "type": "string"
+                        },
+                        "altloc": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "coordinate_declaration_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "coordinate_declaration_sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "normalization_profile_id": {
+                      "enum": [
+                        "coordinate-nm-identity"
+                      ]
+                    },
+                    "normalization_profile_version": {
+                      "enum": [
+                        "1"
+                      ]
+                    },
+                    "source_unit": {
+                      "enum": [
+                        "nm"
+                      ]
+                    },
+                    "target_unit": {
+                      "enum": [
+                        "nm"
+                      ]
+                    },
+                    "source_coordinates": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "normalized_coordinates": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "operation": {
+                      "enum": [
+                        "identity_admission"
+                      ]
+                    },
+                    "normalization_pass_count": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "conversion_count": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "conversion_applied": {
+                      "type": "boolean"
+                    },
+                    "factor": {
+                      "type": "integer"
+                    },
+                    "formula": {
+                      "enum": [
+                        "x_nm = x_source"
+                      ]
+                    },
+                    "canonicalization_version": {
+                      "enum": [
+                        "coordinate-json-v1"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "normalization_trace_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "y": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "required": [
+                "point_id",
+                "coordinates_nm",
+                "coordinate_unit",
+                "frame_id",
+                "frame_kind",
+                "artifact_id",
+                "artifact_sha256",
+                "selected_model_id",
+                "endpoint_locator",
+                "coordinate_declaration_id",
+                "coordinate_declaration_sha256",
+                "normalization_profile_id",
+                "normalization_profile_version",
+                "normalization_trace",
+                "normalization_trace_sha256"
+              ],
+              "properties": {
+                "point_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "coordinates_nm": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "coordinate_unit": {
+                  "enum": [
+                    "nm"
+                  ]
+                },
+                "frame_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "frame_kind": {
+                  "enum": [
+                    "cartesian_3d"
+                  ]
+                },
+                "artifact_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "artifact_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "selected_model_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "endpoint_locator": {
+                  "type": "object",
+                  "required": [
+                    "model_id",
+                    "chain_id",
+                    "segment",
+                    "group",
+                    "residue_id",
+                    "insertion_code",
+                    "residue_name",
+                    "atom_name",
+                    "altloc"
+                  ],
+                  "properties": {
+                    "model_id": {
+                      "type": "string"
+                    },
+                    "chain_id": {
+                      "type": "string"
+                    },
+                    "segment": {
+                      "type": "integer"
+                    },
+                    "group": {
+                      "type": "string"
+                    },
+                    "residue_id": {
+                      "type": "integer"
+                    },
+                    "insertion_code": {
+                      "type": "string"
+                    },
+                    "residue_name": {
+                      "type": "string"
+                    },
+                    "atom_name": {
+                      "type": "string"
+                    },
+                    "altloc": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "coordinate_declaration_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "coordinate_declaration_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "normalization_profile_id": {
+                  "enum": [
+                    "coordinate-nm-identity"
+                  ]
+                },
+                "normalization_profile_version": {
+                  "enum": [
+                    "1"
+                  ]
+                },
+                "normalization_trace": {
+                  "type": "object",
+                  "required": [
+                    "artifact_id",
+                    "artifact_sha256",
+                    "selected_model_id",
+                    "endpoint_locator",
+                    "coordinate_declaration_id",
+                    "coordinate_declaration_sha256",
+                    "normalization_profile_id",
+                    "normalization_profile_version",
+                    "source_unit",
+                    "target_unit",
+                    "source_coordinates",
+                    "normalized_coordinates",
+                    "operation",
+                    "normalization_pass_count",
+                    "conversion_count",
+                    "conversion_applied",
+                    "factor",
+                    "formula",
+                    "canonicalization_version"
+                  ],
+                  "properties": {
+                    "artifact_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "artifact_sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "selected_model_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "endpoint_locator": {
+                      "type": "object",
+                      "required": [
+                        "model_id",
+                        "chain_id",
+                        "segment",
+                        "group",
+                        "residue_id",
+                        "insertion_code",
+                        "residue_name",
+                        "atom_name",
+                        "altloc"
+                      ],
+                      "properties": {
+                        "model_id": {
+                          "type": "string"
+                        },
+                        "chain_id": {
+                          "type": "string"
+                        },
+                        "segment": {
+                          "type": "integer"
+                        },
+                        "group": {
+                          "type": "string"
+                        },
+                        "residue_id": {
+                          "type": "integer"
+                        },
+                        "insertion_code": {
+                          "type": "string"
+                        },
+                        "residue_name": {
+                          "type": "string"
+                        },
+                        "atom_name": {
+                          "type": "string"
+                        },
+                        "altloc": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "coordinate_declaration_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "coordinate_declaration_sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "normalization_profile_id": {
+                      "enum": [
+                        "coordinate-nm-identity"
+                      ]
+                    },
+                    "normalization_profile_version": {
+                      "enum": [
+                        "1"
+                      ]
+                    },
+                    "source_unit": {
+                      "enum": [
+                        "nm"
+                      ]
+                    },
+                    "target_unit": {
+                      "enum": [
+                        "nm"
+                      ]
+                    },
+                    "source_coordinates": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "normalized_coordinates": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "operation": {
+                      "enum": [
+                        "identity_admission"
+                      ]
+                    },
+                    "normalization_pass_count": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "conversion_count": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "conversion_applied": {
+                      "type": "boolean"
+                    },
+                    "factor": {
+                      "type": "integer"
+                    },
+                    "formula": {
+                      "enum": [
+                        "x_nm = x_source"
+                      ]
+                    },
+                    "canonicalization_version": {
+                      "enum": [
+                        "coordinate-json-v1"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "normalization_trace_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "endpoint_mapping": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "order",
+            "x",
+            "y"
+          ],
+          "properties": {
+            "order": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "x": {
+              "type": "object",
+              "required": [
+                "point_id",
+                "artifact_id",
+                "artifact_sha256",
+                "selected_model_id",
+                "endpoint_locator",
+                "coordinate_declaration_sha256"
+              ],
+              "properties": {
+                "point_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "artifact_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "artifact_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "selected_model_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "endpoint_locator": {
+                  "type": "object",
+                  "required": [
+                    "model_id",
+                    "chain_id",
+                    "segment",
+                    "group",
+                    "residue_id",
+                    "insertion_code",
+                    "residue_name",
+                    "atom_name",
+                    "altloc"
+                  ],
+                  "properties": {
+                    "model_id": {
+                      "type": "string"
+                    },
+                    "chain_id": {
+                      "type": "string"
+                    },
+                    "segment": {
+                      "type": "integer"
+                    },
+                    "group": {
+                      "type": "string"
+                    },
+                    "residue_id": {
+                      "type": "integer"
+                    },
+                    "insertion_code": {
+                      "type": "string"
+                    },
+                    "residue_name": {
+                      "type": "string"
+                    },
+                    "atom_name": {
+                      "type": "string"
+                    },
+                    "altloc": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "coordinate_declaration_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "y": {
+              "type": "object",
+              "required": [
+                "point_id",
+                "artifact_id",
+                "artifact_sha256",
+                "selected_model_id",
+                "endpoint_locator",
+                "coordinate_declaration_sha256"
+              ],
+              "properties": {
+                "point_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "artifact_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "artifact_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "selected_model_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "endpoint_locator": {
+                  "type": "object",
+                  "required": [
+                    "model_id",
+                    "chain_id",
+                    "segment",
+                    "group",
+                    "residue_id",
+                    "insertion_code",
+                    "residue_name",
+                    "atom_name",
+                    "altloc"
+                  ],
+                  "properties": {
+                    "model_id": {
+                      "type": "string"
+                    },
+                    "chain_id": {
+                      "type": "string"
+                    },
+                    "segment": {
+                      "type": "integer"
+                    },
+                    "group": {
+                      "type": "string"
+                    },
+                    "residue_id": {
+                      "type": "integer"
+                    },
+                    "insertion_code": {
+                      "type": "string"
+                    },
+                    "residue_name": {
+                      "type": "string"
+                    },
+                    "atom_name": {
+                      "type": "string"
+                    },
+                    "altloc": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "coordinate_declaration_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "endpoint_mapping_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "producer_configuration": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "producer_configuration_hash": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "producer_configuration_missing_reason": {
+          "enum": [
+            null,
+            "not_declared"
+          ]
+        },
+        "distance_nm": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "unit": {
+          "enum": [
+            "nm"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "payload_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "output_metric": {
+      "type": "object",
+      "required": [
+        "quantity_id",
+        "quantity_definition_id",
+        "context",
+        "category",
+        "scale",
+        "unit",
+        "value"
+      ],
+      "properties": {
+        "quantity_id": {
+          "enum": [
+            "distance_nm"
+          ]
+        },
+        "quantity_definition_id": {
+          "enum": [
+            "distance_nm"
+          ]
+        },
+        "context": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scale": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "unit": {
+          "enum": [
+            "nm"
+          ]
+        },
+        "value": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "code",
+          "result"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "enum": [
+              "PASSED",
+              "FAILED",
+              "NOT_REACHED"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "status": {
+      "enum": [
+        "COMPUTED",
+        "REJECTED"
+      ]
+    },
+    "diagnostic": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "code",
+        "endpoint",
+        "field",
+        "detail"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "endpoint": {
+          "enum": [
+            null,
+            "x",
+            "y"
+          ]
+        },
+        "field": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

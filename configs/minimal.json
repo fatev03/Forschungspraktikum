@@ -1,0 +1,7 @@
+{
+  "model_id": null,
+  "seed": null,
+  "supplied_models": [],
+  "integrity": {"altloc": "A", "max_peptide_cn_distance": 2.0, "expected_residues": []},
+  "clash": {"altloc": "A", "cutoff_angstrom": 2.0, "scope": "interchain", "fail_at_count": null, "max_reported_pairs": 100}
+}

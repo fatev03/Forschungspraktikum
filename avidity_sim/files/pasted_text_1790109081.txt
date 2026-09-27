@@ -1,0 +1,627 @@
+Ordered three-domain tethered assembly: analytical model specification, revision 2
+Revision 2 of the standalone model specification. Structure and mathematical intent are unchanged from revision 1. This revision tightens definitions, fixes the variable taxonomy, makes clamping and status logic exhaustive, and converts the test section into an auditable contract.
+
+Notation for provenance. Every quantity carries exactly one tag:
+
+[IN] input, supplied by the caller, never modified by the implementation
+[DER] derived, computed from [IN] and [CFG] by a formula given here, never supplied by the caller
+[CFG] configurable, supplied through model_config, with a default fixed here
+[CONST] fixed constant, an implementation must use the exact value given
+Notation for rigor. Every formula carries exactly one tag:
+
+(EXACT) exact within the stated model, no approximation beyond the model's own assumptions
+(APPROX) an approximation, with the direction of error stated where known
+No quantity and no formula may appear untagged.
+
+1. Problem definition
+1.1 System
+A rigid plane bounds the accessible half-space z >= z_min. A linear assembly is grafted at anchor point A:
+
+A --- D1 --- linker12 --- D2 --- linker23 --- D3
+D1 is assumed engaged at target site T1. Every probability returned by this model is conditional on that engagement. The model does not evaluate D1 engagement itself.
+
+Domains are hard spheres. Linkers are polymer segments. The anchor tether is a steric object only.
+
+1.2 Coordinate conventions, fixed
+Right-handed Cartesian laboratory frame. All positions and vectors in this frame unless explicitly marked as body-frame.
+Length unit nm everywhere, without exception. No implementation may accept or emit Angstrom.
+Angle unit radian everywhere.
+Probability densities over 3-space in nm^-3.
+Concentrations carried internally in nm^-3, converted to mM once, at output only.
+The surface normal is +z. z_min is the lowest permitted z for any domain surface.
+1.3 Quantities
+Per domain Di, i in {1,2,3}:
+
+symbol	tag	meaning	unit
+a_i	[IN]	hard-sphere radius	nm
+attach_in_i	[IN]	incoming-linker attachment point, body frame	nm
+attach_out_i	[IN]	outgoing-linker attachment point, body frame	nm
+s_i	[DER]	attach_out_i - attach_in_i, body frame traverse	nm
+s_i = 0 is legal and collapses Di to a point relay.
+
+Per linker j in {12, 23}:
+
+symbol	tag	meaning	unit
+n_j	[IN]	monomer unit count, integer >= 1	1
+l_j	[IN]	contour rise per unit	nm
+lp_j	[IN]	persistence length	nm
+w_j	[IN]	steric cross-section radius	nm
+L_j	[DER]	n_j * l_j	nm
+b_j	[DER]	2 * lp_j	nm
+N_j	[DER]	L_j / b_j	1
+t_j	[DER]	L_j / lp_j	1
+R2_j	[DER]	mean squared end-to-end, model-dependent	nm^2
+Per target Tk, k in {1,2,3}:
+
+symbol	tag	meaning	unit
+t_k	[IN]	site position	nm
+Rc_k	[IN]	capture radius, > 0	nm
+n_k	[IN] optional	approach normal, unit	1
+delta_k	[IN] optional	interface offset, default 0	nm
+aT_k	[IN] optional	target body exclusion radius, default 0	nm
+theta_k	[IN] optional	orientation tolerance half-angle	rad
+p_k	[IN] or [DER]	docking position of attach_in_k	nm
+Docking position rule, fixed. If dock_position is supplied it is used verbatim and n_k, delta_k are ignored for that target. If it is absent, p_k = t_k + (a_k + delta_k) * normalize(n_k) (APPROX). If it is absent and n_k is also absent, this is invalid_input. No other fallback is permitted.
+
+1.4 Derived geometry [DER]
+e_1  = p_1 + R(pose_1) * s_1              start of linker12          [nm]
+d_12 = || p_2 - e_1 ||                    required span of linker12  [nm]
+e_2  = p_2 + R(pose_2) * s_2              start of linker23          [nm]
+d_23 = || p_3 - e_2 ||                    required span of linker23  [nm]
+R(pose_i) is the rotation carrying the body frame of Di into the laboratory frame. Fixed convention: if a pose is not supplied, R = I and s_i is interpreted as already expressed in the laboratory frame. Implementations must not invent an orientation from n_k.
+
+1.5 Clearance constraints [DER], all (EXACT)
+Evaluated on docking positions only, before any probability.
+
+C1  || p_i - p_j || >= a_i + a_j + eps_dom          for i < j in {1,2,3}
+C2  p_k.z - a_k >= z_min                            for k in {1,2,3}
+C3  d_j <= L_j - contour_tolerance                  for j in {12,23}
+C4  || p_i - t_k || >= a_i + aT_k + eps_tgt         for all i != k
+C1, C2, C4 failing gives infeasible. C3 failing gives unreachable. These are disjoint statuses and must not be merged.
+
+2. Modeling assumptions
+2.1 Layer separation, mandatory
+layer	contents	output type
+deterministic	docking positions, d_12, d_23, C1 to C4	boolean, or exact 0
+probabilistic	chain densities, reachability, Ceff	real in [0,1], or concentration
+The deterministic layer runs first and can veto. The probabilistic layer can never repair a deterministic veto, and the deterministic layer can never emit a soft score. An implementation that evaluates a chain density before C1 to C4 have passed is non-conforming.
+
+2.2 Chain models
+chain_model [CFG], values "ideal" or "wlc", default "wlc".
+
+(a) Ideal chain. (EXACT within the Gaussian model)
+
+R2_j   = 2 * lp_j * L_j                                              [nm^2]
+G_j(r) = (3 / (2*pi*R2_j))^(3/2) * exp(-3*r^2 / (2*R2_j))            [nm^-3]
+Must preserve numerically: normalization 4*pi * Int_0^inf r^2 G_j(r) dr = 1 analytically, so no numerical normalization constant is computed for this branch. The closed form is authoritative; any quadrature is a check, not a source.
+
+Validity: t_j >= 20 for good accuracy, d_j / L_j <= 0.6. Outside that, warning only. The Gaussian assigns nonzero density beyond L_j, which is why C3 is a hard gate and not a soft penalty.
+
+(b) Worm-like chain, Thirumalai-Ha. (APPROX, a few percent for 0.5 <= t <= 20)
+
+With x = r / L_j:
+
+R2_j = 2*lp_j*L_j - 2*lp_j^2 * (1 - exp(-t_j))                       [nm^2]
+
+G_j(r) = (A_j / L_j^3) * (1-x^2)^(-9/2) * exp(-3*t_j/(4*(1-x^2)))    for x < 1
+G_j(r) = 0                                                            for x >= 1
+A_j [DER] is fixed by numerical normalization over [0, L_j] and must be cached per linker. Recomputing it inside the reachability integral is non-conforming on performance grounds and invites inconsistency between the G(d) used for Ceff and the G(r) used inside P_reach.
+
+Must preserve numerically: the hard support G_j(r) = 0 for r >= L_j exactly, and normalization residual below 1e-3.
+
+2.3 Assumptions, stated
+Linkers are ideal, no self-avoidance. (APPROX) Biases Ceff upward at short spans.
+Domains are hard spheres. (APPROX) Anisotropy absorbed into a_i.
+Attachment points rigid in the body frame. (APPROX) Terminal flexibility should be folded into L_j.
+The surface is flat, rigid, non-adsorbing apart from the hard-wall term. (APPROX)
+Orientation decoupled from linker statistics, entering only through omega_k. (APPROX)
+End-to-end distribution isotropic. (EXACT for both chain models as specified.) This is what permits the one-dimensional capture integral of section 3.2.
+No energetics. The output is geometric availability, not affinity. (EXACT statement of scope.)
+2.4 Steric treatment
+Obstacle shadow. (APPROX, error direction not guaranteed)
+
+f_m = 0.5 * (1 - sqrt(max(0, 1 - (rho_m/D_m)^2)))     D_m = ||c_m - e||,  D_m > rho_m
+S   = clamp(1 - sum_m f_m, S_MIN, 1)
+Fixed decision: the aggregate is a sum of shadow fractions, not a product of transmissions. Overlapping obstacles are double-counted. An implementer may not substitute prod_m (1 - f_m); that changes the model.
+
+If D_m <= rho_m the start point is inside an obstacle: return S = S_MIN immediately.
+
+Image wall, ideal chain only. (EXACT for a Gaussian chain with a reflecting-to-absorbing plane)
+
+G^wall(r_end | r_0) = G(r_end - r_0) - G(r_end - r_0*)
+r_0* = (x_0, y_0, 2*z_min - z_0)
+Enabled by use_image_wall [CFG], default true, silently ignored when chain_model = "wlc" and a warning emitted.
+
+Wall shadow, WLC only. (APPROX, weakest element of the specification)
+
+With h = e.z - z_min and the evaluated span d:
+
+f_wall = clamp(0.5 * (1 - h/d), 0, 0.5)          for d > 0
+f_wall = 0                                        for d <= EPS_D
+Enters S as one more term in the sum.
+
+2.5 Orientation penalty
+omega_k [DER], in [0,1]:
+
+omega_k = (1 - cos(theta_k)) / 2      if theta_k supplied      (APPROX)
+omega_k = 1                            otherwise                (EXACT upper bound)
+When omega_k = 1 the result is an upper bound on accessibility, and that must be stated in diagnostics.warnings.
+
+3. Mathematical formulation
+3.1 Reachability (EXACT given G and the isotropy assumption)
+Fraction of a shell of radius r centered at e lying inside the capture ball of radius Rc at distance d:
+
+phi(r; d, Rc) = (Rc^2 - (r-d)^2) / (4*d*r)
+Reachability:
+
+P_reach_k = S_k * omega_k * I(G_j, d_k, Rc_k, L_j)
+
+I(G, d, Rc, L) =
+  if d <= EPS_D:
+      4*pi * Int_0^{min(Rc, L)} r^2 G(r) dr
+  else:
+      inner = 4*pi * Int_0^{max(0, Rc-d)} r^2 G(r) dr
+      shell = Int_{r_lo}^{r_hi} 4*pi*r^2*G(r)*clamp(phi(r;d,Rc), 0, 1) dr
+              r_lo = max(0, d-Rc, Rc-d) ; r_hi = min(d+Rc, L)
+      inner + shell
+Must preserve numerically: I in [0,1] without relying on the final clamp to get there; integrate the product directly rather than differencing cumulative integrals; the upper limit L applies to the WLC branch and is +inf in effect for the ideal branch.
+
+Monotonicity that must hold if correct
+
+I non-decreasing in Rc (EXACT)
+I non-increasing in d for d > sqrt(R2) (EXACT for the ideal chain; APPROX for the WLC near x -> 1)
+P_reach non-increasing in every obstacle radius (EXACT given the shadow model)
+P_reach non-increasing in theta_k shrinking, non-decreasing in theta_k growing (EXACT)
+Limits that must hold if correct
+
+Rc -> 0: I / ((4/3)*pi*Rc^3) -> G(d)
+Rc -> inf: I -> 1 (ideal chain) or I -> 1 (WLC, once Rc >= d + L)
+d -> L^- with WLC: I -> 0
+S -> 0 or omega -> 0: P_reach -> 0
+3.2 Joint accessibility
+P_joint       = clamp(P_reach_2 * P_reach_3_given_2 * chi, 0, 1)        (APPROX)
+P_joint_lower = max(0, P_reach_2 + P_reach_3_given_2 - 1)               (EXACT, Frechet)
+P_reach_3_given_2 is computed from e_2 = p_2 + s_2, which is fully determined once D2 is engaged. For an ideal chain with no excluded volume the conditional factorization is exact by the Markov property of the chain. The approximation enters through: inter-linker excluded volume, correlated obstacle shadows (making the product an underestimate), and strain in D2 under simultaneous engagement.
+
+chi [CFG], default 1.0, range [0,1], echoed in output as chi_used.
+
+Must preserve numerically and non-negotiably:
+
+P_joint <= min(P_reach_2, P_reach_3_given_2) + 1e-12
+P_joint >= P_joint_lower - 1e-12
+joint_is_approximation == true         in every successful return, unconditionally
+3.3 Effective local concentration
+NM3_TO_MM = 1660.5390671                [CONST]   1 nm^-3 expressed in mM
+
+rho_k        = S_k * omega_k * G_j(d_k)                      [nm^-3]   (APPROX via S, omega)
+ceff_k_mM    = rho_k * NM3_TO_MM                             [mM]
+ceff_k_avg_mM = (P_reach_k / max((4/3)*pi*Rc_k^3, EPS_VOL)) * NM3_TO_MM   [mM]
+ceff_k is the peak density at the docking point. ceff_k_avg is the capture-ball average. Both are reported; they converge as Rc -> 0.
+
+Must preserve numerically: NM3_TO_MM applied exactly once, at output. Internal arithmetic stays in nm^-3. ceff and P_reach must use the identical cached G_j, so that the Rc -> 0 consistency test can pass.
+
+Limits that must hold if correct (ideal chain, S = omega = 1)
+
+ceff_k(d=0) proportional to R2^(-3/2), hence to L^(-3/2): lengthening a linker always lowers peak concentration
+ceff_k(d) Gaussian decay in d
+the crossover where lengthening helps sits near d ~ sqrt(R2)
+3.4 Clamping policy, exhaustive
+Clamping is permitted at exactly four places and forbidden everywhere else:
+
+#	expression	range	reason
+1	phi(r; d, Rc)	[0,1]	geometric fraction
+2	S_k	[S_MIN, 1]	survival floor
+3	omega_k	[0,1]	penalty definition
+4	P_reach_k, P_joint	[0,1]	final probability guard
+Forbidden: clamping G(r), rho_k, ceff_*, d_j, L_j, R2_j, or any input. If a value outside range appears at a forbidden site, that is a bug and must surface as a warning in diagnostics, not be silently corrected. Clamp #4 firing by more than 1e-9 must itself raise a warning, because a correct implementation should already be in range.
+
+3.5 Evaluation strategy, fixed
+expression	strategy
+WLC G(r)	log-space: logG = log A - 3 log L - 4.5*log1p(-x^2) - 3t/(4(1-x^2)), exponentiate once
+WLC A_j	cached per linker at construction
+WLC radial grid	cached, Gauss-Legendre, >= quadrature_points nodes on [0, L]
+ideal G(r)	direct, closed form, no caching needed
+R2_j, L_j, b_j, N_j, t_j	direct, computed once
+phi	direct
+shadow factors	direct
+capture integral	quadrature on the cached grid, restricted to [r_lo, r_hi]
+4. API contract
+4.1 Required input fields
+No default exists for any of these. Absence is invalid_input.
+
+system_spec.anchor.position                      vec3  [nm]
+system_spec.domains[0..2].id                     string
+system_spec.domains[0..2].radius                 float [nm]  > 0
+system_spec.linkers[0..1].n_units                int         >= 1
+system_spec.linkers[0..1].rise_per_unit          float [nm]  > 0
+system_spec.linkers[0..1].persistence_length     float [nm]  > 0
+target_geometry.targets[0..2].id                 string
+target_geometry.targets[0..2].position           vec3  [nm]
+target_geometry.targets[0..2].capture_radius     float [nm]  > 0
+Plus, per target, exactly one of: dock_position, or approach_normal. Both absent is invalid_input. Both present is accepted with dock_position winning and a warning.
+
+4.2 Optional input fields with defaults
+Defaults are fixed here and must be echoed in diagnostics.effective_config. Hidden defaults are forbidden.
+
+system_spec.anchor.stub_radius                   0.0    [nm]
+system_spec.domains[*].attach_in                 (0,0,0)[nm]
+system_spec.domains[*].attach_out                (0,0,0)[nm]
+system_spec.domains[*].pose                      identity
+system_spec.linkers[*].width                     0.5    [nm]
+target_geometry.surface_z_min                    0.0    [nm]
+target_geometry.targets[*].interface_offset      0.0    [nm]
+target_geometry.targets[*].body_radius           0.0    [nm]
+target_geometry.targets[*].orientation_tolerance absent -> omega = 1
+model_config.chain_model                         "wlc"
+model_config.use_image_wall                      true
+model_config.steric_mode                         "shadow"    ("none" | "shadow")
+model_config.chi                                 1.0
+model_config.eps_dom                             0.2    [nm]
+model_config.eps_tgt                             0.2    [nm]
+model_config.contour_tolerance                   0.1    [nm]
+model_config.s_min                               1e-6
+model_config.quadrature_points                   256
+model_config.strict                              true
+4.3 Derived fields, never accepted as input
+s_i, L_j, b_j, N_j, t_j, R2_j, A_j, e_1, e_2, d_12, d_23,
+S_2, S_3, omega_2, omega_3, rho_2, rho_3,
+P_reach_2, P_reach_3_given_2, P_joint, P_joint_lower,
+ceff_2_mM, ceff_3_mM, ceff_2_avg_mM, ceff_3_avg_mM
+Supplying any of these in the input is invalid_input. This rule exists so that no caller can inject a probability and have it echoed as if computed.
+
+4.4 Output schema
+status                     : "ok" | "unreachable" | "infeasible" | "invalid_input"
+feasible                   : bool
+messages                   : [string]
+
+derived.contour_length_12  : float [nm]
+derived.contour_length_23  : float [nm]
+derived.mean_sq_ee_12      : float [nm^2]
+derived.mean_sq_ee_23      : float [nm^2]
+derived.span_12            : float [nm]
+derived.span_23            : float [nm]
+derived.extension_ratio_12 : float [1]
+derived.extension_ratio_23 : float [1]
+
+reachability.p_reach_2             : float [0,1]
+reachability.p_reach_3_given_2     : float [0,1]
+reachability.p_joint               : float [0,1]
+reachability.p_joint_lower_bound   : float [0,1]
+reachability.joint_is_approximation: bool, always true
+reachability.chi_used              : float
+
+concentration.ceff_2_mM     : float [mM]
+concentration.ceff_3_mM     : float [mM]
+concentration.ceff_2_avg_mM : float [mM]
+concentration.ceff_3_avg_mM : float [mM]
+
+steric.survival_2           : float [0,1]
+steric.survival_3           : float [0,1]
+steric.orientation_2        : float [0,1]
+steric.orientation_3        : float [0,1]
+steric.clearance_violations : [string]
+
+diagnostics.chain_model_used        : string
+diagnostics.normalization_error_12  : float
+diagnostics.normalization_error_23  : float
+diagnostics.effective_config        : object, every resolved default
+diagnostics.warnings                : [string]
+diagnostics.units                   : {"length":"nm","concentration":"mM","angle":"rad"}
+4.5 Non-negotiable output fields
+Present in every return, including invalid_input:
+
+status
+feasible
+messages
+reachability.joint_is_approximation      (always true)
+diagnostics.units
+diagnostics.effective_config
+diagnostics.warnings
+Present in every return except invalid_input, with exact 0.0 where vetoed:
+
+derived.*
+reachability.p_reach_2, p_reach_3_given_2, p_joint, p_joint_lower_bound
+concentration.*
+steric.*
+4.6 Must never happen
+any NaN or Inf in any numeric output field, under any input that passes validation
+null in a numeric output field. Vetoed values are exact 0.0 plus a status
+any unit conversion applied more than once, or applied internally rather than at output
+any default applied without appearing in diagnostics.effective_config
+any silent fallback: every substitution, clamp beyond 1e-9, or ignored field emits a warning
+p_joint returned without joint_is_approximation = true
+an exception escaping to the caller. All failure modes are statuses
+a probability above 1 + 1e-12 or below -1e-12 at any point before the final clamp
+a G(r) > 0 evaluated at r >= L on the WLC branch
+the probabilistic layer running after a C1, C2 or C4 violation
+4.7 Status logic, exhaustive and ordered
+Evaluated strictly in this order. First match wins.
+
+order	trigger	status	numeric fields
+1	schema violation, range violation, derived field supplied, missing dock information, non-finite input, chi outside [0,1], theta outside [0,pi], n_units < 1	invalid_input	none beyond section 4.5
+2	strict = true and any V7, V8, V11 condition triggered	invalid_input	none beyond section 4.5
+3	C1, C2 or C4 violated	infeasible	derived.* populated, all probabilities and concentrations exact 0.0
+4	C3 violated	unreachable	derived.* populated, all probabilities and concentrations exact 0.0
+5	otherwise	ok	all fields populated
+Warning-only conditions, which never change status away from ok when strict = false:
+
+V7 t_j < 0.1, clamped to the numerical floor
+V8 chain_model = "ideal" and t_j < 20
+V11 Rc_k > L_j, clamped to L_j
+V12 normalization residual above 1e-3
+use_image_wall = true with chain_model = "wlc"
+omega_k = 1 because no tolerance was supplied, so the result is an upper bound
+both dock_position and approach_normal supplied
+5. Pseudocode
+function evaluate_ordered_three_domain_geometry(system_spec, target_geometry, model_config):
+
+    R = new Result()
+    R.joint_is_approximation = true
+    R.units = {length:"nm", concentration:"mM", angle:"rad"}
+
+    # --- stage 1: validation, status order 1 and 2 ---------------------
+    errs = validate(system_spec, target_geometry, model_config)
+    if errs: return R.fail("invalid_input", errs)
+    cfg = resolve_defaults(model_config)
+    R.effective_config = cfg
+
+    # --- stage 2: derived scalars, no probability yet ------------------
+    for j in {12,23}:
+        L[j] = n[j]*l[j];  b[j] = 2*lp[j];  N[j] = L[j]/b[j];  t[j] = L[j]/lp[j]
+        R2[j] = (cfg.chain_model=="ideal")
+                ? 2*lp[j]*L[j]
+                : 2*lp[j]*L[j] - 2*lp[j]^2*(1-exp(-t[j]))
+        emit_warnings_V7_V8(t[j], cfg)      # may promote to invalid_input if strict
+
+    for k in {1,2,3}:
+        p[k] = dock_position[k] if present
+               else t[k] + (a[k] + delta[k]) * normalize(n_hat[k])
+
+    e1 = p[1] + Rot(pose[1]) * s[1];   d12 = norm(p[2]-e1)
+    e2 = p[2] + Rot(pose[2]) * s[2];   d23 = norm(p[3]-e2)
+    R.derived = {L, R2, d12, d23, d12/L[12], d23/L[23]}
+
+    # --- stage 3: deterministic veto, status order 3 and 4 -------------
+    v = check_C1_C2_C4(p, a, aT, z_min, cfg)
+    if v: return R.zeroed("infeasible", v)
+    if d12 > L[12]-cfg.contour_tolerance or d23 > L[23]-cfg.contour_tolerance:
+        return R.zeroed("unreachable", ["span exceeds contour length"])
+
+    # --- stage 4: cached densities -------------------------------------
+    G12 = ChainDensity(cfg.chain_model, L[12], lp[12], R2[12], cfg.quadrature_points)
+    G23 = ChainDensity(cfg.chain_model, L[23], lp[23], R2[23], cfg.quadrature_points)
+    R.normalization_error_12 = G12.residual
+    R.normalization_error_23 = G23.residual
+
+    # --- stage 5: steric and orientation -------------------------------
+    if cfg.steric_mode == "shadow":
+        S2 = survival(e1, {D1, T1_body, anchor_stub, surface})
+        S3 = survival(e2, {D1, D2, T1_body, T2_body, surface})
+    else: S2 = 1; S3 = 1
+    om2 = orientation(theta_2);  om3 = orientation(theta_3)
+
+    # --- stage 6: reachability -----------------------------------------
+    Rc2 = min(Rc[2], L[12]);  Rc3 = min(Rc[3], L[23])      # V11, warns if clamped
+    p2 = clamp(S2*om2*capture_integral(G12, d12, Rc2, L[12]), 0, 1)
+    p3 = clamp(S3*om3*capture_integral(G23, d23, Rc3, L[23]), 0, 1)
+
+    # --- stage 7: joint -------------------------------------------------
+    pj     = clamp(p2*p3*cfg.chi, 0, 1)
+    pj_low = max(0, p2+p3-1)
+    assert pj <= min(p2,p3)+1e-12 and pj >= pj_low-1e-12
+
+    # --- stage 8: concentrations ----------------------------------------
+    NM3_TO_MM = 1660.5390671
+    rho2 = S2*om2*G12.density_at(d12);   rho3 = S3*om3*G23.density_at(d23)
+    ceff2 = rho2*NM3_TO_MM;              ceff3 = rho3*NM3_TO_MM
+    ceff2_avg = p2/max((4/3)*pi*Rc2^3, EPS_VOL)*NM3_TO_MM
+    ceff3_avg = p3/max((4/3)*pi*Rc3^3, EPS_VOL)*NM3_TO_MM
+
+    R.status="ok"; R.feasible=true
+    fill(R, p2,p3,pj,pj_low, ceff2,ceff3,ceff2_avg,ceff3_avg, S2,S3,om2,om3)
+    assert no_nan_no_inf(R)
+    return R
+
+
+function capture_integral(G, d, Rc, Lmax):
+    if d <= EPS_D:
+        return clamp(4*pi*quad(r -> r^2*G(r), 0, min(Rc, Lmax)), 0, 1)
+    inner = (Rc > d) ? 4*pi*quad(r -> r^2*G(r), 0, Rc-d) : 0
+    r_lo = max(0, d-Rc, Rc-d)
+    r_hi = min(d+Rc, Lmax)
+    if r_hi <= r_lo: return clamp(inner, 0, 1)
+    shell = quad(r -> 4*pi*r^2*G(r)*clamp((Rc^2-(r-d)^2)/(4*d*r), 0, 1), r_lo, r_hi)
+    return clamp(inner + shell, 0, 1)
+
+
+function survival(e, obstacles):
+    blocked = 0
+    for m in obstacles:
+        if m is surface:
+            blocked += wall_shadow(e, m)        # image method instead, if ideal + enabled
+        else:
+            D = norm(m.center - e)
+            if D <= m.radius: return S_MIN
+            blocked += 0.5*(1 - sqrt(max(0, 1 - (m.radius/D)^2)))
+    return clamp(1 - blocked, S_MIN, 1)
+6. Test contract
+Format per test: purpose, invariant, expected status, tolerance type. Tolerance types are exact (bitwise equality to 0.0 or true), abs(x) (absolute), rel(x) (relative), ordinal (sign of a difference only).
+
+T1. Linker-length optimum. Purpose: the model must reproduce the entropic trade-off where lengthening helps a distant target then hurts. Invariant: with d_12 = 6, lp = 0.5, sweeping n_12 from 20 to 120, the sequence P_reach_2(n) has exactly one interior maximum, and the argmax satisfies 0.7*d_12 <= sqrt(R2_12) <= 1.5*d_12. Status: ok. Tolerance: ordinal for monotonicity, abs(0) for the count of interior maxima.
+
+T2. Contour gate precedes density evaluation. Purpose: catch the single most common bug, evaluating a Gaussian past the contour limit. Invariant: with d_23 = 1.5*L_23, p_reach_3_given_2 == 0.0, p_joint == 0.0, ceff_3_mM == 0.0, and a spy on ChainDensity records zero evaluations. Status: unreachable. Tolerance: exact. Must pass for both chain_model values.
+
+T3. Capture radius monotone. Purpose: guard the capture integral limits. Invariant: for Rc in {0.2, 0.5, 1.0, 2.0}, P_reach_2 non-decreasing. Status: ok. Tolerance: abs(1e-12) on each pairwise difference.
+
+T4. Excluded volume monotone. Purpose: guard the shadow aggregation and the clearance gate. Invariant: increasing any rho_m or eps_dom never increases P_reach_2, P_joint or ceff_2_mM; at large enough rho_m the status flips. Status: ok then infeasible. Tolerance: abs(1e-12), then exact on the zeroed fields.
+
+T5. Symmetry and rigid invariance. Purpose: guard frame handling and any accidental index coupling. Invariant (a): with L_12 = L_23, lp_12 = lp_23, d_12 = d_23, Rc_2 = Rc_3, identical obstacles, omega_2 = omega_3, then p_reach_2 == p_reach_3_given_2 and ceff_2_mM == ceff_3_mM. Invariant (b): applying one rigid transform to all positions, poses and the plane leaves every output unchanged. Status: ok. Tolerance: rel(1e-9).
+
+T6. Validation surface. Purpose: no invalid input reaches numerics, no exception escapes. Invariant: each of n_units = 0, n_units = -3, rise_per_unit = 0, persistence_length = -1, capture_radius = 0, a NaN coordinate, a 2-component vector, chi = 1.4, theta = 4.0, a supplied p_reach_2, and a target with neither dock_position nor approach_normal returns status = "invalid_input" with non-empty messages and raises nothing. Status: invalid_input. Tolerance: exact.
+
+T7. Finiteness in extreme valid regimes. Purpose: guard the log-space evaluation and the divergences. Invariant: for d -> 0, d -> L - contour_tolerance, t = 0.2, t = 500, and Rc > d, every numeric output field is finite, P_reach in [0,1], ceff >= 0. Status: ok. Tolerance: exact on the finiteness predicate.
+
+T8. Joint labeling and bounds. Purpose: prevent an approximation being presented as exact. Invariant: joint_is_approximation == true in every non-invalid_input return including chi = 1; p_joint <= min(p_reach_2, p_reach_3_given_2) and p_joint >= p_joint_lower_bound. Status: any except invalid_input. Tolerance: exact on the flag, abs(1e-12) on the bounds.
+
+T9. Normalization. Purpose: guard the cached constant A_j and the quadrature grid. Invariant: for both chain models and t in {0.5, 2, 10, 50}, 4*pi*Int_0^{r_max} r^2 G(r) dr = 1, with r_max = L for WLC and r_max = 5*sqrt(R2) for ideal. Status: ok. Tolerance: abs(1e-3).
+
+T10. Small-capture-radius consistency. Purpose: guard that P_reach and ceff use the same density object. Invariant: at Rc = 0.05*d, P_reach / ((4/3)*pi*Rc^3) equals G(d), and ceff_avg equals ceff. Status: ok. Tolerance: rel(1e-2).
+
+T11. Ideal closed form and unit factor. Purpose: pin NM3_TO_MM and the Gaussian prefactor. Invariant: with chain_model = "ideal", steric_mode = "none", omega = 1, ceff_2_mM equals (3/(2*pi*R2))^(3/2) * exp(-3*d^2/(2*R2)) * 1660.5390671. Status: ok. Tolerance: rel(1e-9).
+
+T12. Wall reduces accessibility. Purpose: guard the image construction. Invariant: with use_image_wall = true and the ideal chain, P_reach_2 decreases monotonically as e_1.z falls toward z_min, and tends to 0 at the plane. Status: ok. Tolerance: ordinal, plus abs(1e-9) at the plane.
+
+T13. Defaults are visible. Purpose: enforce section 4.6. Invariant: for a minimal valid input, every key listed in section 4.2 appears in diagnostics.effective_config with the documented default value. Status: ok. Tolerance: exact.
+
+T14. No silent fallback. Purpose: enforce warning emission. Invariant: each of use_image_wall = true with WLC, Rc > L, omega defaulting to 1, and both dock fields supplied produces at least one entry in diagnostics.warnings. Status: ok. Tolerance: exact on non-emptiness.
+
+T15. Strict mode promotion. Purpose: guard status order 2. Invariant: an input triggering V7, V8 or V11 returns ok with warnings when strict = false, and invalid_input when strict = true, with otherwise identical input. Status: both. Tolerance: exact.
+
+T16. Deterministic layer precedes probabilistic layer. Purpose: enforce section 2.1. Invariant: with a C1 violation injected, a spy on ChainDensity records zero constructions and zero evaluations. Status: infeasible. Tolerance: exact.
+
+6.1 Minimum regression set
+Must run on every commit. Chosen for coverage of the failure classes that silently corrupt results rather than crash:
+
+T2   contour gate
+T6   validation surface
+T7   finiteness
+T8   joint labeling and bounds
+T11  unit factor and closed form
+T16  layer ordering
+T3, T4, T9, T13 are recommended for every merge to a main branch. T1, T5, T10, T12, T14, T15 may run on a nightly schedule.
+
+7. Known limitations
+Not captured, and not to be represented as captured:
+
+atomistic interactions of any kind, including electrostatics, desolvation, hydrogen bonding
+surface or membrane fluctuation, undulation, local curvature. The plane is rigid
+lateral diffusion, clustering or any motion of target sites. Positions are static inputs
+any surrounding polymer or glycan field
+kinetic rates. No k_on, no k_off, no residence time. Ceff is a geometric density in concentration units and must not be multiplied by a solution-phase rate constant without separate justification
+induced fit or conformational selection
+allosteric coupling, except empirically through omega_k or chi
+self-avoidance within or between linkers
+linker charge, hence no ionic-strength dependence of lp
+competition between domains beyond the hard clearance checks
+D1 engagement itself. Everything returned is conditional on it
+Reliability ordering, to be assumed when interpreting results: P_reach more reliable than ceff_avg more reliable than ceff more reliable than P_joint.
+
+8. Implementation handoff
+8.1 Exact variable names
+L_12, L_23, lp_12, lp_23, b_12, b_23, N_12, N_23, t_12, t_23, R2_12, R2_23
+A_12, A_23                     cached WLC normalization constants
+d_12, d_23                     required spans [nm]
+p_1, p_2, p_3                  docking positions [nm, vec3]
+e_1, e_2                       linker start points [nm, vec3]
+Rc_2, Rc_3                     capture radii after V11 clamp [nm]
+S_2, S_3, omega_2, omega_3     survival and orientation factors
+chi                            joint correlation correction
+p_reach_2, p_reach_3_given_2   reachability probabilities
+p_joint, p_joint_lower         joint estimates
+rho_2, rho_3                   densities at docking positions [nm^-3]
+ceff_2_mM, ceff_3_mM, ceff_2_avg_mM, ceff_3_avg_mM
+NM3_TO_MM = 1660.5390671       [CONST]
+S_MIN     = 1e-6               [CONST]
+EPS_D     = 1e-9               [CONST, nm]
+EPS_VOL   = 1e-12              [CONST, nm^3]
+X_MAX     = 1 - 1e-8           [CONST, WLC reduced-extension cap]
+8.2 Data structures
+SystemSpec, TargetGeometry, ModelConfig: immutable value objects, validated once at construction, never revalidated downstream.
+ChainDensity: one per linker, constructed once. Holds L, lp, R2, A, the cached quadrature grid, residual. Exposes density_at(r) -> nm^-3 and capture(d, Rc) -> [0,1]. All quadrature lives here. P_reach and ceff must call the same instance.
+Obstacles: flat list of (center: vec3, radius: float, label: string). The surface is the only special case.
+Result: flat record, no optional numeric fields, no nulls. Vetoed values are exact 0.0 accompanied by a status.
+Vectors: fixed-size 3. Validate length at the API boundary only.
+8.3 Numerical danger points
+WLC divergence as x -> 1. Evaluate in log space, cap x at X_MAX, return 0 beyond.
+Stiff chains, t < 5, concentrate density in a thin shell near r = L. A uniform grid mis-normalizes by tens of percent. Use Gauss-Legendre with at least 256 nodes, or the substitution r = L*sin(u), and report the residual.
+phi has d and r in the denominator. The d <= EPS_D branch is mandatory, not an optimization.
+Never compute P_reach as a difference of cumulative integrals. Integrate the product on [r_lo, r_hi].
+Shadow aggregation is a sum, not a product of transmissions. The product form stays monotone and therefore passes T4, but silently changes the model.
+Unit conversion exactly once, at output. Early conversion is the standard route to a factor-of-1000 error.
+A_j must be cached. Recomputation inside the integral risks P_reach and ceff disagreeing, which T10 is designed to catch.
+8.4 Implementation-critical decisions already fixed
+A coding model must not reinterpret any of the following:
+
+Length is nm, angle is rad, concentration is mM at output only. No alternative units are accepted anywhere.
+NM3_TO_MM = 1660.5390671, applied exactly once.
+The joint term is conditional, P_2 * P_{3|2} * chi, with e_2 derived from p_2. It is not a product of two independent marginals computed from the same origin.
+joint_is_approximation is always true. There is no configuration in which it is false.
+Shadow aggregation is 1 - sum_m f_m, clamped to [S_MIN, 1].
+Clamping occurs at exactly the four sites in section 3.4 and nowhere else.
+infeasible and unreachable are distinct statuses and must not be merged, because the corrective action differs.
+The deterministic layer runs first and can veto absolutely. No chain density may be constructed or evaluated before C1 to C4 have passed.
+Vetoed numeric outputs are exact 0.0, never null, never absent.
+R = I when no pose is supplied, and s_i is then read as laboratory-frame. Orientation is never inferred from n_k.
+dock_position, when supplied, wins over the approach_normal construction.
+Defaults are echoed in diagnostics.effective_config. No default may be applied invisibly.
+Derived fields are rejected as inputs.
+All failures are statuses. No exception escapes to the caller.
+8.5 Permitted substitutions in future versions
+These may be replaced without changing the API. Ranked by accuracy gained per unit of effort.
+
+survival(...). Replace the shadow model, and in particular the wall term, with a rejection rate from sampled conformations. Same signature, same [0,1] output. Highest value, do first.
+chi. Replace the scalar with the measured ratio of joint hit rate to the product of marginal hit rates over a sampled ensemble of full assemblies. Converts the main caveat from assumption to measurement. joint_is_approximation still stays true.
+capture_integral(...). Replace quadrature with a hit count against the capture ball. Absorbs excluded volume automatically once the sampler has it.
+ChainDensity. Replace the analytical G(r) with a histogram or KDE over sampled end-to-end vectors. This also lifts the isotropy assumption of section 2.3 item 6, since a sampled distribution can be conditioned on direction.
+omega_k. Replace the solid-angle fraction with the sampled fraction of conformations whose interface vector lies within tolerance.
+Not permitted to change without a new API version: the unit contract, the status taxonomy, the conditional structure of the joint term, the required and derived field lists, the non-negotiable output fields.
+
+The deterministic layer must never be replaced by sampling. It is cheap, exact, and it is what keeps a sampler from being run on geometries that cannot work.
+
+8.6 Open decisions requiring explicit choice before coding
+The following are genuinely unresolved. Each needs a decision recorded before implementation, and each has a stated provisional default so that work can start.
+
+Pose source. Whether pose_i comes from a structural model, or whether R = I is always used. Provisional: R = I, with s_i supplied in laboratory frame. Affects e_1, e_2, hence both spans.
+Wall term for the WLC branch. The shadow form in section 2.4 is crude and has no derivation. Options: keep it, disable the wall entirely for WLC and warn, or restrict WLC to geometries far from the plane. Provisional: keep it, warn always.
+Obstacle set membership. Whether the anchor stub and the T1 body belong in S_3's obstacle set as written, or whether an engaged D2 should shadow itself out of its own outgoing linker. Provisional: as written in section 5.
+Rc semantics. Whether the capture radius is a tolerance on the attachment point attach_in_k or on the interface centroid. These differ by roughly a_k. Provisional: on attach_in_k, consistent with p_k.
+Terminal flexibility accounting. Whether disordered terminal residues are folded into L_j by the caller or by the implementation. Provisional: by the caller, and the implementation warns nothing.
+ceff versus ceff_avg as the headline number. Both are returned, but downstream consumers need one designated primary. Provisional: ceff_avg, being less sensitive to the exact docking position.
+Quadrature rule. Gauss-Legendre on [0, L] versus the r = L*sin(u) substitution. Both satisfy T9 at t >= 0.5; they diverge at very small t. Provisional: Gauss-Legendre, 256 nodes, with the residual reported.
+9. Implementer summary
+Core equation set
+L      = n * l                                            [nm]
+R2     = 2*lp*L                          (ideal)          [nm^2]
+R2     = 2*lp*L - 2*lp^2*(1-exp(-L/lp))  (wlc)            [nm^2]
+G(r)   = (3/(2 pi R2))^(3/2) exp(-3 r^2/(2 R2))           (ideal)   [nm^-3]
+G(r)   = (A/L^3)(1-x^2)^(-9/2) exp(-3t/(4(1-x^2)))        (wlc, x=r/L<1)
+phi    = (Rc^2-(r-d)^2)/(4 d r)
+P      = S*omega*Int 4 pi r^2 G(r) clamp(phi,0,1) dr  over [r_lo, r_hi]
+f_m    = 0.5(1 - sqrt(max(0, 1-(rho/D)^2)))
+S      = clamp(1 - sum f_m, 1e-6, 1)
+P_joint      = clamp(P2 * P3|2 * chi, 0, 1)               (APPROX, always labeled)
+P_joint_low  = max(0, P2 + P3|2 - 1)                      (EXACT)
+ceff_mM      = S*omega*G(d) * 1660.5390671
+ceff_avg_mM  = P / ((4/3) pi Rc^3) * 1660.5390671
+Status logic
+1  schema / range / derived-supplied / missing dock      -> invalid_input
+2  strict = true and V7|V8|V11 triggered                 -> invalid_input
+3  C1 | C2 | C4 violated                                 -> infeasible, numerics = 0.0
+4  C3 violated (span > contour)                          -> unreachable, numerics = 0.0
+5  otherwise                                             -> ok
+   warnings never change status when strict = false
+Numerical danger points
+WLC prefactor and exponential both diverge at x -> 1: log-space, cap at 1 - 1e-8
+stiff chains need a grid dense near r = L, or normalization silently fails
+phi divides by d and r: the d <= EPS_D branch is mandatory
+never difference cumulative integrals
+shadow is a sum, not a product
+convert units once, at output
+cache A_j, and share one ChainDensity between P_reach and ceff
+First replacement candidates
+survival(...), especially the wall term
+chi, measured rather than assumed
+capture_integral(...), hit counting
+ChainDensity, sampled distribution
+omega_k, sampled orientation fraction
+Safe implementation order
+Value objects, validation, diagnostics.effective_config. Pass T6 and T13.
+Derived scalars and spans. Pass the derived.* half of T5.
+Deterministic layer, C1 to C4, status taxonomy, zeroed returns. Pass T2 and T16.
+Ideal ChainDensity, closed form, no quadrature. Pass T11.
+capture_integral against the ideal density. Pass T3, T7, T10.
+Steric and orientation factors. Pass T4, T12, T14.
+Joint term and bounds. Pass T8.
+WLC ChainDensity with log-space evaluation, cached A, Gauss-Legendre grid. Pass T9, then re-run T2, T3, T7, T10 on the WLC branch.
+Strict-mode promotion. Pass T15.
+T1 last, since it is the only test that depends on the whole pipeline being simultaneously correct.

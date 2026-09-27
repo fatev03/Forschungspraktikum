@@ -1,0 +1,61 @@
+[
+  {
+    "candidate_id": "syn-pair-a",
+    "conformer_id": null,
+    "metrics": [
+      {
+        "category": "declared_geometry",
+        "context": "complex",
+        "missing_reason": null,
+        "name": "syn-pair:/distance_nm",
+        "provenance": {
+          "checkpoint_id": null,
+          "model_id": "synthetic-geometry-report",
+          "seed": 0
+        },
+        "raw_value": 30.0,
+        "scale": null,
+        "source": {
+          "path": "/synthetic/producer-pair/pairs.json",
+          "row": 7,
+          "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "unit": "angstrom",
+        "value": 30.0
+      },
+      {
+        "category": "declared_span_composition",
+        "context": "complex",
+        "missing_reason": null,
+        "name": "syn-pair:/segment_count",
+        "provenance": {
+          "checkpoint_id": null,
+          "model_id": "synthetic-geometry-report",
+          "seed": 0
+        },
+        "raw_value": 9.0,
+        "scale": null,
+        "source": {
+          "path": "/synthetic/producer-pair/pairs.json",
+          "row": 7,
+          "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "unit": "dimensionless",
+        "value": 9.0
+      }
+    ],
+    "missing_values": {
+      "conformer_id": "synthetic fixture",
+      "sequence_hash": "synthetic fixture: no sequence is bound"
+    },
+    "provenance": {
+      "checkpoint_id": null,
+      "model_id": "synthetic-geometry-report",
+      "seed": 0
+    },
+    "schema_version": "1.0",
+    "sequence_hash": null,
+    "target_id": "syn-target",
+    "warnings": []
+  }
+]

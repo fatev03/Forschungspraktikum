@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "alignment_handoff_record",
+  "description": "One immutable consumer handoff record for one alignment_evidence_envelope/1. It records the envelope identity, the explicitly declared references to source components with their resolution, and the handoff status. A PRESENT reference carries the source's own occurrence locator verbatim; no other source value, score, ranking or derived value is recorded.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "handoff_id",
+    "envelope_id",
+    "status",
+    "reason",
+    "references",
+    "rules"
+  ],
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "alignment_handoff_record/1"
+      ]
+    },
+    "handoff_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "envelope_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "status": {
+      "enum": [
+        "READY",
+        "BLOCKED",
+        "UNAVAILABLE",
+        "UNSUPPORTED",
+        "REJECTED"
+      ]
+    },
+    "reason": {
+      "enum": [
+        null,
+        "REQUIRED_REFERENCE_ABSENT",
+        "READER_CODE_UNRECOGNIZED",
+        "SOURCE_CONTENT_HASH_MISMATCH",
+        "SOURCE_LAYOUT_UNSUPPORTED",
+        "SOURCE_MALFORMED",
+        "SOURCE_REQUEST_REJECTED",
+        "SOURCE_SELECTION_REJECTED",
+        "SOURCE_UNREADABLE"
+      ]
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "component_kind",
+          "component_id",
+          "resolution",
+          "source_locator"
+        ],
+        "properties": {
+          "component_kind": {
+            "enum": [
+              "record_occurrence",
+              "selected_occurrence"
+            ]
+          },
+          "component_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "resolution": {
+            "enum": [
+              "PRESENT",
+              "ABSENT",
+              "NOT_EVALUATED"
+            ]
+          },
+          "source_locator": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "rules": {
+      "type": "object",
+      "required": [
+        "blocking",
+        "identity",
+        "immutability",
+        "payload",
+        "propagation",
+        "references"
+      ],
+      "properties": {
+        "blocking": {
+          "type": "string"
+        },
+        "identity": {
+          "type": "string"
+        },
+        "immutability": {
+          "type": "string"
+        },
+        "payload": {
+          "type": "string"
+        },
+        "propagation": {
+          "type": "string"
+        },
+        "references": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

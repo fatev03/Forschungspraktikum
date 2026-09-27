@@ -1,0 +1,469 @@
+I'll resolve the ten decisions, then produce v0.3, the phase plan, and the Phase 1c code as actual files.
+
+---
+
+# PART 1 — Blocking decision record
+
+Each item gives: **(1)** chosen rule, **(2)** normative wording, **(3)** schema/API impact, **(4)** validation/runtime behavior, **(5)** test. Items marked **[PV1]** are *proposed v1 design choices* — they cannot be derived from the existing contract and are recorded as decisions, not deductions.
+
+---
+
+## D1 — `FREE_SWIVEL` minimum-span rule
+
+**(1) Chosen rule.** The apparent conflict between §18.2 and §18.4 is a conflation of two different claims. "Full folding permitted" is a statement about *junction orientation freedom*, not about the attainable end-to-end distance. A freely jointed linkage still obeys the polygon inequality: a single element longer than the sum of all others cannot be cancelled. The rule is therefore the **generalized polygon inequality over span intervals**, which reduces to `D_min = 0` exactly when no element dominates.
+
+Model the composed chain between the shielding ancestor `k` and node `j` as an ordered set of **elements** `e ∈ E(k,j)`, each with a span interval `[a_e, b_e]` in nm:
+
+| Element | `a_e` | `b_e` |
+|---|---|---|
+| Flexible segment `σ_i`, `k ≤ i ≤ j−1` | `L_min,i` | `L_i` |
+| Rigid spacer `B_i`, `k+1 ≤ i ≤ j−1` | `λ_i` | `λ_i` |
+| Terminal capture offset of `D_j` | `c_j = ‖q_j − e_j‖` | `c_j` |
+
+**(2) Normative wording** (replaces §18.2 in full):
+
+> **§18.2 (v0.3) Contour budget under `FREE_SWIVEL`.** Let `E(k,j)` be the element set defined above, `a_e` and `b_e` its span interval endpoints in nm. Then
+> ```
+> D_max(D_j, S) = Σ_{e ∈ E(k,j)} b_e
+> D_min(D_j, S) = max( 0,  max_{e ∈ E(k,j)} ( a_e − Σ_{f ∈ E(k,j), f ≠ e} b_f ) )
+> ```
+> `D_min = 0` if and only if no single element's minimum span exceeds the sum of every other element's maximum span. This is the sole admissible reading of "full folding permitted" in §18.4: junctions impose no orientational restriction, so the only obstruction to closure is the polygon inequality. Antiparallel folding to zero separation is permitted whenever the inequality allows it and is forbidden whenever it does not; there is no separate slack parameter. For `|E(k,j)| = 1` the rule degenerates correctly to `D_min = a_e`, `D_max = b_e`. Rigid spacer spans `λ_i` enter `D_max` additively and enter `D_min` only through the dominance term. An implementation that computes `D_min` as a sum of `a_e` violates this section and is MNH16.
+
+**(3) Schema/API.**
+
+```
+BudgetBreakdown += {
+  elements: [ { kind ∈ {SEGMENT, SPACER, CAPTURE_OFFSET},
+                source_id, a_nm, b_nm } ],
+  D_max_nm, D_min_nm,
+  dominating_element_id | null,      # argmax of the D_min expression, null if D_min == 0
+  folding_unobstructed: bool         # true iff D_min == 0
+}
+```
+`cassette_contour_budget(...)` returns this object; its `elements` list is the computation, not a report of it (audit L10 unchanged).
+
+**(4) Validation/runtime.** `a_e > b_e` for any element → `INFEASIBLE / SPAN_INTERVAL_INVALID`. `D_min > D_max` is arithmetically impossible under this rule and is asserted as MNH22. `D_min` participates in the base reachability gate unchanged: `D_min − eps_len ≤ d ≤ D_max + eps_len`.
+
+**(5) Test.** **T57 (dominating spacer forces nonzero `D_min`).** `REF-CASSETTE-3` with `λ_1 = 20.0`, `L_0 = 1.0`, `L_1 = 1.0`, `c_2 = 0.7`. Expect `D_min = 20.0 − 2.7 = 17.3`, `folding_unobstructed = false`, `dominating_element_id = "D1.span"`. A target at `d = 5.0` yields `UNREACHABLE`. Companion **T58**: with `λ_1 = 1.2`, expect `D_min = 0.0` and `dominating_element_id = null`.
+
+---
+
+## D2 — `RESTRICTED_CONE`
+
+**(1) Chosen rule.** **Option B — removed from v1.** Retaining it would require inventing a half-angle parameterization, an orientation measure, and a second moment that no part of the contract fixes. The enum value is retained in the schema so that configs written against v0.2 are *rejected loudly* rather than silently reinterpreted.
+
+**(2) Normative wording** (replaces the `RESTRICTED_CONE` row of §18.4):
+
+> **§18.4 (v0.3).** `junction_model ∈ { FREE_SWIVEL, FIXED_RIGID, RESTRICTED_CONE }`. In v1, `RESTRICTED_CONE` is **declared but not implemented**. A configuration selecting it is rejected by `validate_cassette_policy_fields` with `status = INFEASIBLE`, `status_reason = "JUNCTION_MODEL_NOT_SUPPORTED_V1"`, diagnostic code `RESTRICTED_CONE_NOT_IMPLEMENTED`, severity `ERROR`, remediation naming `FIXED_RIGID` (if the relative junction rotations are known) or `EXTERNAL_SAMPLED_CHAIN` (if they are not). The value MUST NOT be silently mapped onto `FREE_SWIVEL`; such a mapping is MNH23. Re-introduction in a later version requires a half-angle parameterization, an explicit orientation measure on the cone, a second moment, and a `D_min`/`D_max` rule, all specified before any code is written.
+
+**(3) Schema/API.** No new fields. `JunctionModel.RESTRICTED_CONE` remains in the enum. `SUPPORTED_JUNCTION_MODELS_V1 = {FREE_SWIVEL, FIXED_RIGID}` is exported as a module constant so the rejection set is data, not a literal buried in a branch.
+
+**(4) Validation/runtime.** Rejection occurs in Phase 1c policy validation, before topology validation, before WF1–WF7, before any geometry module is imported. There is no runtime path.
+
+**(5) Test.** **T59.** `REF-CASSETTE-3` with `junction_model = RESTRICTED_CONE`. Expect `INFEASIBLE`, `status_reason = "JUNCTION_MODEL_NOT_SUPPORTED_V1"`, diagnostic `RESTRICTED_CONE_NOT_IMPLEMENTED`, all values zeroed per §10.1, and no topology diagnostics emitted (policy stage fails first and topology is reported as `CHECK_SKIPPED`).
+
+---
+
+## D3 — `tau_spacer` policy
+
+**(1) Chosen rule.** `tau_spacer = 0.25` **remains the v1 default** [PV1 — the numeric value is a judgement call, not a derivation]. It is configurable. Valid range is the closed interval `[0.0, 1.0]`. **Equality escalates**: the comparison is `≥`, not `>`, so a fraction exactly at the threshold is treated as spacer-dominated. This is chosen because escalation is non-destructive (it adds a flag and a bound, never a veto), so resolving the boundary ambiguity in the conservative direction costs nothing and removes a float-equality trap.
+
+**(2) Normative wording** (replaces the guard text of §19.2 and D5.c2):
+
+> **§19.2.1 (v0.3) Spacer dominance guard.** Define, for the composed chain between shielding ancestor `k` and node `j` under `junction_model = FREE_SWIVEL`:
+> ```
+> M_seg    = Σ_{i=k}^{j-1} L_i · b_i                     [nm²]
+> M_spacer = Σ_{i=k+1}^{j-1} λ_i²                        [nm²]
+> spacer_fraction = M_spacer / (M_seg + M_spacer)        [dimensionless], defined as 0 when M_spacer == 0
+> ```
+> Under `composite_density_method = GAUSSIAN_MOMENT_MATCH`, the guard fires iff `M_spacer > 0` **and** `spacer_fraction ≥ tau_spacer`. When it fires: `status = APPROXIMATION_REQUIRED`, `status_reason = "SPACER_DOMINATED"`, diagnostic code `SPACER_DOMINATED` severity `WARN` carrying `{spacer_fraction, tau_spacer, M_seg, M_spacer}` and remediation naming `NUMERICAL_CONVOLUTION` or `EXTERNAL_SAMPLED`. Whether or not the guard fires, a composite of two or more elements under `GAUSSIAN_MOMENT_MATCH` NEVER carries provenance `EXACT_CLOSED_FORM`; its provenance is `ANALYTIC_APPROXIMATION`. The guard is an escalation, never a veto. `tau_spacer ∉ [0.0, 1.0]` or non-finite is rejected by `validate_cassette_policy_fields` with `INFEASIBLE / POLICY_FIELD_OUT_OF_RANGE`, code `TAU_SPACER_OUT_OF_RANGE`. `tau_spacer = 0.0` means "escalate whenever any rigid spacer is composed"; it does not escalate a spacer-free composite.
+
+**(3) Schema/API.** `CassettePolicy.tau_spacer: float = 0.25` — the one field in cassette mode carrying a default, because it is a guard threshold rather than a semantic choice; its default direction is conservative. Flagged in `ProvenanceRecord.declared_assumptions` as `tau_spacer=<value>` on every result of a composed node.
+
+**(4) Validation/runtime.** Range check in Phase 1c (a scalar domain check on a declared field, not a geometric computation). Guard evaluation in Phase 4.
+
+**(5) Test.** **T53 (amended).** Retained as specified, plus boundary case **T53b**: construct `spacer_fraction` exactly `0.25` (e.g. `L·b = 3·1 = 3`, single `λ = 1.0`, `M_spacer = 1`, fraction `= 0.25`). Expect the guard to fire (`≥` semantics). **T53c**: `tau_spacer = 0.0`, spacer-free single segment. Expect `VALID`, no `SPACER_DOMINATED`. **T60**: `tau_spacer = 1.4`. Expect `INFEASIBLE / POLICY_FIELD_OUT_OF_RANGE`.
+
+---
+
+## D4 — `EXCLUDED_SHELL_BOUND` occupancy fraction
+
+**(1) Chosen rule.** **Option A — required per unresolved module.** Derivation from `ρ_i` and shell volume (option C) would be a silent physical model choice disguised as bookkeeping, which §19.3 exists to prevent. A global value (option B) cannot distinguish a small spacer from a large body. So: `Module.unresolved_occupancy_fraction ∈ [0.0, 1.0]`, no default, required for **every** module in the cassette whenever `unresolved_upstream_policy = EXCLUDED_SHELL_BOUND`.
+
+The fraction is used **only** for a diagnostic point estimate. The exported interval is **independent of it** and is a true enclosure.
+
+**(2) Normative wording** (replaces the `EXCLUDED_SHELL_BOUND` row and adds §19.3.1):
+
+> **§19.3.1 (v0.3) Shell-bound interval construction.** For node `D_j` under state `S` with unresolved intervening bodies `U = { D_i : k < i < j, S[D_i] ≠ ENGAGED }`:
+> 1. For each `i ∈ U`, `Sh_i` is the set of world positions the exclusion centre `κ_i` can occupy, i.e. the annulus `D_min(κ_i, S) ≤ ‖x − x_a_eff‖ ≤ D_max(κ_i, S)` computed by §18.2 with `D_i`'s exclusion centre as the terminal offset.
+> 2. The **at-risk region** of `D_i` is `E_i = { x ∈ A_j(S) : dist(x, Sh_i) < ρ_i + ρ_j }` — every endpoint position that *some* admissible pose of `D_i` could block.
+> 3. The **at-risk capture weight** is `m_i = ( ∫_{E_i ∩ K_j} p_j ) / ( ∫_{A_j(S) ∩ K_j} p_j )`, dimensionless in `[0,1]`.
+> 4. The exported enclosure is
+>    ```
+>    P_upper = P_nominal                                   # no unresolved body ever intrudes
+>    P_lower = P_nominal · Π_{i ∈ U} (1 − m_i)             # every at-risk weight is blocked
+>    ```
+>    valid as a product only when the `E_i` are pairwise disjoint to within `omega_tol` per §8.3; otherwise the Fréchet bounds of §8.4 replace the product and `provenance = BOUND_ONLY` is already in force.
+> 5. `values.conditional_probability = null`; `value_intervals.conditional_probability = [P_lower, P_upper]`; `provenance.worst_label = "BOUND_ONLY"`; `status = APPROXIMATION_REQUIRED`, `status_reason = "SHELL_BOUND"`. MNH15 forbids populating both, so the declared smeared point estimate
+>    ```
+>    P_smeared = P_nominal · Π_{i ∈ U} (1 − φ_i · m_i)
+>    ```
+>    is placed in `diagnostics.smeared_point_estimate` together with the `φ_i` used, **never** in `values`. `P_lower ≤ P_smeared ≤ P_upper` is asserted; violation is MNH24.
+>
+> `φ_i` absent under this policy → `INFEASIBLE / POLICY_FIELD_MISSING`, code `OCCUPANCY_FRACTION_MISSING`, naming the module. `φ_i ∉ [0,1]` or non-finite → `INFEASIBLE / POLICY_FIELD_OUT_OF_RANGE`, code `OCCUPANCY_FRACTION_OUT_OF_RANGE`. `φ_i` is required for every cassette module, not only those currently unresolved, because the state under which a module is unresolved is not known at config time.
+
+**(3) Schema/API.** `Module += { unresolved_occupancy_fraction: float | MISSING }`. `compute_survival_correction` gains a `shell_bound_terms` output block listing per-`i` `{module_id, m_i, phi_i}`.
+
+**(4) Validation/runtime.** Presence and range in Phase 1c (declared-field domain check). Interval construction in Phase 5.
+
+**(5) Test.** **T47 (amended).** As specified, plus: `P_upper` equals the `SELF_AVOIDANCE_IGNORED` point value of T46 exactly (bitwise), `P_lower ≤ P_smeared ≤ P_upper`, and `values.conditional_probability is None`. **T61**: `unresolved_upstream_policy = EXCLUDED_SHELL_BOUND` with `unresolved_occupancy_fraction` omitted on `D2`. Expect `INFEASIBLE / POLICY_FIELD_MISSING`, code `OCCUPANCY_FRACTION_MISSING`, `{module: "D2"}`. **T62**: `φ = 1.3` → `OCCUPANCY_FRACTION_OUT_OF_RANGE`.
+
+---
+
+## D5 — `ORIENTATION_MARGINALIZED` measure
+
+**(1) Chosen rule.** **Option A — normalized Haar measure on `SO(3)`, restricted to the stabilizer of the engagement constraint.** Option B is not an alternative: the Haar measure's pushforward onto the exit point *is* the uniform measure on the orbit sphere, so B is a consequence of A, not a competing choice. A is chosen because it is the only one that also determines the exclusion centre `κ_k`, which B leaves undefined. Marginalization is **joint over one rotation**, never independently over two spheres.
+
+**(2) Normative wording** (replaces the `ORIENTATION_MARGINALIZED` column of §18.5):
+
+> **§18.5.1 (v0.3) Orientation marginalization.** Let `D_k` be engaged at `x_t` with `R_k` undetermined. The admissible rotation set is the stabilizer
+> ```
+> H(x_t) = { R ∈ SO(3) : the engagement constraint on q_k is satisfied }
+> ```
+> which equals `SO(3)` for an orientation-free target, and the one-parameter subgroup of rotations about `n_t` for an oriented target with `orientation_required = true`. The marginalization measure is the **normalized Haar measure on `H(x_t)`** and no other. Under this measure the induced distribution of the exit point `u_k` is uniform on the sphere of radius `‖u_k − q_k‖` centred at `x_t`; that uniformity is a derived consequence, not an independent assumption, and MUST NOT be used to marginalize `u_k` and `κ_k` separately — a single rotation sample determines both jointly. Marginalizing them independently is MNH25.
+>
+> Any quantity `F` downstream of `D_k` is computed as `E_{R ~ Haar(H)} [ F(R) ]`.
+>
+> **Numerical method.** Deterministic quasi-uniform `SO(3)` grids of `n_ℓ = 72 · 4^ℓ` rotations generated by Hopf-fibration product of a Fibonacci sphere grid with a uniform `S¹` grid, refined `ℓ = 0, 1, 2, ...`. Refinement halts when `|F_ℓ − F_{ℓ−1}| ≤ q_tol · max(|F_ℓ|, floor_F)`. Maximum `ℓ_max = 4` (18432 rotations), policy-overridable as `pose_marginalization_max_level`. Non-convergence at `ℓ_max` → `NUMERIC_FAILURE`, `status_reason = "POSE_MARGINALIZATION_NOT_CONVERGED"`, all fields nulled per §10.1, diagnostic carrying the last two iterates and the achieved relative change. Sampling is deterministic and seed-free; `SO(3)` sampling by pseudo-random draw is forbidden because it breaks the determinism invariant of T29.
+>
+> **Provenance and status.** `provenance.worst_label = "NUMERICAL_QUADRATURE"`; composite provenance is never better. `status = APPROXIMATION_REQUIRED`, `status_reason = "POSE_MARGINALIZED"` **always**, with exactly one exception: if `‖u_k − q_k‖ ≤ eps_len` **and** `‖κ_k − q_k‖ ≤ eps_len`, the orientation is geometrically irrelevant, no marginalization is performed, and the status is whatever the remaining evaluation yields, including `VALID`. Both conditions are required; satisfying only one still requires marginalization.
+
+**(3) Schema/API.**
+
+```
+CassettePolicy += { pose_marginalization_max_level: int ∈ [0, 6] = 4 }
+compute_pose_marginalized(cert, functional, cfg, policy) -> EvaluationResult
+diagnostics += { pose_marginalization: { level_used, n_rotations,
+                                         rel_change_achieved, converged: bool,
+                                         stabilizer ∈ {"SO3","AXIAL","TRIVIAL"} } }
+```
+
+**(4) Validation/runtime.** `pose_marginalization_max_level` range check in Phase 1c. Marginalization in Phase 4.
+
+**(5) Test.** **T52 (amended).** As specified, plus assert `stabilizer == "SO3"`, `converged == true`, provenance `NUMERICAL_QUADRATURE`, status reason `POSE_MARGINALIZED`. **T63 (degenerate exemption)**: `u_1 = q_1 = κ_1` within `eps_len`. Expect no marginalization block in diagnostics and status `VALID`. **T64 (half-exemption)**: `u_1 = q_1` but `‖κ_1 − q_1‖ = 0.6`. Expect `APPROXIMATION_REQUIRED / POSE_MARGINALIZED` — the exemption does not apply. **T65 (determinism)**: two runs produce bitwise-identical marginalized values.
+
+---
+
+## D6 — Chain-closure output model
+
+**(1) Chosen rule.** **Option A plus mandatory propagation.** A `StateResult` object is added. Option B alone loses the fact that the *state* is infeasible rather than the node, and makes `audit_result` unable to distinguish "this node is blocked" from "this conditioning state should never have been constructed". Propagation is still required so that no node result silently omits the veto.
+
+**(2) Normative wording** (replaces §20.5 and extends §10):
+
+> **§20.5 (v0.3) Chain closure.** For every pair `(D_i, D_j)`, `i < j`, both `ENGAGED` under `S` with no engaged module strictly between them:
+> ```
+> chain_closure_feasible(i, j, S) ⇔
+>     D_min(i→j) − eps_len ≤ ‖ entry_world(D_j) − exit_world(D_i) ‖ ≤ D_max(i→j) + eps_len
+> ```
+> with `D_min`, `D_max` from §18.2 (v0.3). Closure is evaluated for **every** such consecutive engaged pair, in increasing `i`, before any density is computed under `S`.
+>
+> **§10.7 (v0.3) `StateResult`.** A new `object_kind = "STATE"` is added to `EvaluationResult`. `evaluate_state(S, cfg, policy)` returns it and is a mandatory precondition of `evaluate_node`, `evaluate_path`, and `evaluate_network` in cassette mode: those functions accept a `StateCertificate` producible only by a `VALID` or `APPROXIMATION_REQUIRED` `StateResult`. On failure the `StateResult` carries `status = UNREACHABLE`, `status_reason = "CHAIN_CLOSURE_VIOLATED"`, all `values` zeroed per §10.1, and a diagnostic per failing pair.
+>
+> **Propagation.** Every node, path, and network result whose `upstream_state` is a closure-violating state carries `status = UNREACHABLE`, `status_reason = "CHAIN_CLOSURE_VIOLATED"`, the §10.1 veto field pattern, and `diagnostics.vetoing_state_result_id` referencing the `StateResult`. Computing a density under such a state is MNH20. Emitting a node result without `vetoing_state_result_id` when the state was vetoed is MNH26.
+
+**(3) Serialized shape.**
+
+```json
+{
+  "object_kind": "STATE",
+  "object_id": "S:{D1@t1,D2@t2b}",
+  "status": "UNREACHABLE",
+  "status_reason": "CHAIN_CLOSURE_VIOLATED",
+  "exact_or_approximate": "EXACT",
+  "values": { "conditional_probability": 0.0, "effective_local_concentration": null,
+              "capture_integral": 0.0, "survival_correction": 0.0, "joint_score": 0.0 },
+  "value_intervals": {},
+  "zeroed_due_to_status": true,
+  "nulled_due_to_status": false,
+  "provenance": { "worst_label": "EXACT_GEOMETRIC_VETO",
+                  "contributing_labels": ["EXACT_GEOMETRIC_VETO"],
+                  "method_id": "chain_closure", "method_version": "1.0.0",
+                  "declared_assumptions": ["topology_mode=LINEAR_ORDERED_CASSETTE",
+                                           "junction_model=FREE_SWIVEL"] },
+  "upstream_state": { "hash": "…", "assignments": { "D1": {"label":"ENGAGED","target_id":"t1"},
+                                                     "D2": {"label":"ENGAGED","target_id":"t2b"} } },
+  "diagnostics": [
+    { "code": "CHAIN_CLOSURE_VIOLATED", "severity": "ERROR",
+      "message": "consecutive engaged pair cannot be spanned",
+      "quantities": { "upstream": "D1", "downstream": "D2",
+                      "required_span_nm": 12.0, "D_min_nm": 0.0, "D_max_nm": 7.7 },
+      "remediation": "target assignment for D2 is unreachable from D1's engaged pose" }
+  ],
+  "result_id": "st-0007", "supersedes": null
+}
+```
+And the propagated node result:
+```json
+{ "object_kind": "NODE", "object_id": "D3",
+  "status": "UNREACHABLE", "status_reason": "CHAIN_CLOSURE_VIOLATED",
+  "values": { "conditional_probability": 0.0, "effective_local_concentration": null,
+              "capture_integral": 0.0, "survival_correction": 0.0, "joint_score": 0.0 },
+  "zeroed_due_to_status": true, "nulled_due_to_status": false,
+  "diagnostics": [ { "code": "STATE_VETO_PROPAGATED", "severity": "INFO",
+                     "message": "conditioning state failed chain closure",
+                     "quantities": { "vetoing_state_result_id": "st-0007" } } ] }
+```
+
+**(4) Validation/runtime.** Phase 2. `evaluate_node` without a `StateCertificate` is a signature-level impossibility, not a runtime check.
+
+**(5) Test.** **T50 (amended).** Assert the `StateResult` exists with `object_kind == "STATE"`, and that `D3`'s node result carries `vetoing_state_result_id` equal to it and zero-valued fields. **T66**: assert no density function was entered, by method-trace assertion.
+
+---
+
+## D7 — Terminal module exclusion centre
+
+**(1) Chosen rule.** `exclusion_centre` is **required explicitly for `D_N`**. Midpoint defaulting is forbidden for `D_N` because `u_N` is null and the midpoint is undefined. For `i < N` the midpoint default `κ_i = (e_i + u_i)/2` is retained.
+
+**(2) Normative wording** (amends §17.1 and the C10 row of §17.4):
+
+> **§17.1 (v0.3), exclusion centre.** `κ_i` defaults to `(e_i + u_i)/2` for `i < N`. For `i = N`, `u_N` is null by C10, the midpoint is undefined, and `κ_N` MUST be declared explicitly. Absence is rejected; defaulting `κ_N` to `e_N`, to `q_N`, or to the origin is forbidden and is MNH27.
+>
+> **C10 (v0.3)** splits into two checks, both under `status_reason = "TOPOLOGY_NOT_LINEAR_ORDERED_CASSETTE"`:
+> - **C10a** `exit_offset` declared as explicit null iff `cassette_index == N`; code `EXIT_OFFSET_MALFORMED`. An *undeclared* `exit_offset` is distinct from an explicitly null one and is also `EXIT_OFFSET_MALFORMED` with `{declared: false}`.
+> - **C10b** `exclusion_centre` present for the module with `cassette_index == N`; code `TERMINAL_EXCLUSION_CENTRE_MISSING`.
+
+**(3) Schema/API.** `Module.exit_offset` and `Module.exclusion_centre` take the three-valued domain `{MISSING, None, value}`. `MISSING` (not declared) and `None` (declared null) are distinct and a schema that collapses them cannot express C10a. `MISSING` is a module-level sentinel, not `None`.
+
+**(4) Validation/runtime.** Phase 1c, stage E. Ordering: C10a and C10b run after C11 (index sequence), because the identity of `D_N` is read from `cassette_index`; if C11 failed, both are skipped with `CHECK_SKIPPED` INFO diagnostics rather than guessing the terminal module.
+
+**(5) Test.** **T67.** `REF-CASSETTE-3` with `D3.exclusion_centre = MISSING`. Expect `INFEASIBLE / TOPOLOGY_NOT_LINEAR_ORDERED_CASSETTE`, code `TERMINAL_EXCLUSION_CENTRE_MISSING`, `{module: "D3"}`. **T68**: `D2.exit_offset = None` (declared null on a non-terminal module) → `EXIT_OFFSET_MALFORMED`. **T69**: `D3.exit_offset = MISSING` → `EXIT_OFFSET_MALFORMED` with `{declared: false}`.
+
+---
+
+## D8 — `E_dep` `REQUIRES` and engagement order
+
+**(1) Chosen rule.** **Option B — additional constraints intersected with `engagement_order_policy`.** Option A would discard a legitimate expressive facility that the base spec already defines. Option C would make the policy redundant. Intersection is the only choice that lets the two mechanisms disagree *detectably*.
+
+**(2) Normative wording** (new §20.6):
+
+> **§20.6 (v0.3) Interaction of `E_dep` REQUIRES with `engagement_order_policy`.** In `LINEAR_ORDERED_CASSETTE` mode, `REQUIRES` edges are permitted and act as **additional** ordering constraints. The admissible engagement order relation is the intersection of the constraint sets, equivalently the transitive closure of the union digraph
+> ```
+> R_union = R_policy ∪ R_requires
+> R_policy = { (D_m, D_i) : m < i }   for STRICT_PROXIMAL_TO_DISTAL
+>          = ∅                        for ANY_ORDER
+>          = the supplied DAG         for EXPLICIT_PARTIAL_ORDER
+> R_requires = { (i, j) : (i ≺ j) ∈ E_dep }
+> ```
+> A state `S` is admissible iff its `ENGAGED` set is down-closed under `R_union`.
+>
+> **Conflict.** `R_union` containing a directed cycle means the intersection admits no order and the configuration is unsatisfiable. It is rejected at config time with `status = INFEASIBLE`, `status_reason = "ENGAGEMENT_ORDER_CONSTRAINTS_UNSATISFIABLE"`, and one diagnostic per cycle:
+> - cycle formed entirely within `R_requires` → code `REQUIRES_CYCLE_IN_CASSETTE`;
+> - cycle requiring at least one `R_policy` edge → code `ENGAGEMENT_ORDER_CONFLICT`, carrying the offending `REQUIRES` edge and the policy edges completing the cycle.
+>
+> Under `STRICT_PROXIMAL_TO_DISTAL`, any `REQUIRES` edge `(i, j)` with `cassette_index(i) > cassette_index(j)` necessarily closes a cycle and is reported as `ENGAGEMENT_ORDER_CONFLICT` with `{requires_edge, policy_path}`. A `REQUIRES` edge consistent with the policy is redundant but legal and is reported as an INFO diagnostic `REDUNDANT_REQUIRES_EDGE`, never an error. `status_reason` for order conflicts is distinct from `TOPOLOGY_NOT_LINEAR_ORDERED_CASSETTE`: connectivity and order are different failures and MUST NOT share a reason string.
+>
+> `EXCLUDES` edges are unaffected by this section and retain base §2.2 semantics.
+
+**(3) Schema/API.** `validate_cassette_order_constraints(cfg) -> EvaluationResult` (pure, Phase 1c). `CassetteSpec += { explicit_partial_order: [ [from, to] ] | MISSING }`, required iff `engagement_order_policy == EXPLICIT_PARTIAL_ORDER`, else must be `MISSING` (code `EXPLICIT_ORDER_UNEXPECTED`).
+
+**(4) Validation/runtime.** Config-time satisfiability in Phase 1c. Per-state down-closure check in Phase 2 (D1.c2), reason `ENGAGEMENT_ORDER_VIOLATION`, unchanged.
+
+**(5) Test.** **T70.** `STRICT_PROXIMAL_TO_DISTAL` with `REQUIRES(D3, D1)`. Expect `INFEASIBLE / ENGAGEMENT_ORDER_CONSTRAINTS_UNSATISFIABLE`, code `ENGAGEMENT_ORDER_CONFLICT`. **T71**: `ANY_ORDER` with `REQUIRES(D1, D2)` and `REQUIRES(D2, D1)` → `REQUIRES_CYCLE_IN_CASSETTE`. **T72**: `STRICT_PROXIMAL_TO_DISTAL` with `REQUIRES(D1, D2)` → `VALID` with INFO `REDUNDANT_REQUIRES_EDGE`. **T73**: `EXPLICIT_PARTIAL_ORDER` with `explicit_partial_order = MISSING` → `INFEASIBLE / POLICY_FIELD_MISSING`, code `EXPLICIT_ORDER_MISSING`.
+
+---
+
+## D9 — Single-module cassette
+
+**(1) Chosen rule.** **`N = 1` is legal.** [PV1] Every stated invariant is satisfied vacuously or trivially: C2 exempts `D_1`, C3 exempts `D_N`, and a one-node path is a path. Forbidding it would require a rule not present in the contract. `N = 0` is illegal.
+
+**(2) Normative wording** (new §17.6):
+
+> **§17.6 (v0.3) Single-module cassette.** `N ≥ 1`. For `N = 1` the module `D_1` is simultaneously first and terminal. Required fields: `cassette_index = 1`; `exit_offset` declared as explicit null (C10a, since `1 == N`); `exclusion_centre` declared explicitly (C10b); `entry_offset` and `capture_offset_vec` declared. `ordered_segments` has length 1 and contains only `σ_0`. C2 requires `indeg_τ(D_1) = 1` with the parent being the root anchor; C3 requires `outdeg_τ(D_1) = 0`. Under §18.2 (v0.3) the element set for `D_1` under the empty state is `{σ_0, capture_offset}`, giving `D_max = L_0 + c_1` and `D_min = max(0, max(L_min,0 − c_1, c_1 − L_0))`. `unresolved_upstream_ids` is always empty for `N = 1` and `shielding_ancestor` is always `"ROOT"`.
+>
+> `N = 0`, i.e. an empty `ordered_modules`, is rejected with `INFEASIBLE / TOPOLOGY_NOT_LINEAR_ORDERED_CASSETTE`, code `CASSETTE_EMPTY`.
+
+**(3) Schema/API.** No new fields. The `λ` family is undefined for `D_N` and the element-set builder of §18.2 must produce an empty spacer list for `j = 1`, not an entry with `λ = 0`.
+
+**(4) Validation/runtime.** Emptiness check in Phase 1c stage A, before C11.
+
+**(5) Test.** **T74 (N=1 accepted).** Anchor → `D1`, `exit_offset = None`, `exclusion_centre` declared. Expect `VALID`; `ordered_segments` length 1. **T75 (N=1 terminal centre missing)** → `TERMINAL_EXCLUSION_CENTRE_MISSING`. **T76 (N=0)** → `CASSETTE_EMPTY`. **T77 (N=1 budget)**, Phase 2: `spacers_nm == []` and `shielding_ancestor == "ROOT"`.
+
+---
+
+## D10 — Cache behavior
+
+**(1) Chosen rule.** **No shielding-based cache sharing in v1.** The shielding theorem of §18.3 holds only under `SELF_AVOIDANCE_IGNORED` with `FREE_SWIVEL`; under `EXCLUDED_SHELL_BOUND` and `EXTERNAL_SAMPLED_CHAIN` two states with the same shielding ancestor are *not* density-identical, because the unresolved bodies differ. Exploiting it would require a per-policy proof that does not exist. The cache key remains the full base key plus `topology_mode`.
+
+**(2) Normative wording** (replaces §11.8 key definition):
+
+> **§11.8 (v0.3) Cache key.**
+> ```
+> cache_key = H( node_id, state_hash, policy_hash, geometry_hash,
+>                tolerance_hash, method_version, topology_mode )
+> ```
+> `topology_mode` is a first-class key component: two configs differing only in `topology_mode` produce different `geometry_hash` values **and** different cache keys, and share no entry. A hit requires exact equality of every component. **Shielding-based cache sharing is prohibited in v1.** Two distinct `state_hash` values with the same `shielding_ancestor` MUST NOT share an entry, even under `SELF_AVOIDANCE_IGNORED` where the shielding theorem would permit it, because the sharing predicate would then be policy-dependent and would silently become wrong on a policy change. Re-introduction requires a per-policy soundness proof recorded in the specification before implementation. A cache implementation that keys on `shielding_ancestor` is MNH28.
+
+**(3) Schema/API.** `cache_key(...)` gains a required `topology_mode` parameter. `config_identity_hash(cfg)` includes `topology_mode` in its canonical serialization. Both are pure and live in Phase 1c so that T56 is testable before any evaluation code exists.
+
+**(4) Validation/runtime.** MNH21 (differing `topology_mode` under a shared `geometry_hash`) becomes unreachable by construction. `audit_result` verifies that `diagnostics.topology_mode` matches the mode encoded in the key.
+
+**(5) Test.** **T56** as specified, implemented in Phase 1c: identical geometry, two modes, assert `config_identity_hash` differs and `cache_key` differs. **T78**: same mode, same everything → identical hashes (determinism).
+
+---
+
+# PART 2 — Addendum A v0.3 (changed and new sections only)
+
+> Sections not listed are unchanged from v0.2. Where v0.3 text conflicts with v0.2, v0.3 governs.
+
+**§17.1 (amended)** — exclusion centre rule per D7.
+**§17.2 (amended)** — `Module.exit_offset`, `Module.exclusion_centre`, `Module.unresolved_occupancy_fraction` take the three-valued `{MISSING, None, value}` domain; `CassetteSpec.explicit_partial_order` added; `CassettePolicy.tau_spacer` and `pose_marginalization_max_level` added.
+**§17.4 (amended)** — C10 splits into C10a/C10b; new codes `ROOT_ANCHOR_MISSING`, `ROOT_ANCHOR_MISMATCH`, `CASSETTE_EMPTY`, `SEGMENT_SEQUENCE_INVALID`, `TERMINAL_EXCLUSION_CENTRE_MISSING` added under the existing invariants.
+**§17.6 (new)** — single-module cassette, per D9.
+**§18.2 (replaced)** — generalized polygon inequality, per D1.
+**§18.4 (replaced)** — `RESTRICTED_CONE` not implemented in v1, per D2.
+**§18.5.1 (new)** — Haar marginalization, per D5.
+**§19.2.1 (new)** — spacer dominance guard, per D3.
+**§19.3.1 (new)** — shell-bound interval construction, per D4.
+**§10.7 (new)** and **§20.5 (replaced)** — `StateResult` and closure propagation, per D6.
+**§20.6 (new)** — `REQUIRES` × policy intersection, per D8.
+**§11.8 (replaced)** — cache key, per D10.
+
+**§11.6 (extended) — must-never-happen additions**
+
+| ID | Forbidden internal state |
+|---|---|
+| MNH22 | `D_min > D_max` for any element set |
+| MNH23 | `RESTRICTED_CONE` silently mapped onto another junction model |
+| MNH24 | `P_smeared` outside `[P_lower, P_upper]` |
+| MNH25 | Exit point and exclusion centre marginalized independently |
+| MNH26 | Node result under a closure-vetoed state without `vetoing_state_result_id` |
+| MNH27 | `κ_N` defaulted rather than declared |
+| MNH28 | Cache entry keyed on `shielding_ancestor` |
+
+**§13 (extended) — audit checklist additions**
+
+- L13. Is `D_min` ever computed as a sum of element minima rather than by the dominance rule? (MNH16, MNH22)
+- L14. Does any branch accept `RESTRICTED_CONE`? (MNH23)
+- L15. Is the spacer guard comparison `>=`, and is it suppressed when `M_spacer == 0`?
+- L16. Is `φ_i` ever used to construct the exported interval rather than only the diagnostic point estimate? (MNH24)
+- L17. Is `SO(3)` ever sampled pseudo-randomly, or `u_k` and `κ_k` marginalized in separate loops? (MNH25, T29)
+- L18. Does every node result under a vetoed state carry `vetoing_state_result_id`? (MNH26)
+- L19. Is `κ_N` ever defaulted? (MNH27)
+- L20. Does the cache key include `topology_mode`, and does it exclude `shielding_ancestor`? (MNH28)
+- L21. Do topology failures and order failures share a `status_reason`? They must not.
+
+**§12 (extended) — new tests.** T57–T78 as specified in Part 1, added to the existing T34–T56.
+
+---
+
+# PART 3 — Phased implementation plan (1c, 2, 4, 5)
+
+## Phase 1c — schema and pure topology validation
+
+**Modules.** `gotne/status.py` (new), `gotne/cassette_schema.py` (new), `gotne/cassette_topology.py` (new), `gotne/mode_applicability.py` (new), `gotne/identity.py` (new), `tests/test_cassette_topology.py` (new).
+
+**Public API.**
+```python
+validate_cassette_policy_fields(cfg: CassetteConfig) -> EvaluationResult
+validate_cassette_topology(cfg: CassetteConfig) -> EvaluationResult
+validate_cassette_order_constraints(cfg: CassetteConfig) -> EvaluationResult
+validate_cassette_config(cfg: CassetteConfig) -> EvaluationResult
+config_identity_hash(cfg: CassetteConfig) -> str
+cache_key(node_id, state_hash, policy_hash, geometry_hash,
+          tolerance_hash, method_version, topology_mode) -> str
+mode_applicability(test_id: str, mode: TopologyMode) -> ModeApplicability
+```
+
+**Validation order (locked).** `validate_cassette_config` runs, in this order and never reordered: **P0** policy fields → **P1** topology C1–C14 → **P2** order constraints. Each stage is skipped with an INFO `CHECK_SKIPPED` diagnostic if a prerequisite stage failed. All three run before WF1–WF7, which belong to the base validator and are not touched in this phase. Within P1, checks are grouped into stages A (declaration: C1a, `CASSETTE_EMPTY`, C14, C11), B (anchoring: C1, C12), C (degree: C2, C3), D (connectivity: C4, C13), E (offsets: C10a, C10b). **All checks run; no early exit.** Structural validation is cheap and deterministic, so the complete violation set is always returned; tests assert diagnostic-code *membership*, never exclusivity.
+
+**Status/reason/diagnostic contract.**
+
+| Stage | `status` | `status_reason` | Codes |
+|---|---|---|---|
+| P0 | `INFEASIBLE` | `POLICY_FIELD_MISSING`, `POLICY_FIELD_OUT_OF_RANGE`, `JUNCTION_MODEL_NOT_SUPPORTED_V1` | `RESTRICTED_CONE_NOT_IMPLEMENTED`, `TAU_SPACER_OUT_OF_RANGE`, `OCCUPANCY_FRACTION_MISSING`, `OCCUPANCY_FRACTION_OUT_OF_RANGE`, `EXPLICIT_ORDER_MISSING`, `EXPLICIT_ORDER_UNEXPECTED`, `POSE_LEVEL_OUT_OF_RANGE`, `TOPOLOGY_MODE_MISSING` |
+| P1 | `INFEASIBLE` | `TOPOLOGY_NOT_LINEAR_ORDERED_CASSETTE` (single, mandated) | C1–C14 codes |
+| P2 | `INFEASIBLE` | `ENGAGEMENT_ORDER_CONSTRAINTS_UNSATISFIABLE` | `REQUIRES_CYCLE_IN_CASSETTE`, `ENGAGEMENT_ORDER_CONFLICT`, `REDUNDANT_REQUIRES_EDGE` (INFO) |
+
+All failures apply the §10.1 veto field pattern through the single `apply_status_field_pattern` implementation.
+
+**Required tests.** T34, T35, T36, T37, T38, T55, T56 (mandated) plus T59, T60, T61, T62, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T78.
+
+**Non-goals.** No geometry. No numerics beyond scalar domain checks on declared policy fields. No `math`, `numpy`, or SDF import. No effective anchor, no contour budget, no density, no state evaluation, no `StateResult`, no caching implementation (only the key function), no WF1–WF7, no `GENERAL_DAG` support.
+
+## Phase 2 — single-path conditional evaluation
+
+**Modules.** `gotne/cassette_frames.py`, `gotne/cassette_budget.py`, `gotne/cassette_state.py`, `gotne/closure.py`, `gotne/evaluate_node.py`.
+
+**Public API.**
+```python
+cassette_effective_anchor(mod_id, state, cfg) -> (Vec3, ancestor_id_or_ROOT, index)
+cassette_contour_budget(mod_id, state, cfg) -> BudgetBreakdown       # §18.2 v0.3
+chain_closure_feasible(i, j, state, cfg, policy) -> Tri
+evaluate_state(state, cfg, policy) -> EvaluationResult               # object_kind STATE
+evaluate_node(node_id, state_cert: StateCertificate, cfg, policy) -> EvaluationResult
+```
+`evaluate_node` takes **no** anchor parameter; C6 is enforced by signature.
+
+**Validation order.** Phase 1c config validation → state admissibility under `R_union` (§20.6) → `evaluate_state` closure sweep over consecutive engaged pairs in increasing `i` → per-node D0…D4 with the v0.3 budget → D5 escalations (`SELF_AVOIDANCE_IGNORED`, `SHELL_BOUND`).
+
+**Contract.** New reasons: `ENGAGEMENT_ORDER_VIOLATION`, `CHAIN_CLOSURE_VIOLATED`, `ENGAGED_POSE_UNDERDETERMINED`, `SELF_AVOIDANCE_IGNORED`. Mandatory diagnostics: `shielding_ancestor`, `upstream_resolution`, `unresolved_upstream_ids`, `contour_budget_breakdown` (with `elements`, `dominating_element_id`, `folding_unobstructed`), `vetoing_state_result_id` when propagated.
+
+**Tests.** T39, T40, T41, T42, T43, T44, T45, T46, T48, T49, T50, T51, T54, T57, T58, T66, T77.
+
+**Non-goals.** No density, no capture integral, no survival terms, no marginalization, no intervals, no external sampled input.
+
+## Phase 4 — composite density and pose marginalization
+
+**Modules.** `gotne/composite_density.py`, `gotne/so3_grids.py`, `gotne/pose_marginalization.py`.
+
+**Public API.**
+```python
+composite_second_moment(elements, policy) -> (M_seg, M_spacer, spacer_fraction)
+compute_conditional_density(cert, x, cfg, policy, external=None) -> EvaluationResult
+so3_grid(level: int, stabilizer: Stabilizer) -> Sequence[Rotation]   # deterministic
+compute_pose_marginalized(cert, functional, cfg, policy) -> EvaluationResult
+```
+
+**Validation order.** Budget → element set → `M_seg`/`M_spacer` → spacer guard (`≥`, suppressed when `M_spacer == 0`) → density → marginalization when the §18.5.1 exemption does not apply → convergence check.
+
+**Contract.** Single-element composites may carry `EXACT_CLOSED_FORM`; multi-element `GAUSSIAN_MOMENT_MATCH` never does. New reasons: `SPACER_DOMINATED`, `POSE_MARGINALIZED`, `POSE_MARGINALIZATION_NOT_CONVERGED` (status `NUMERIC_FAILURE`, all fields null).
+
+**Tests.** T52, T53, T53b, T53c, T63, T64, T65.
+
+**Non-goals.** No shell bounds, no obstacle survival, no external sampled chain, no caching.
+
+## Phase 5 — `EXCLUDED_SHELL_BOUND` interval arithmetic
+
+**Modules.** `gotne/shell_bounds.py`, `gotne/intervals.py`.
+
+**Public API.**
+```python
+at_risk_region(i, j, state, cfg) -> Region
+at_risk_capture_weight(i, j, cert, cfg, policy) -> EvaluationResult   # m_i
+compute_shell_bound(cert, cfg, policy) -> EvaluationResult            # interval + smeared estimate
+```
+
+**Validation order.** Nominal `P` → per-`i` `m_i` → pairwise `ω` disjointness check → product or Fréchet → interval assembly → assert `P_lower ≤ P_smeared ≤ P_upper` (MNH24) → assert `P_upper == P_nominal` bitwise.
+
+**Contract.** `values.conditional_probability = null`, `value_intervals.conditional_probability = [lo, hi]`, `provenance = BOUND_ONLY`, `status = APPROXIMATION_REQUIRED / SHELL_BOUND`, `diagnostics.smeared_point_estimate` with the `φ_i` used. MNH15 enforced.
+
+**Tests.** T47, plus regression of T46 (its value must equal the new `P_upper`).
+
+**Non-goals.** No interval-times-interval arithmetic (base unresolved item 10 is still open), no correlated shell modelling beyond Fréchet, no external sampled chain.
+
+---
+
+# PART 4 — Phase 1c implementation
+
+Building the files now.Phase 1c is implemented and all 46 tests pass (`python3 -m unittest discover -s tests -t .`). Files are below.
+
+**What the code enforces.** `validate_cassette_config` runs P0 policy fields → P1 topology C1–C14 → P2 order constraints, in that locked order, before WF1–WF7. It imports nothing beyond `dataclasses`, `enum`, `typing`, `hashlib`, `json`; a purity test greps the sources for `math`/`numpy`/`scipy`/`random` and a second test asserts no Phase 2+ symbol is exported. C6 is enforced by absence: no function in the package accepts an anchor position, so re-rooting is not expressible rather than merely rejected. C5, C7, C8 are runtime invariants and are registered in `RUNTIME_ENFORCED_INVARIANTS` as an explicit gap rather than silently claimed.
+
+**Two implementation policies worth flagging**, since neither is derivable from your brief:
+
+- *Complete diagnosis.* Every check runs; there is no early exit. T35 needs both `MULTI_ANCHOR_IN_CASSETTE` and `SECONDARY_SURFACE_ANCHOR`, and T37 needs both `PARENT_COUNT_INVALID` and `NOT_A_SINGLE_PATH`, which a stop-on-first-stage design cannot deliver. Checks whose prerequisites failed emit INFO `CHECK_SKIPPED` rather than guessing. Tests therefore assert code membership, never exclusivity.
+- *Reason separation.* Topology failures use the single mandated `TOPOLOGY_NOT_LINEAR_ORDERED_CASSETTE`; policy and order failures use distinct reasons (`JUNCTION_MODEL_NOT_SUPPORTED_V1`, `POLICY_FIELD_MISSING`, `POLICY_FIELD_OUT_OF_RANGE`, `ENGAGEMENT_ORDER_CONSTRAINTS_UNSATISFIABLE`). Collapsing connectivity and order onto one reason string would make audit item L21 uncheckable.
+
+**Three decisions are labelled [PV1] in Part 1 and cannot be justified from the existing contract**: `tau_spacer = 0.25` as the numeric default, `≥` rather than `>` as the escalation comparison, and the legality of `N = 1`. The first two are guard-threshold judgements; the third follows from the invariants but was never stated, so it is recorded as a choice.
+
+Still open after this round, carried into Phase 5: interval-times-interval arithmetic when two shell-bound factors multiply (base unresolved item 10). The current text specifies interval-times-point only, which is what §15.D exercises; naive interval multiplication would over-widen, and no correlation-aware rule has been fixed. That needs deciding before Phase 5 begins, not during it.
