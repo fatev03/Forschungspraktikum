@@ -19,7 +19,7 @@ import subprocess
 import sys
 import types
 import unittest
-from dataclasses import FrozenInstanceError
+from dataclasses import FrozenInstanceError, replace
 
 ROOT_DIR = pathlib.Path(__file__).resolve().parents[1]
 PACKAGE_DIR = ROOT_DIR / "files"
@@ -730,7 +730,7 @@ class DerivedConditionsAndReasons(unittest.TestCase):
         doc = document(missing_declarations=(missing("/scope", "unresolved"),))
         self.assertEqual(conditions_of(doc, 0), ("UNAVAILABLE",))
         self.assertIn(
-            "/missing_declarations/0",
+            "/scope",
             reasons_of(doc, 0)["DECLARATION_MISSING"].field_paths,
         )
 
@@ -2117,6 +2117,301 @@ class ApplicabilityAndMixedValues(unittest.TestCase):
         self.assertEqual(again.to_json_bytes(), doc.to_json_bytes())
         self.assertEqual(again.descriptor_conditions, doc.descriptor_conditions)
         self.assertEqual(again.descriptor_reasons, doc.descriptor_reasons)
+
+
+class CoordinatedSemanticAlignment(unittest.TestCase):
+    COLLECTIVE = False
+
+    def one(self, **overrides):
+        return document(descriptors=(descriptor(),), **overrides)
+
+    def assert_wire(self, doc):
+        cls = type(doc)
+        self.assertEqual(cls.from_json_bytes(doc.to_json_bytes()).to_json_bytes(), doc.to_json_bytes())
+        self.assertEqual(cls.from_dict(doc.as_dict()).as_dict(), doc.as_dict())
+        payload = doc.as_dict()
+        payload["descriptors"][0]["reasons"].append({
+            "code": "DECLARATION_MISSING", "field_paths": ["/unasserted"],
+            "observation_ids": [], "record_ids": [],
+        })
+        with self.assertRaises(Error) as caught:
+            cls.from_json_bytes(canon(payload))
+        self.assertEqual(caught.exception.code, "INVARIANT_INVALID")
+        self.assertEqual(caught.exception.field, "/descriptors/0/reasons")
+        payload = doc.as_dict()
+        payload["descriptors"][0]["conditions"] = (
+            ["UNAVAILABLE"] if "PROVIDED" in conditions_of(doc, 0) else ["PROVIDED"]
+        )
+        with self.assertRaises(Error) as caught:
+            cls.from_dict(payload)
+        self.assertEqual(caught.exception.field, "/descriptors/0/conditions")
+
+    def mapped_scope(self, alternative):
+        original = scope()
+        subjects = list(original.participants)
+        subjects[0] = replace(subjects[0], mapping_alternatives=(alternative,))
+        return replace(original, participants=tuple(subjects))
+
+    def role_case(self, name):
+        original = scope()
+        if self.COLLECTIVE:
+            identifier = getattr(original.local_associations[0], name)
+            pointer = "/scope/local_associations/0/" + name
+        else:
+            identifier = getattr(original, name)
+            pointer = "/scope/" + name
+        subjects = tuple(
+            replace(p, role="LIGAND") if p.participant_id == identifier else p
+            for p in original.participants
+        )
+        return replace(original, participants=subjects), pointer
+
+    def test_container_applicability_and_original_absolute_attribution(self):
+        marker = missing("/descriptors/1/observations/0/value", "caller explanation")
+        for container in ("document", "scope", "descriptor", "observation"):
+            with self.subTest(container=container):
+                first = descriptor(observations=(observation("z"), observation("a")))
+                second = replace(
+                    descriptor(), descriptor_id="second",
+                    definition=replace(definition(), selection_declaration="second selection"),
+                )
+                kwargs = {}
+                if container == "document":
+                    kwargs["missing_declarations"] = (marker,)
+                elif container == "scope":
+                    kwargs["scope"] = replace(scope(), missing_declarations=(marker,))
+                elif container == "descriptor":
+                    first = replace(first, missing_declarations=(marker,))
+                else:
+                    first = replace(first, observations=(
+                        replace(first.observations[0], missing_declarations=(marker,)),
+                        first.observations[1],
+                    ))
+                doc = document(descriptors=(first, second), **kwargs)
+                self.assertEqual(
+                    conditions_of(doc, 0),
+                    ("PROVIDED",) if container == "observation" else ("UNAVAILABLE",),
+                )
+                self.assertEqual(
+                    conditions_of(doc, 1),
+                    ("UNAVAILABLE",) if container in ("document", "scope") else ("PROVIDED",),
+                )
+                reason = reasons_of(doc, 0)["DECLARATION_MISSING"]
+                self.assertEqual(reason.field_paths, (marker.field,))
+                self.assertEqual(reason.observation_ids, ("z",) if container == "observation" else ())
+                payload = doc.as_dict()
+                locations = {
+                    "document": payload,
+                    "scope": payload["scope"],
+                    "descriptor": payload["descriptors"][0],
+                    "observation": payload["descriptors"][0]["observations"][0],
+                }
+                self.assertEqual(locations[container]["missing_declarations"], [marker.as_dict()])
+                self.assert_wire(doc)
+
+    def test_nonexistent_and_root_locators_are_retained_without_dependency_analysis(self):
+        for pointer in ("", "/nowhere/~0at~1all"):
+            with self.subTest(pointer=pointer):
+                marker = missing(pointer, "opaque caller locator")
+                doc = self.one(missing_declarations=(marker,))
+                self.assertEqual(conditions_of(doc, 0), ("UNAVAILABLE",))
+                self.assertEqual(reasons_of(doc, 0)["DECLARATION_MISSING"].field_paths, (pointer,))
+                self.assertEqual(doc.missing_declarations, (marker,))
+                self.assert_wire(doc)
+
+    def test_missing_paths_are_unique_sorted_but_input_records_remain_distinct(self):
+        markers = (missing("/z", "first"), missing("/a", "second"), missing("/z", "third"))
+        doc = self.one(missing_declarations=markers)
+        self.assertEqual(doc.missing_declarations, markers)
+        self.assertEqual(reasons_of(doc, 0)["DECLARATION_MISSING"].field_paths, ("/a", "/z"))
+        self.assertEqual([r.code for r in doc.descriptor_reasons[0]], ["DECLARATION_MISSING"])
+        self.assert_wire(doc)
+
+    def test_mixed_values_have_one_evidence_reason_and_no_declaration_gap(self):
+        observed = (observation("z", value=None), observation("a"), observation("b", value=None))
+        doc = document(descriptors=(descriptor(observations=observed),))
+        self.assertEqual(conditions_of(doc, 0), ("PROVIDED",))
+        self.assertEqual([r.code for r in doc.descriptor_reasons[0]], ["EVIDENCE_NOT_SUPPLIED"])
+        reason = reasons_of(doc, 0)["EVIDENCE_NOT_SUPPLIED"]
+        self.assertEqual(reason.observation_ids, ("z", "b"))
+        self.assertEqual(reason.field_paths, (
+            "/descriptors/0/observations/0/value", "/descriptors/0/observations/2/value",
+        ))
+        self.assertEqual(reason.record_ids, ())
+        self.assert_wire(doc)
+
+    def test_all_valueless_and_empty_observations_remain_unavailable(self):
+        for observed in ((), (observation("z", value=None), observation("a", value=None))):
+            with self.subTest(count=len(observed)):
+                doc = document(descriptors=(descriptor(observations=observed),))
+                self.assertEqual(conditions_of(doc, 0), ("UNAVAILABLE",))
+                self.assertEqual([r.code for r in doc.descriptor_reasons[0]], ["EVIDENCE_NOT_SUPPLIED"])
+                self.assertEqual(
+                    reasons_of(doc, 0)["EVIDENCE_NOT_SUPPLIED"].observation_ids,
+                    tuple(o.observation_id for o in observed),
+                )
+                self.assert_wire(doc)
+
+    def test_role_disagreement_requires_exact_document_or_scope_declaration(self):
+        for name in ("binder_participant_id", "target_participant_id"):
+            for container in ("document", "scope"):
+                with self.subTest(name=name, container=container):
+                    declared_scope, pointer = self.role_case(name)
+                    marker = missing(pointer, "explicit unresolved role")
+                    kwargs = {"scope": declared_scope}
+                    if container == "scope":
+                        kwargs["scope"] = replace(declared_scope, missing_declarations=(marker,))
+                    else:
+                        kwargs["missing_declarations"] = (marker,)
+                    doc = self.one(**kwargs)
+                    self.assertEqual(conditions_of(doc, 0), ("UNAVAILABLE",))
+                    self.assertIn(pointer, reasons_of(doc, 0)["DECLARATION_MISSING"].field_paths)
+                    self.assertEqual(doc.scope.participants, declared_scope.participants)
+                    self.assertEqual(
+                        doc.missing_declarations + doc.scope.missing_declarations, (marker,)
+                    )
+                    self.assert_wire(doc)
+
+    def test_unrecorded_relative_and_descriptor_only_role_declarations_are_refused(self):
+        for name in ("binder_participant_id", "target_participant_id"):
+            for form in ("absent", "relative", "descriptor"):
+                with self.subTest(name=name, form=form):
+                    declared_scope, pointer = self.role_case(name)
+                    first = descriptor()
+                    if form == "relative":
+                        declared_scope = replace(
+                            declared_scope, missing_declarations=(missing("/" + name),)
+                        )
+                    if form == "descriptor":
+                        first = replace(first, missing_declarations=(missing(pointer),))
+                    with self.assertRaises(Error) as caught:
+                        document(scope=declared_scope, descriptors=(first,))
+                    self.assertEqual(caught.exception.code, "INVARIANT_INVALID")
+                    self.assertEqual(caught.exception.field, pointer)
+
+    def test_missing_namespace_and_chain_are_nonqualifying_and_not_repaired(self):
+        for name in ("identifier_namespace", "chain_id"):
+            with self.subTest(field=name):
+                chain = replace(chain_instance(), **{name: None})
+                alternative = replace(mapping_alternative(), chain_instances=(chain,))
+                doc = self.one(scope=self.mapped_scope(alternative))
+                self.assertEqual(conditions_of(doc, 0), ("UNAVAILABLE",))
+                self.assertEqual(doc.scope.participants[0].mapping_alternatives, (alternative,))
+                self.assertIn(
+                    "/scope/participants/0/mapping_alternatives/0/chain_instances/0/" + name,
+                    reasons_of(doc, 0)["DECLARATION_MISSING"].field_paths,
+                )
+                self.assert_wire(doc)
+
+    def test_optional_instance_identifier_remains_optional(self):
+        chain = replace(chain_instance(), instance_id=None)
+        doc = self.one(scope=self.mapped_scope(
+            replace(mapping_alternative(), chain_instances=(chain,))
+        ))
+        self.assertEqual(conditions_of(doc, 0), ("PROVIDED",))
+        self.assert_wire(doc)
+
+    def test_missing_mapping_pose_is_retained_as_nonqualifying(self):
+        alternative = replace(mapping_alternative(), pose_id=None)
+        doc = self.one(scope=self.mapped_scope(alternative))
+        self.assertEqual(conditions_of(doc, 0), ("UNAVAILABLE",))
+        self.assertIn(
+            "/scope/participants/0/mapping_alternatives/0/pose_id",
+            reasons_of(doc, 0)["DECLARATION_MISSING"].field_paths,
+        )
+        self.assert_wire(doc)
+
+    def test_explicit_mapping_observation_pose_mismatches_are_refused(self):
+        for mapped, observed in (("pose_1", "pose_2"), ("pose_2", "pose_1")):
+            with self.subTest(mapped=mapped, observed=observed):
+                alternative = replace(mapping_alternative(), pose_id=mapped)
+                with self.assertRaises(Error) as caught:
+                    document(
+                        scope=self.mapped_scope(alternative), poses=(pose(), pose("pose_2")),
+                        descriptors=(descriptor(observations=(observation(pose_id=observed),)),),
+                    )
+                self.assertEqual(caught.exception.code, "REFERENCE_INVALID")
+                self.assertEqual(caught.exception.field, "/descriptors/0/observations/0/pose_id")
+
+    def test_missing_observation_pose_remains_nonqualifying(self):
+        doc = document(descriptors=(descriptor(observations=(observation(pose_id=None),)),))
+        self.assertEqual(conditions_of(doc, 0), ("UNAVAILABLE",))
+        self.assert_wire(doc)
+
+    def test_unrelated_supplied_mapping_does_not_constrain_observation_pose(self):
+        extra = participant(
+            "unrelated", "CONTEXT",
+            mapping_alternatives=(replace(mapping_alternative(), pose_id="pose_2"),),
+        )
+        declared_scope = replace(scope(), participants=scope().participants + (extra,))
+        doc = self.one(scope=declared_scope, poses=(pose(), pose("pose_2")))
+        self.assertEqual(conditions_of(doc, 0), ("PROVIDED",))
+        self.assert_wire(doc)
+
+    def test_ambiguous_mapping_is_retained_without_selecting_an_alternative(self):
+        original = scope()
+        changed = replace(
+            original.participants[0], mapping_state="AMBIGUOUS",
+            mapping_alternatives=(
+                mapping_alternative(), replace(mapping_alternative(), pose_id="pose_2"),
+            ),
+        )
+        declared_scope = replace(original, participants=(changed,) + original.participants[1:])
+        doc = self.one(scope=declared_scope, poses=(pose(), pose("pose_2")))
+        self.assertEqual(conditions_of(doc, 0), ("UNAVAILABLE", "AMBIGUOUS"))
+        self.assertEqual(doc.scope.participants[0], changed)
+        self.assert_wire(doc)
+
+    def test_nonapplicable_overlap_or_interference_remains_blocking(self):
+        doc = document(descriptors=(descriptor(
+            definition=definition(reference_state=reference_state("NOT_APPLICABLE"))
+        ),))
+        self.assertEqual(conditions_of(doc, 0), ("UNAVAILABLE",))
+        self.assertIn(
+            "/descriptors/0/definition/reference_state",
+            reasons_of(doc, 0)["DECLARATION_MISSING"].field_paths,
+        )
+        self.assert_wire(doc)
+
+    def test_nonapplicable_deformation_is_still_refused(self):
+        family = BURDEN if self.COLLECTIVE else DEFORMATION
+        with self.assertRaises(Error) as caught:
+            document(descriptors=(descriptor(
+                family=family,
+                definition=definition(reference_state=reference_state("NOT_APPLICABLE")),
+            ),))
+        self.assertEqual(caught.exception.code, "INVARIANT_INVALID")
+        self.assertEqual(caught.exception.field, "/descriptors/0/definition/reference_state/kind")
+
+    def test_shared_evidence_cardinality_errors_are_invariant_faults(self):
+        cases = (
+            lambda: replace(uncertainties("u")[0], state="DECLARED", source_references=()),
+            lambda: replace(ambiguity(), field_paths=()),
+            lambda: replace(ambiguity(), alternatives=ambiguity().alternatives[:1]),
+            lambda: replace(ambiguity(), alternatives=(ambiguity().alternatives[0],) * 2),
+            lambda: replace(conflict(), observation_ids=("o1",)),
+            lambda: replace(conflict(), observation_ids=("o1", "o1")),
+            lambda: m.L2ReferenceState(kind="UNAVAILABLE", references=(src(),), declaration="why"),
+            lambda: m.L2ConditionsProfileReference(state="SUPPLIED", reference=None, reason=None),
+            lambda: participant(
+                mapping_state="SUPPLIED", mapping_alternatives=()
+            ),
+        )
+        for index, call in enumerate(cases):
+            with self.subTest(case=index), self.assertRaises(Error) as caught:
+                call()
+            self.assertEqual(caught.exception.code, "INVARIANT_INVALID")
+
+    def test_primitive_spelling_and_token_errors_remain_structural(self):
+        for call in (
+            lambda: missing("relative", "why"),
+            lambda: participant(role="UNDECLARED_ROLE"),
+            lambda: replace(uncertainties("u")[0], state="unknown"),
+            lambda: m.L2ReferenceState(kind="NOT_APPLICABLE", references=(), declaration=""),
+        ):
+            with self.subTest(call=call), self.assertRaises(Error) as caught:
+                call()
+            self.assertEqual(caught.exception.code, "STRUCTURAL_INVALID")
 
 
 if __name__ == "__main__":

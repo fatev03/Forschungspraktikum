@@ -1,7 +1,7 @@
-"""Layer 2A descriptor input document (contract ``layer_2a_descriptor_input/1``).
+"""Layer 2B descriptor input document (contract ``layer_2b_descriptor_input/1``).
 
 Standard library only. This module holds the shared primitive and immutable record
-vocabulary that ``layer_2a_descriptor_input/1`` requires, plus the public document
+vocabulary that ``layer_2b_descriptor_input/1`` requires, plus the public document
 record. It opens no file, resolves no locator, parses no coordinate or trajectory,
 reads no provider output, computes no hash, reads no clock or environment, starts no
 subprocess and reaches no network.
@@ -9,24 +9,28 @@ subprocess and reaches no network.
 Every field name, vocabulary token, family label, condition, reason and non-claim text
 is opaque contract data. This module neither assigns nor interprets meaning for any of
 them. It checks shape, spelling, cardinality, internal reference resolution and the
-document invariants, and it derives exactly three things: the two document constants
+collective invariants, and it derives exactly three things: the two document constants
 and, per descriptor, ``conditions`` and ``reasons``.
 
-LOCAL SCOPE ONLY
+DELIBERATE DUPLICATION
 
-  Only ``L2_LOCAL_FAMILIES`` exists here. The collective families, the collective
-  scope records and ``layer_2b_descriptor_input/1`` are out of scope and are neither
-  defined nor accepted. Records used exclusively by the collective document
-  (``L2JointFrame``, ``L2AssemblyElement``, ``L2Connection``,
-  ``L2LocalDocumentReference``) are deliberately absent.
+  The shared primitive and record vocabulary is copied verbatim from the Layer 2A
+  module rather than imported. The two document types are separate immutable
+  contracts, and neither depends on the other at import time.
+
+COLLECTIVE SCOPE ONLY
+
+  Only ``L2_COLLECTIVE_FAMILIES`` exists here. The local families and the Layer 2A
+  local-scope record are out of scope and are neither defined nor accepted.
+  ``L2LocalAssociation`` names a Layer 2A document; it never loads, reconstructs or
+  validates its external contents, and it never creates a collective frame.
 
 WHAT IS NEVER DONE
 
-  No score, rank, priority, comparison, feature calculation, uncertainty estimate or
-  eligibility decision. No external reference is resolved or loaded. Absent,
-  unavailable, ambiguous and contradictory declarations are preserved exactly as
-  supplied; nothing is repaired, normalized, deduplicated or reordered except where
-  the contract expressly derives an order.
+  No score, rank, triage, comparison, feature calculation, uncertainty estimate or
+  eligibility decision. No external reference is resolved or loaded, and there is no
+  cross-document loader. Absent, unavailable, ambiguous and contradictory
+  declarations are preserved exactly as supplied.
 
 ERRORS
 
@@ -43,9 +47,14 @@ import json
 # Closed vocabularies
 # ================================================================================
 
-L2_LOCAL_FAMILIES = ("LOCAL_OVERLAP", "LOCAL_ISOLATED_REFERENCE_DEFORMATION_BURDEN")
+L2_COLLECTIVE_FAMILIES = (
+    "COLLECTIVE_INTERFERENCE",
+    "COLLECTIVE_DEFORMATION_RESTRAINT_BURDEN",
+    "COLLECTIVE_ANCHOR_LINKER_CONFIGURATION",
+)
 L2_SLOT_IDS = ("slot_1", "slot_2", "slot_3")
 L2_PARTICIPANT_ROLES = ("BINDER", "RECEPTOR", "LIGAND", "CONTEXT")
+L2_ELEMENT_KINDS = ("ANCHOR", "LINKER")
 L2_INFORMATION_STATES = ("SUPPLIED", "ABSENT", "AMBIGUOUS")
 L2_PROFILE_STATES = ("SUPPLIED", "UNAVAILABLE")
 L2_CONDITIONS = ("PROVIDED", "UNAVAILABLE", "AMBIGUOUS", "CONTRADICTORY")
@@ -76,6 +85,7 @@ L2_UNIT_CLASSES = (
     "OTHER",
 )
 L2_ANCHOR_KINDS = ("CONTENT_HASH", "IMMUTABLE_SNAPSHOT")
+L2_FRAME_KINDS = ("CALLER_DECLARED_ARTIFACT_MODEL_FRAME",)
 L2_REFERENCE_STATE_KINDS = (
     "ISOLATED_FROZEN",
     "ISOLATED_RELAXED",
@@ -105,21 +115,32 @@ L2_ERROR_CODES = (
 # Document constants
 # ================================================================================
 
-LAYER_2A_DOCUMENT_TYPE = "layer_2a_descriptor_input/1"
-LAYER_2A_FAMILIES = L2_LOCAL_FAMILIES
-LAYER_2A_NON_CLAIM = (
-    "This document preserves supplied computational descriptors for one declared "
-    "binder–target local scope, with their provenance, assumptions and "
-    "uncertainty. It does not establish a coupled three-binder assembly, binding, "
-    "affinity, avidity, thermodynamic truth, compatibility, biological activity, "
-    "safety or experimental success. Missing evidence is not negative evidence. It "
-    "assigns no priority and changes no deterministic outcome."
+LAYER_2B_DOCUMENT_TYPE = "layer_2b_descriptor_input/1"
+LAYER_2B_FAMILIES = L2_COLLECTIVE_FAMILIES
+LAYER_2B_NON_CLAIM = (
+    "This document preserves supplied computational descriptors for a "
+    "caller-declared three-binder, anchor/linker and shared-target scope, with "
+    "their provenance, assumptions and uncertainty. The declared joint scope does "
+    "not establish simultaneous engagement, binding, affinity, avidity, "
+    "thermodynamic truth, compatibility, biological activity, safety or "
+    "experimental success. Missing evidence is not negative evidence. It assigns "
+    "no priority and changes no deterministic outcome."
 )
 
-#: Reference-state kinds the deformation family accepts (local invariant).
-LOCAL_DEFORMATION_REFERENCE_STATE_KINDS = (
-    "ISOLATED_FROZEN",
-    "ISOLATED_RELAXED",
+#: The document type an L2LocalDocumentReference names. It is never loaded.
+LOCAL_DOCUMENT_TYPE = "layer_2a_descriptor_input/1"
+
+#: Families whose values are numeric only.
+DIRECTIONAL_FAMILIES = (
+    "COLLECTIVE_INTERFERENCE",
+    "COLLECTIVE_DEFORMATION_RESTRAINT_BURDEN",
+)
+
+#: Reference-state kinds the collective deformation/restraint family accepts.
+COLLECTIVE_DEFORMATION_REFERENCE_STATE_KINDS = (
+    "ASSEMBLY_REFERENCE",
+    "ANCHOR_LINKER_REFERENCE",
+    "RESTRAINT_REFERENCE",
     "UNAVAILABLE",
 )
 
@@ -128,6 +149,16 @@ _INAPPLICABLE_REFERENCE_STATES = ("NOT_APPLICABLE", "UNAVAILABLE")
 
 #: The ordered fields an admission reference may list as absent.
 _ADMISSION_ABSENT_KEYS = ("state_result_id", "ineligibility_reason", "certificate_present")
+
+#: The six nullable identity/reference fields that govern a local association reason.
+_LOCAL_ASSOCIATION_OPTIONAL = (
+    "binder_participant_id",
+    "target_participant_id",
+    "candidate_id",
+    "scenario_id",
+    "pose_association_reference",
+    "local_document_reference",
+)
 
 _CONTENT_HASH_ALGORITHM = "sha256"
 _CONTENT_HASH_DIGEST_LENGTH = 64
@@ -1224,7 +1255,7 @@ class L2DescriptorRecord:
 
     def __post_init__(self):
         _identifier(self.descriptor_id, "/descriptor_id")
-        _token(self.family, LAYER_2A_FAMILIES, "/family")
+        _token(self.family, LAYER_2B_FAMILIES, "/family")
         _opt_text(self.scope_declaration, "/scope_declaration")
         _record(self.definition, L2ObservableDefinition, "/definition")
         for name, element in (
@@ -1261,7 +1292,7 @@ class L2FamilyAvailability:
     absence_reason: str | None
 
     def __post_init__(self):
-        _token(self.family, LAYER_2A_FAMILIES, "/family")
+        _token(self.family, LAYER_2B_FAMILIES, "/family")
         identifiers = _identifier_tuple(self.descriptor_ids, "/descriptor_ids")
         object.__setattr__(self, "descriptor_ids", identifiers)
         _opt_text(self.absence_reason, "/absence_reason")
@@ -1281,33 +1312,242 @@ class L2FamilyAvailability:
 
 
 # ================================================================================
-# Local scope
+# Collective scope records
 # ================================================================================
 
 
 @dataclass(frozen=True)
-class L2LocalScope:
+class L2LocalDocumentReference:
+    """Names a Layer 2A document revision. Its contents are never loaded."""
+
+    document_id: str
+    revision: str
+    reference: L2ImmutableReference
+
+    def __post_init__(self):
+        _identifier(self.document_id, "/document_id")
+        _identifier(self.revision, "/revision")
+        _record(self.reference, L2ImmutableReference, "/reference")
+
+    def as_dict(self):
+        return {
+            "document_id": self.document_id,
+            "revision": self.revision,
+            "reference": self.reference.as_dict(),
+        }
+
+
+@dataclass(frozen=True)
+class L2JointFrame:
+    """A caller assertion. It establishes no coordinate reconciliation."""
+
+    frame_id: str
+    frame_kind: str
+    pose_ids: tuple
+    declaration: str
+    source_reference: L2SourceRecord | None
+
+    def __post_init__(self):
+        _identifier(self.frame_id, "/frame_id")
+        _token(self.frame_kind, L2_FRAME_KINDS, "/frame_kind")
+        poses = _identifier_tuple(self.pose_ids, "/pose_ids")
+        object.__setattr__(self, "pose_ids", poses)
+        _text(self.declaration, "/declaration")
+        _opt_record(self.source_reference, L2SourceRecord, "/source_reference")
+
+    def as_dict(self):
+        return {
+            "frame_id": self.frame_id,
+            "frame_kind": self.frame_kind,
+            "pose_ids": list(self.pose_ids),
+            "declaration": self.declaration,
+            "source_reference": (
+                None if self.source_reference is None else self.source_reference.as_dict()
+            ),
+        }
+
+
+@dataclass(frozen=True)
+class L2AssemblyElement:
+    element_id: str
+    kind: str
+    identity_reference: L2ImmutableReference | None
+    construct_id: str | None
+    construct_version: str | None
+    mapping_state: str
+    mapping_alternatives: tuple
+    representation_declaration: str | None
+
+    def __post_init__(self):
+        _identifier(self.element_id, "/element_id")
+        _token(self.kind, L2_ELEMENT_KINDS, "/kind")
+        _opt_record(self.identity_reference, L2ImmutableReference, "/identity_reference")
+        _opt_identifier(self.construct_id, "/construct_id")
+        _opt_identifier(self.construct_version, "/construct_version")
+        _token(self.mapping_state, L2_INFORMATION_STATES, "/mapping_state")
+        alternatives = _record_tuple(
+            self.mapping_alternatives, L2MappingAlternative, "/mapping_alternatives"
+        )
+        object.__setattr__(self, "mapping_alternatives", alternatives)
+        _check_mapping_cardinality(
+            self.mapping_state, alternatives, "/mapping_alternatives"
+        )
+        _opt_text(self.representation_declaration, "/representation_declaration")
+
+    def as_dict(self):
+        return {
+            "element_id": self.element_id,
+            "kind": self.kind,
+            "identity_reference": (
+                None
+                if self.identity_reference is None
+                else self.identity_reference.as_dict()
+            ),
+            "construct_id": self.construct_id,
+            "construct_version": self.construct_version,
+            "mapping_state": self.mapping_state,
+            "mapping_alternatives": [
+                item.as_dict() for item in self.mapping_alternatives
+            ],
+            "representation_declaration": self.representation_declaration,
+        }
+
+
+@dataclass(frozen=True)
+class L2Connection:
+    """Sites and connectivity are declared, never inferred."""
+
+    connection_id: str
+    first_subject_id: str
+    first_site_declaration: str | None
+    second_subject_id: str
+    second_site_declaration: str | None
+    connection_declaration: str | None
+    source_reference: L2SourceRecord | None
+
+    def __post_init__(self):
+        _identifier(self.connection_id, "/connection_id")
+        _identifier(self.first_subject_id, "/first_subject_id")
+        _opt_text(self.first_site_declaration, "/first_site_declaration")
+        _identifier(self.second_subject_id, "/second_subject_id")
+        _opt_text(self.second_site_declaration, "/second_site_declaration")
+        _opt_text(self.connection_declaration, "/connection_declaration")
+        _opt_record(self.source_reference, L2SourceRecord, "/source_reference")
+
+    def endpoints(self):
+        """The ordered endpoint/site declaration. Reversed order is not normalized."""
+        return (
+            self.first_subject_id,
+            self.first_site_declaration,
+            self.second_subject_id,
+            self.second_site_declaration,
+        )
+
+    def as_dict(self):
+        return {
+            "connection_id": self.connection_id,
+            "first_subject_id": self.first_subject_id,
+            "first_site_declaration": self.first_site_declaration,
+            "second_subject_id": self.second_subject_id,
+            "second_site_declaration": self.second_site_declaration,
+            "connection_declaration": self.connection_declaration,
+            "source_reference": (
+                None if self.source_reference is None else self.source_reference.as_dict()
+            ),
+        }
+
+
+@dataclass(frozen=True)
+class L2LocalAssociation:
+    """One local-association position. It never creates a collective frame."""
+
     slot_id: str
     binder_participant_id: str | None
     target_participant_id: str | None
-    participants: tuple
-    association_reference: L2AssociationReference | None
-    target_site_declaration: str | None
-    context_declarations: tuple
-    missing_declarations: tuple
+    candidate_id: str | None
+    scenario_id: str | None
+    pose_association_reference: L2AssociationReference | None
+    local_document_reference: L2LocalDocumentReference | None
+    missing_reason: str | None
 
     def __post_init__(self):
         _token(self.slot_id, L2_SLOT_IDS, "/slot_id")
         _opt_identifier(self.binder_participant_id, "/binder_participant_id")
         _opt_identifier(self.target_participant_id, "/target_participant_id")
-        participants = _record_tuple(
-            self.participants, L2MolecularParticipant, "/participants"
-        )
-        object.__setattr__(self, "participants", participants)
+        _opt_identifier(self.candidate_id, "/candidate_id")
+        _opt_identifier(self.scenario_id, "/scenario_id")
         _opt_record(
-            self.association_reference, L2AssociationReference, "/association_reference"
+            self.pose_association_reference,
+            L2AssociationReference,
+            "/pose_association_reference",
         )
+        _opt_record(
+            self.local_document_reference,
+            L2LocalDocumentReference,
+            "/local_document_reference",
+        )
+        _opt_text(self.missing_reason, "/missing_reason")
+        absent = [
+            name
+            for name in _LOCAL_ASSOCIATION_OPTIONAL
+            if getattr(self, name) is None
+        ]
+        if absent and self.missing_reason is None:
+            _structural(
+                "/missing_reason",
+                "an absent identity/reference field requires a missing reason",
+            )
+        if not absent and self.missing_reason is not None:
+            _structural(
+                "/missing_reason",
+                "a complete local association requires a null missing reason",
+            )
+
+    def as_dict(self):
+        return {
+            "slot_id": self.slot_id,
+            "binder_participant_id": self.binder_participant_id,
+            "target_participant_id": self.target_participant_id,
+            "candidate_id": self.candidate_id,
+            "scenario_id": self.scenario_id,
+            "pose_association_reference": (
+                None
+                if self.pose_association_reference is None
+                else self.pose_association_reference.as_dict()
+            ),
+            "local_document_reference": (
+                None
+                if self.local_document_reference is None
+                else self.local_document_reference.as_dict()
+            ),
+            "missing_reason": self.missing_reason,
+        }
+
+
+@dataclass(frozen=True)
+class L2CollectiveScope:
+    participants: tuple
+    local_associations: tuple
+    assembly_elements: tuple
+    connections: tuple
+    joint_frame: L2JointFrame | None
+    target_site_declaration: str | None
+    assembly_task_declaration: str | None
+    context_declarations: tuple
+    missing_declarations: tuple
+
+    def __post_init__(self):
+        for name, element in (
+            ("participants", L2MolecularParticipant),
+            ("local_associations", L2LocalAssociation),
+            ("assembly_elements", L2AssemblyElement),
+            ("connections", L2Connection),
+        ):
+            items = _record_tuple(getattr(self, name), element, "/" + name)
+            object.__setattr__(self, name, items)
+        _opt_record(self.joint_frame, L2JointFrame, "/joint_frame")
         _opt_text(self.target_site_declaration, "/target_site_declaration")
+        _opt_text(self.assembly_task_declaration, "/assembly_task_declaration")
         contexts = _record_tuple(
             self.context_declarations, L2ContextDeclaration, "/context_declarations"
         )
@@ -1319,16 +1559,17 @@ class L2LocalScope:
 
     def as_dict(self):
         return {
-            "slot_id": self.slot_id,
-            "binder_participant_id": self.binder_participant_id,
-            "target_participant_id": self.target_participant_id,
             "participants": [item.as_dict() for item in self.participants],
-            "association_reference": (
-                None
-                if self.association_reference is None
-                else self.association_reference.as_dict()
+            "local_associations": [
+                item.as_dict() for item in self.local_associations
+            ],
+            "assembly_elements": [item.as_dict() for item in self.assembly_elements],
+            "connections": [item.as_dict() for item in self.connections],
+            "joint_frame": (
+                None if self.joint_frame is None else self.joint_frame.as_dict()
             ),
             "target_site_declaration": self.target_site_declaration,
+            "assembly_task_declaration": self.assembly_task_declaration,
             "context_declarations": [
                 item.as_dict() for item in self.context_declarations
             ],
@@ -1397,10 +1638,7 @@ _TOP_LEVEL_KEYS = (
     "non_claim",
 )
 
-#: Descriptor-level declarations a provided observation requires.
-_DESCRIPTOR_REQUIRED = (
-    ("scope_declaration", "/scope_declaration"),
-)
+_DESCRIPTOR_REQUIRED = (("scope_declaration", "/scope_declaration"),)
 _DEFINITION_REQUIRED = (
     ("definition_reference", "/definition/definition_reference"),
     ("selection_declaration", "/definition/selection_declaration"),
@@ -1420,10 +1658,18 @@ _POSE_REQUIRED = (
     "method_reference",
 )
 
+#: The collective scope declarations a provided collective observation requires.
+_COLLECTIVE_SCOPE_REQUIRED = (
+    "joint_frame",
+    "participants",
+    "assembly_elements",
+    "connections",
+)
+
 
 @dataclass(frozen=True)
-class Layer2ADescriptorInput:
-    """One immutable ``layer_2a_descriptor_input/1`` document."""
+class Layer2BDescriptorInput:
+    """One immutable ``layer_2b_descriptor_input/1`` document."""
 
     document_id: str
     revision: str
@@ -1431,17 +1677,15 @@ class Layer2ADescriptorInput:
     declared_at: str
     source_references: tuple
     candidate_anchor: L2CandidateAnchor
-    scope: L2LocalScope
+    scope: L2CollectiveScope
     poses: tuple
     family_availability: tuple
     descriptors: tuple
     missing_declarations: tuple
-    document_type: str = field(init=False, default=LAYER_2A_DOCUMENT_TYPE)
-    non_claim: str = field(init=False, default=LAYER_2A_NON_CLAIM)
+    document_type: str = field(init=False, default=LAYER_2B_DOCUMENT_TYPE)
+    non_claim: str = field(init=False, default=LAYER_2B_NON_CLAIM)
     descriptor_conditions: tuple = field(init=False, default=())
     descriptor_reasons: tuple = field(init=False, default=())
-
-    # -- construction -------------------------------------------------------------
 
     def __post_init__(self):
         self._structural_phase()
@@ -1451,6 +1695,8 @@ class Layer2ADescriptorInput:
         self._family_phase()
         self._derived_phase()
 
+    # -- phase 1: structural traversal in declared field order ---------------------
+
     def _structural_phase(self):
         _identifier(self.document_id, "/document_id")
         _identifier(self.revision, "/revision")
@@ -1459,7 +1705,7 @@ class Layer2ADescriptorInput:
         sources = _source_tuple(self.source_references, "/source_references")
         object.__setattr__(self, "source_references", sources)
         _record(self.candidate_anchor, L2CandidateAnchor, "/candidate_anchor")
-        _record(self.scope, L2LocalScope, "/scope")
+        _record(self.scope, L2CollectiveScope, "/scope")
         poses = _record_tuple(self.poses, L2PoseRecord, "/poses")
         object.__setattr__(self, "poses", poses)
         availability = _record_tuple(
@@ -1473,63 +1719,99 @@ class Layer2ADescriptorInput:
         )
         object.__setattr__(self, "missing_declarations", missing)
 
-    # -- phase 2: internal reference resolution -----------------------------------
+    # -- phase 2: internal reference resolution ------------------------------------
 
     def _reference_phase(self):
-        participants = {}
-        for position, participant in enumerate(self.scope.participants):
-            if participant.participant_id in participants:
-                _reference_error(
-                    "/scope/participants/{0}/participant_id".format(position),
-                    "participant identifiers share one document-wide namespace",
-                )
-            participants[participant.participant_id] = position
-        object.__setattr__(self, "_participant_index", participants)
+        subjects = {}
+        for collection in ("participants", "assembly_elements"):
+            key = "participant_id" if collection == "participants" else "element_id"
+            for position, item in enumerate(getattr(self.scope, collection)):
+                identifier = getattr(item, key)
+                if identifier in subjects:
+                    _reference_error(
+                        "/scope/{0}/{1}/{2}".format(collection, position, key),
+                        "participant and assembly-element identifiers share one "
+                        "document-wide namespace",
+                    )
+                subjects[identifier] = (collection, position)
+        object.__setattr__(self, "_subject_index", subjects)
 
         poses = {}
         for position, pose in enumerate(self.poses):
             if pose.pose_id in poses:
                 _reference_error(
-                    "/poses/{0}/pose_id".format(position), "pose identifiers must be unique"
+                    "/poses/{0}/pose_id".format(position),
+                    "pose identifiers must be unique",
                 )
             poses[pose.pose_id] = position
         object.__setattr__(self, "_pose_index", poses)
 
-        for name in ("binder_participant_id", "target_participant_id"):
-            value = getattr(self.scope, name)
-            if value is not None and value not in participants:
-                _reference_error(
-                    "/scope/" + name, "identifier does not resolve to a participant"
-                )
+        participants = {
+            item.participant_id: position
+            for position, item in enumerate(self.scope.participants)
+        }
+        object.__setattr__(self, "_participant_index", participants)
 
-        for position, participant in enumerate(self.scope.participants):
-            for offset, alternative in enumerate(participant.mapping_alternatives):
-                if alternative.pose_id is not None and alternative.pose_id not in poses:
+        # Only an unresolvable identifier is a reference fault here. A role
+        # disagreement is retained, never repaired, and is reported by the derived
+        # phase as an unresolved scope declaration.
+        for position, association in enumerate(self.scope.local_associations):
+            prefix = "/scope/local_associations/{0}".format(position)
+            for name in ("binder_participant_id", "target_participant_id"):
+                value = getattr(association, name)
+                if value is None:
+                    continue
+                if value not in participants:
                     _reference_error(
-                        "/scope/participants/{0}/mapping_alternatives/{1}/pose_id".format(
-                            position, offset
-                        ),
+                        prefix + "/" + name,
+                        "identifier does not resolve to a participant",
+                    )
+
+        for collection in ("participants", "assembly_elements"):
+            for position, item in enumerate(getattr(self.scope, collection)):
+                for offset, alternative in enumerate(item.mapping_alternatives):
+                    if alternative.pose_id is None:
+                        continue
+                    if alternative.pose_id not in poses:
+                        _reference_error(
+                            "/scope/{0}/{1}/mapping_alternatives/{2}/pose_id".format(
+                                collection, position, offset
+                            ),
+                            "identifier does not resolve to a pose",
+                        )
+
+        for position, connection in enumerate(self.scope.connections):
+            for name in ("first_subject_id", "second_subject_id"):
+                if getattr(connection, name) not in subjects:
+                    _reference_error(
+                        "/scope/connections/{0}/{1}".format(position, name),
+                        "identifier resolves only to a participant or assembly element",
+                    )
+
+        if self.scope.joint_frame is not None:
+            for offset, pose_id in enumerate(self.scope.joint_frame.pose_ids):
+                if pose_id not in poses:
+                    _reference_error(
+                        "/scope/joint_frame/pose_ids/{0}".format(offset),
                         "identifier does not resolve to a pose",
                     )
 
         for index, descriptor in enumerate(self.descriptors):
             base = "/descriptors/{0}".format(index)
-            local = {}
+            local = set()
             for position, observation in enumerate(descriptor.observations):
-                local[observation.observation_id] = position
-                if (
-                    observation.pose_id is not None
-                    and observation.pose_id not in poses
-                ):
+                local.add(observation.observation_id)
+                if observation.pose_id is not None and observation.pose_id not in poses:
                     _reference_error(
                         "{0}/observations/{1}/pose_id".format(base, position),
                         "identifier does not resolve to a pose",
                     )
             for position, subject in enumerate(descriptor.definition.subject_ids):
-                if subject not in participants:
+                if subject not in subjects:
                     _reference_error(
                         "{0}/definition/subject_ids/{1}".format(base, position),
-                        "subject identifier resolves only to declared participants",
+                        "subject identifier resolves only to a declared participant "
+                        "or assembly element",
                     )
             for name in ("uncertainties", "ambiguities", "conflicts"):
                 for position, record in enumerate(getattr(descriptor, name)):
@@ -1542,8 +1824,8 @@ class Layer2ADescriptorInput:
                                 "identifier does not resolve within this descriptor",
                             )
 
+        known = {item.descriptor_id for item in self.descriptors}
         for position, availability in enumerate(self.family_availability):
-            known = {item.descriptor_id for item in self.descriptors}
             for offset, descriptor_id in enumerate(availability.descriptor_ids):
                 if descriptor_id not in known:
                     _reference_error(
@@ -1553,7 +1835,7 @@ class Layer2ADescriptorInput:
                         "identifier does not resolve to a descriptor",
                     )
 
-    # -- phase 3: identity agreement ----------------------------------------------
+    # -- phase 3: identity agreement -----------------------------------------------
 
     def _identity_phase(self):
         admission = self.candidate_anchor.admission_reference
@@ -1568,47 +1850,105 @@ class Layer2ADescriptorInput:
                     "/candidate_anchor/candidate_id",
                     "candidate identity disagrees with the admission reference",
                 )
-        for position, pose in enumerate(self.poses):
-            if pose.association_reference is None:
-                continue
-            if pose.association_reference != self.scope.association_reference:
-                _reference_error(
-                    "/poses/{0}/association_reference".format(position),
-                    "pose association must equal the scope association reference",
-                )
+        for position, association in enumerate(self.scope.local_associations):
+            for name in ("candidate_id", "scenario_id"):
+                value = getattr(association, name)
+                if value is None:
+                    continue
+                if value != getattr(self.candidate_anchor, name):
+                    _reference_error(
+                        "/scope/local_associations/{0}/{1}".format(position, name),
+                        "a non-null identifier must equal the collective anchor",
+                    )
         for index, descriptor in enumerate(self.descriptors):
             for offset, observation in enumerate(descriptor.observations):
                 if observation.pose_id is None:
                     continue
+                field_path = "/descriptors/{0}/observations/{1}/pose_id".format(index, offset)
                 for subject in descriptor.definition.subject_ids:
-                    participant = self.scope.participants[self._participant_index[subject]]
-                    if participant.mapping_state != "SUPPLIED":
+                    collection, position = self._subject_index[subject]
+                    item = getattr(self.scope, collection)[position]
+                    if item.mapping_state != "SUPPLIED":
                         continue
-                    mapped_pose = participant.mapping_alternatives[0].pose_id
+                    mapped_pose = item.mapping_alternatives[0].pose_id
                     if mapped_pose is not None and mapped_pose != observation.pose_id:
                         _reference_error(
-                            "/descriptors/{0}/observations/{1}/pose_id".format(index, offset),
+                            field_path,
                             "observation pose disagrees with a supplied subject mapping",
                         )
+                frame = self.scope.joint_frame
+                if frame is None:
+                    continue
+                if frame.pose_ids and observation.pose_id not in frame.pose_ids:
+                    _reference_error(field_path, "observation pose is outside the declared joint frame")
+                pose_position = self._pose_index[observation.pose_id]
+                pose = self.poses[pose_position]
+                if pose.frame_id is not None and pose.frame_id != frame.frame_id:
+                    _reference_error(
+                        "/poses/{0}/frame_id".format(pose_position),
+                        "observation pose frame disagrees with the declared joint frame",
+                    )
 
-    # -- phase 4: cardinality, ordering and duplicates -----------------------------
+    # -- phase 4: cardinality, ordering and duplicates -------------------------------
 
     def _cardinality_phase(self):
-        binders = [p for p in self.scope.participants if p.role == "BINDER"]
-        receptors = [p for p in self.scope.participants if p.role == "RECEPTOR"]
-        if len(binders) > 1:
-            _invariant("/scope/participants", "at most one BINDER may be declared")
-        if len(receptors) > 1:
-            _invariant("/scope/participants", "at most one RECEPTOR may be declared")
-
-        seen_contexts = set()
-        for position, context in enumerate(self.scope.context_declarations):
-            if context.context_id in seen_contexts:
+        associations = self.scope.local_associations
+        if len(associations) != len(L2_SLOT_IDS):
+            _invariant(
+                "/scope/local_associations",
+                "exactly three local-association records are required",
+            )
+        for position, association in enumerate(associations):
+            if association.slot_id != L2_SLOT_IDS[position]:
                 _invariant(
-                    "/scope/context_declarations/{0}/context_id".format(position),
-                    "context identifiers must be unique",
+                    "/scope/local_associations/{0}/slot_id".format(position),
+                    "local associations must follow slot_1, slot_2, slot_3 order",
                 )
-            seen_contexts.add(context.context_id)
+
+        seen_binders = set()
+        for position, association in enumerate(associations):
+            value = association.binder_participant_id
+            if value is None:
+                continue
+            if value in seen_binders:
+                _invariant(
+                    "/scope/local_associations/{0}/binder_participant_id".format(
+                        position
+                    ),
+                    "binder identifiers across positions must be distinct",
+                )
+            seen_binders.add(value)
+        for position, participant in enumerate(self.scope.participants):
+            if participant.role == "BINDER" and participant.participant_id not in seen_binders:
+                _invariant(
+                    "/scope/participants/{0}/participant_id".format(position),
+                    "every binder participant must be referenced by exactly one "
+                    "local-association position",
+                )
+
+        for name, key in (
+            ("context_declarations", "context_id"),
+            ("connections", "connection_id"),
+        ):
+            seen = set()
+            for position, record in enumerate(getattr(self.scope, name)):
+                identifier = getattr(record, key)
+                if identifier in seen:
+                    _invariant(
+                        "/scope/{0}/{1}/{2}".format(name, position, key),
+                        "identifiers must be unique within their record collection",
+                    )
+                seen.add(identifier)
+
+        seen_endpoints = set()
+        for position, connection in enumerate(self.scope.connections):
+            endpoints = connection.endpoints()
+            if endpoints in seen_endpoints:
+                _invariant(
+                    "/scope/connections/{0}".format(position),
+                    "a connection may not repeat an ordered endpoint/site declaration",
+                )
+            seen_endpoints.add(endpoints)
 
         seen_descriptors = set()
         for index, descriptor in enumerate(self.descriptors):
@@ -1624,33 +1964,28 @@ class Layer2ADescriptorInput:
         self._role_agreement()
 
     def _role_agreement(self):
-        """Role disagreement must already be recorded; nothing is synthesized here.
-
-        An unresolved declaration naming the exact document-absolute pointer of the
-        scope field, in the document-level or scope-level array, retains the caller's
-        uncertainty through the derived conditions and reasons. Without one there is no
-        declaration to retain, and the document is refused rather than repaired.
-        """
+        """Retain a role disagreement only when the caller explicitly names it."""
         recorded = {
             record.field
             for record in (*self.missing_declarations, *self.scope.missing_declarations)
         }
-        for name, role in (
-            ("binder_participant_id", "BINDER"),
-            ("target_participant_id", "RECEPTOR"),
-        ):
-            value = getattr(self.scope, name)
-            if value is None:
-                continue
-            pointer = "/scope/" + name
-            participant = self.scope.participants[self._participant_index[value]]
-            if participant.role == role or pointer in recorded:
-                continue
-            _invariant(
-                pointer,
-                "the named participant does not carry the {0} role and no unresolved "
-                "declaration names {1}".format(role, pointer),
-            )
+        for position, association in enumerate(self.scope.local_associations):
+            for name, role in (
+                ("binder_participant_id", "BINDER"),
+                ("target_participant_id", "RECEPTOR"),
+            ):
+                value = getattr(association, name)
+                if value is None:
+                    continue
+                pointer = "/scope/local_associations/{0}/{1}".format(position, name)
+                participant = self.scope.participants[self._participant_index[value]]
+                if participant.role == role or pointer in recorded:
+                    continue
+                _invariant(
+                    pointer,
+                    "the named participant does not carry the {0} role and no unresolved "
+                    "declaration names {1}".format(role, pointer),
+                )
 
     def _descriptor_cardinality(self, index, descriptor):
         base = "/descriptors/{0}".format(index)
@@ -1710,19 +2045,19 @@ class Layer2ADescriptorInput:
                 )
             seen[key] = index
 
-    # -- phase 5: family checks ----------------------------------------------------
+    # -- phase 5: family checks -------------------------------------------------------
 
     def _family_phase(self):
-        if len(self.family_availability) != len(LAYER_2A_FAMILIES):
+        if len(self.family_availability) != len(LAYER_2B_FAMILIES):
             _invariant(
                 "/family_availability",
-                "exactly two availability records are required",
+                "exactly three availability records are required",
             )
         for position, availability in enumerate(self.family_availability):
-            if availability.family != LAYER_2A_FAMILIES[position]:
+            if availability.family != LAYER_2B_FAMILIES[position]:
                 _invariant(
                     "/family_availability/{0}/family".format(position),
-                    "availability records must follow LAYER_2A_FAMILIES order",
+                    "availability records must follow LAYER_2B_FAMILIES order",
                 )
             expected = tuple(
                 descriptor.descriptor_id
@@ -1738,40 +2073,50 @@ class Layer2ADescriptorInput:
 
         for index, descriptor in enumerate(self.descriptors):
             base = "/descriptors/{0}".format(index)
+            definition = descriptor.definition
             for position, observation in enumerate(descriptor.observations):
                 if observation.value is None:
                     continue
-                if observation.value.kind != "NUMERIC":
+                if (
+                    descriptor.family in DIRECTIONAL_FAMILIES
+                    and observation.value.kind != "NUMERIC"
+                ):
                     _invariant(
                         "{0}/observations/{1}/value/kind".format(base, position),
-                        "a local family permits only numeric values",
+                        "a directional family permits only numeric values",
                     )
-                if descriptor.definition.unit_class is None:
-                    _invariant(
-                        base + "/definition/unit_class",
-                        "a numeric value requires a non-null unit class",
-                    )
-                if descriptor.definition.unit_symbol is None:
-                    _invariant(
-                        base + "/definition/unit_symbol",
-                        "a numeric value requires a non-null unit symbol",
-                    )
-            if descriptor.family == "LOCAL_ISOLATED_REFERENCE_DEFORMATION_BURDEN":
-                if descriptor.definition.conditions_required is not True:
+                if observation.value.kind == "NUMERIC":
+                    for name in ("unit_class", "unit_symbol"):
+                        if getattr(definition, name) is None:
+                            _invariant(
+                                "{0}/definition/{1}".format(base, name),
+                                "a numeric value requires a non-null " + name,
+                            )
+                else:
+                    for name in ("unit_class", "unit_symbol"):
+                        if getattr(definition, name) is not None:
+                            _invariant(
+                                "{0}/definition/{1}".format(base, name),
+                                "a categorical value requires a null " + name,
+                            )
+            if descriptor.family == "COLLECTIVE_DEFORMATION_RESTRAINT_BURDEN":
+                if definition.conditions_required is not True:
                     _invariant(
                         base + "/definition/conditions_required",
-                        "the deformation family requires conditions_required to be true",
+                        "the deformation/restraint family requires "
+                        "conditions_required to be true",
                     )
                 if (
-                    descriptor.definition.reference_state.kind
-                    not in LOCAL_DEFORMATION_REFERENCE_STATE_KINDS
+                    definition.reference_state.kind
+                    not in COLLECTIVE_DEFORMATION_REFERENCE_STATE_KINDS
                 ):
                     _invariant(
                         base + "/definition/reference_state/kind",
-                        "the deformation family restricts the reference-state kind",
+                        "the deformation/restraint family restricts the "
+                        "reference-state kind",
                     )
 
-    # -- phase 6: derived conditions and reasons ------------------------------------
+    # -- phase 6: derived conditions and reasons ---------------------------------------
 
     def _derived_phase(self):
         conditions = []
@@ -1786,7 +2131,7 @@ class Layer2ADescriptorInput:
         object.__setattr__(self, "descriptor_reasons", tuple(reasons))
 
     def _shared_gaps(self, index, descriptor):
-        """Declarations required for provided content that are null or unresolved."""
+        """Declarations a provided observation requires that are null or unresolved."""
         base = "/descriptors/{0}".format(index)
         gaps = []
         ambiguous = []
@@ -1803,22 +2148,26 @@ class Layer2ADescriptorInput:
                 gaps.append(base + suffix)
         if definition.conditions_required and definition.conditions_profile.state != "SUPPLIED":
             gaps.append(base + "/definition/conditions_profile")
-        if definition.reference_state.kind in _INAPPLICABLE_REFERENCE_STATES:
+        reference_kind = definition.reference_state.kind
+        if reference_kind == "UNAVAILABLE" or (
+            reference_kind == "NOT_APPLICABLE"
+            and descriptor.family != "COLLECTIVE_ANCHOR_LINKER_CONFIGURATION"
+        ):
             gaps.append(base + "/definition/reference_state")
 
         for subject in definition.subject_ids:
-            position = self._participant_index[subject]
-            participant = self.scope.participants[position]
-            prefix = "/scope/participants/{0}".format(position)
+            collection, position = self._subject_index[subject]
+            item = getattr(self.scope, collection)[position]
+            prefix = "/scope/{0}/{1}".format(collection, position)
             for name in ("identity_reference", "construct_id", "construct_version"):
-                if getattr(participant, name) is None:
+                if getattr(item, name) is None:
                     gaps.append(prefix + "/" + name)
-            if participant.mapping_state == "AMBIGUOUS":
+            if item.mapping_state == "AMBIGUOUS":
                 ambiguous.append(prefix + "/mapping_state")
-            elif participant.mapping_state != "SUPPLIED":
+            elif item.mapping_state != "SUPPLIED":
                 gaps.append(prefix + "/mapping_state")
             else:
-                alternative = participant.mapping_alternatives[0]
+                alternative = item.mapping_alternatives[0]
                 if alternative.pose_id is None:
                     gaps.append(prefix + "/mapping_alternatives/0/pose_id")
                 if len(alternative.chain_instances) == 0:
@@ -1837,24 +2186,36 @@ class Layer2ADescriptorInput:
                             "/residue_addressing_reference".format(prefix, offset)
                         )
 
-        scope = self.scope
-        for name, role in (
-            ("binder_participant_id", "BINDER"),
-            ("target_participant_id", "RECEPTOR"),
-        ):
-            value = getattr(scope, name)
-            if value is None:
+        # The collective joint frame, participants, anchors/linkers and connections
+        # supply the relevant scope declarations; local associations never substitute.
+        for name in _COLLECTIVE_SCOPE_REQUIRED:
+            value = getattr(self.scope, name)
+            if value is None or (name != "joint_frame" and len(value) == 0):
                 gaps.append("/scope/" + name)
-            elif scope.participants[self._participant_index[value]].role != role:
-                gaps.append("/scope/" + name)
-        if scope.association_reference is None:
-            gaps.append("/scope/association_reference")
+        if self.scope.joint_frame is not None and not self.scope.joint_frame.pose_ids:
+            gaps.append("/scope/joint_frame/pose_ids")
 
-        # The container determines applicability; the absolute pointer is only
-        # the caller's diagnostic locator and is never dereferenced.
+        # A local-association role disagreement is an unresolved scope declaration:
+        # it is retained verbatim, blocks provided-content qualification, and never
+        # triggers role inference.
+        for position, association in enumerate(self.scope.local_associations):
+            prefix = "/scope/local_associations/{0}".format(position)
+            for name, role in (
+                ("binder_participant_id", "BINDER"),
+                ("target_participant_id", "RECEPTOR"),
+            ):
+                value = getattr(association, name)
+                if value is None:
+                    continue
+                declared = self.scope.participants[self._participant_index[value]]
+                if declared.role != role:
+                    gaps.append(prefix + "/" + name)
+
+        # An L2MissingDeclaration applies to the record scope that stores it; its
+        # pointer is carried verbatim as a diagnostic locator and never dereferenced.
         for record in self.missing_declarations:
             gaps.append(record.field)
-        for record in scope.missing_declarations:
+        for record in self.scope.missing_declarations:
             gaps.append(record.field)
         for record in descriptor.missing_declarations:
             gaps.append(record.field)
@@ -1864,8 +2225,6 @@ class Layer2ADescriptorInput:
     def _derive_descriptor(self, index, descriptor):
         base = "/descriptors/{0}".format(index)
         shared_gaps, ambiguous_paths = self._shared_gaps(index, descriptor)
-        # _shared_gaps reports only ambiguous subject mappings; they block every
-        # observation of this descriptor.
         mapping_ambiguous = bool(ambiguous_paths)
 
         ambiguity_records = []
@@ -1907,8 +2266,6 @@ class Layer2ADescriptorInput:
                 for name in _POSE_REQUIRED:
                     if getattr(pose, name) is None:
                         own.append(pose_prefix + "/" + name)
-                if pose.association_reference is None:
-                    own.append(pose_prefix + "/association_reference")
 
             blocked_by_ambiguity = (
                 descriptor_wide_ambiguity
@@ -1928,9 +2285,6 @@ class Layer2ADescriptorInput:
 
         reasons = []
 
-        # One reason per code: every value-less observation is named here, whether or
-        # not a sibling observation carries a value. A supplied value elsewhere in the
-        # descriptor neither hides nor supplies this absence.
         if value_paths or not any_value:
             paths = value_paths if value_paths else [base + "/observations"]
             reasons.append(
@@ -2017,7 +2371,7 @@ class Layer2ADescriptorInput:
         unique.sort(key=lambda item: order[item])
         return unique
 
-    # -- serialization --------------------------------------------------------------
+    # -- serialization -----------------------------------------------------------------
 
     def as_dict(self):
         """A fresh detached structure on every call, in canonical emission order."""
@@ -2052,49 +2406,17 @@ class Layer2ADescriptorInput:
     def to_json_bytes(self):
         return _canonical_bytes(self.as_dict())
 
-    # -- loading ----------------------------------------------------------------------
+    # -- loading --------------------------------------------------------------------------
 
     @classmethod
     def from_dict(cls, mapping):
-        """Strict reconstruction, traversed in declared top-level field order."""
         _keys(mapping, _TOP_LEVEL_KEYS, "")
-        if mapping["document_type"] != LAYER_2A_DOCUMENT_TYPE:
+        if mapping["document_type"] != LAYER_2B_DOCUMENT_TYPE:
             _structural("/document_type", "the document type constant was modified")
-        # The four document scalars precede every nested record in field order, so a
-        # fault in one of them is reported before a fault inside a later field.
-        _identifier(mapping["document_id"], "/document_id")
-        _identifier(mapping["revision"], "/revision")
-        _identifier(mapping["declared_by"], "/declared_by")
-        _timestamp(mapping["declared_at"], "/declared_at")
-
-        source_references = _build_sources(
-            mapping["source_references"], "/source_references"
-        )
-        candidate_anchor = _build_candidate_anchor(
-            mapping["candidate_anchor"], "/candidate_anchor"
-        )
-        scope = _build_scope(mapping["scope"], "/scope")
-        poses = tuple(
-            _build_pose(item, "/poses/{0}".format(position))
-            for position, item in enumerate(_array(mapping["poses"], "/poses"))
-        )
-        family_availability = tuple(
-            _build_availability(item, "/family_availability/{0}".format(position))
-            for position, item in enumerate(
-                _array(mapping["family_availability"], "/family_availability")
-            )
-        )
-        descriptors_raw = _array(mapping["descriptors"], "/descriptors")
-        descriptors = tuple(
-            _build_descriptor(item, "/descriptors/{0}".format(position))
-            for position, item in enumerate(descriptors_raw)
-        )
-        missing_declarations = _build_missing(
-            mapping["missing_declarations"], "/missing_declarations"
-        )
-        if mapping["non_claim"] != LAYER_2A_NON_CLAIM:
+        if mapping["non_claim"] != LAYER_2B_NON_CLAIM:
             _structural("/non_claim", "the non-claim constant was modified")
 
+        descriptors_raw = _array(mapping["descriptors"], "/descriptors")
         document = _at(
             "",
             cls,
@@ -2102,13 +2424,30 @@ class Layer2ADescriptorInput:
             revision=mapping["revision"],
             declared_by=mapping["declared_by"],
             declared_at=mapping["declared_at"],
-            source_references=source_references,
-            candidate_anchor=candidate_anchor,
-            scope=scope,
-            poses=poses,
-            family_availability=family_availability,
-            descriptors=descriptors,
-            missing_declarations=missing_declarations,
+            source_references=_build_sources(
+                mapping["source_references"], "/source_references"
+            ),
+            candidate_anchor=_build_candidate_anchor(
+                mapping["candidate_anchor"], "/candidate_anchor"
+            ),
+            scope=_build_collective_scope(mapping["scope"], "/scope"),
+            poses=tuple(
+                _build_pose(item, "/poses/{0}".format(position))
+                for position, item in enumerate(_array(mapping["poses"], "/poses"))
+            ),
+            family_availability=tuple(
+                _build_availability(item, "/family_availability/{0}".format(position))
+                for position, item in enumerate(
+                    _array(mapping["family_availability"], "/family_availability")
+                )
+            ),
+            descriptors=tuple(
+                _build_descriptor(item, "/descriptors/{0}".format(position))
+                for position, item in enumerate(descriptors_raw)
+            ),
+            missing_declarations=_build_missing(
+                mapping["missing_declarations"], "/missing_declarations"
+            ),
         )
 
         for index, raw in enumerate(descriptors_raw):
@@ -2135,13 +2474,12 @@ class Layer2ADescriptorInput:
         if not isinstance(data, (bytes, bytearray)):
             _structural("", "canonical input must be bytes")
         data = bytes(data)
+        if data.startswith(b"\xef\xbb\xbf"):
+            _fail("NON_CANONICAL_BYTES", "", "canonical bytes carry no byte order mark")
         try:
             text = data.decode("utf-8")
         except UnicodeDecodeError:
             _structural("", "canonical bytes must decode as UTF-8")
-        # A byte order mark is a non-canonical encoding, not a parse fault: the document
-        # is validated first, and the byte comparison below reports the deviation.
-        text = text[1:] if text.startswith("﻿") else text
         try:
             decoded = json.loads(
                 text,
@@ -2468,49 +2806,6 @@ def _build_missing(raw, path):
     return tuple(built)
 
 
-def _build_scope(raw, path):
-    _keys(
-        raw,
-        (
-            "slot_id",
-            "binder_participant_id",
-            "target_participant_id",
-            "participants",
-            "association_reference",
-            "target_site_declaration",
-            "context_declarations",
-            "missing_declarations",
-        ),
-        path,
-    )
-    return _at(
-        path,
-        L2LocalScope,
-        slot_id=raw["slot_id"],
-        binder_participant_id=raw["binder_participant_id"],
-        target_participant_id=raw["target_participant_id"],
-        participants=tuple(
-            _build_participant(item, "{0}/participants/{1}".format(path, position))
-            for position, item in enumerate(
-                _array(raw["participants"], path + "/participants")
-            )
-        ),
-        association_reference=_build_association(
-            raw["association_reference"], path + "/association_reference"
-        ),
-        target_site_declaration=raw["target_site_declaration"],
-        context_declarations=tuple(
-            _build_context(item, "{0}/context_declarations/{1}".format(path, position))
-            for position, item in enumerate(
-                _array(raw["context_declarations"], path + "/context_declarations")
-            )
-        ),
-        missing_declarations=_build_missing(
-            raw["missing_declarations"], path + "/missing_declarations"
-        ),
-    )
-
-
 def _build_profile(raw, path):
     _keys(raw, ("state", "reference", "reason"), path)
     return _at(
@@ -2803,4 +3098,174 @@ def _build_reason(raw, path):
         field_paths=tuple(_array(raw["field_paths"], path + "/field_paths")),
         observation_ids=tuple(_array(raw["observation_ids"], path + "/observation_ids")),
         record_ids=tuple(_array(raw["record_ids"], path + "/record_ids")),
+    )
+
+
+def _build_local_document_reference(raw, path):
+    if raw is None:
+        return None
+    _keys(raw, ("document_id", "revision", "reference"), path)
+    return _at(
+        path,
+        L2LocalDocumentReference,
+        document_id=raw["document_id"],
+        revision=raw["revision"],
+        reference=_build_reference(raw["reference"], path + "/reference"),
+    )
+
+
+def _build_joint_frame(raw, path):
+    if raw is None:
+        return None
+    _keys(raw, ("frame_id", "frame_kind", "pose_ids", "declaration", "source_reference"), path)
+    return _at(
+        path,
+        L2JointFrame,
+        frame_id=raw["frame_id"],
+        frame_kind=raw["frame_kind"],
+        pose_ids=tuple(_array(raw["pose_ids"], path + "/pose_ids")),
+        declaration=raw["declaration"],
+        source_reference=_build_source(
+            raw["source_reference"], path + "/source_reference"
+        ),
+    )
+
+
+def _build_assembly_element(raw, path):
+    _keys(
+        raw,
+        (
+            "element_id",
+            "kind",
+            "identity_reference",
+            "construct_id",
+            "construct_version",
+            "mapping_state",
+            "mapping_alternatives",
+            "representation_declaration",
+        ),
+        path,
+    )
+    return _at(
+        path,
+        L2AssemblyElement,
+        element_id=raw["element_id"],
+        kind=raw["kind"],
+        identity_reference=_build_reference(
+            raw["identity_reference"], path + "/identity_reference"
+        ),
+        construct_id=raw["construct_id"],
+        construct_version=raw["construct_version"],
+        mapping_state=raw["mapping_state"],
+        mapping_alternatives=tuple(
+            _build_mapping_alternative(
+                item, "{0}/mapping_alternatives/{1}".format(path, position)
+            )
+            for position, item in enumerate(
+                _array(raw["mapping_alternatives"], path + "/mapping_alternatives")
+            )
+        ),
+        representation_declaration=raw["representation_declaration"],
+    )
+
+
+def _build_connection(raw, path):
+    _keys(
+        raw,
+        (
+            "connection_id",
+            "first_subject_id",
+            "first_site_declaration",
+            "second_subject_id",
+            "second_site_declaration",
+            "connection_declaration",
+            "source_reference",
+        ),
+        path,
+    )
+    return _at(
+        path,
+        L2Connection,
+        connection_id=raw["connection_id"],
+        first_subject_id=raw["first_subject_id"],
+        first_site_declaration=raw["first_site_declaration"],
+        second_subject_id=raw["second_subject_id"],
+        second_site_declaration=raw["second_site_declaration"],
+        connection_declaration=raw["connection_declaration"],
+        source_reference=_build_source(
+            raw["source_reference"], path + "/source_reference"
+        ),
+    )
+
+
+def _build_local_association(raw, path):
+    _keys(
+        raw,
+        (
+            "slot_id",
+            "binder_participant_id",
+            "target_participant_id",
+            "candidate_id",
+            "scenario_id",
+            "pose_association_reference",
+            "local_document_reference",
+            "missing_reason",
+        ),
+        path,
+    )
+    return _at(
+        path,
+        L2LocalAssociation,
+        slot_id=raw["slot_id"],
+        binder_participant_id=raw["binder_participant_id"],
+        target_participant_id=raw["target_participant_id"],
+        candidate_id=raw["candidate_id"],
+        scenario_id=raw["scenario_id"],
+        pose_association_reference=_build_association(
+            raw["pose_association_reference"], path + "/pose_association_reference"
+        ),
+        local_document_reference=_build_local_document_reference(
+            raw["local_document_reference"], path + "/local_document_reference"
+        ),
+        missing_reason=raw["missing_reason"],
+    )
+
+
+def _build_collective_scope(raw, path):
+    _keys(
+        raw,
+        (
+            "participants",
+            "local_associations",
+            "assembly_elements",
+            "connections",
+            "joint_frame",
+            "target_site_declaration",
+            "assembly_task_declaration",
+            "context_declarations",
+            "missing_declarations",
+        ),
+        path,
+    )
+
+    def collection(name, builder):
+        return tuple(
+            builder(item, "{0}/{1}/{2}".format(path, name, position))
+            for position, item in enumerate(_array(raw[name], "{0}/{1}".format(path, name)))
+        )
+
+    return _at(
+        path,
+        L2CollectiveScope,
+        participants=collection("participants", _build_participant),
+        local_associations=collection("local_associations", _build_local_association),
+        assembly_elements=collection("assembly_elements", _build_assembly_element),
+        connections=collection("connections", _build_connection),
+        joint_frame=_build_joint_frame(raw["joint_frame"], path + "/joint_frame"),
+        target_site_declaration=raw["target_site_declaration"],
+        assembly_task_declaration=raw["assembly_task_declaration"],
+        context_declarations=collection("context_declarations", _build_context),
+        missing_declarations=_build_missing(
+            raw["missing_declarations"], path + "/missing_declarations"
+        ),
     )
