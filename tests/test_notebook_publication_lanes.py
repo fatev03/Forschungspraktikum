@@ -47,6 +47,11 @@ TAIL = (("vf-external-reference-section", "markdown"), ("vf-external-reference-d
         ("synthetic-demo-declarations", "code"), ("synthetic-demo-priority-disclaimer", "markdown"),
         ("synthetic-demo-priority", "code"), ("synthetic-demo-comparison", "code"),
         ("synthetic-demo-conclusion-nonclaim", "markdown"), ("synthetic-demo-conclusion", "code"),
+        ("triage-profile-00-disclaimer", "markdown"),
+        ("triage-profile-00-assignment", "code"),
+        ("triage-profile-00-section", "markdown"), ("triage-profile-01-load", "code"),
+        ("triage-profile-02-inventory", "code"), ("triage-profile-03-top-candidates", "code"),
+        ("triage-profile-04-dimensions", "code"), ("triage-profile-05-sources", "code"),
         ("DKQXlWEjIOsf", "markdown"))
 EXECUTED_PREFIXES = ("vf-demo-", "pub-lanes-")
 CHECKS = ["repeated serialization", "reload and reserialize", "handoff linkage",
