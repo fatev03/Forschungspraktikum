@@ -7,9 +7,9 @@ the middle of the notebook and later sections are inserted after it. PRE_TAIL is
 read-only collection, artifact-pack and combinations-table block, whose cell ids and sources
 are owned by the three structure_audit modules that publish them. TAIL is the notebook's
 actual final block — the optional external-reference section, the synthetic scenario
-demonstration and the original Colab appendix — which is intentional published content and
-is pinned at the notebook end. PRE_TAIL begins immediately after SECTION and TAIL
-immediately after PRE_TAIL.
+demonstration with the import-only kernel-bootstrap cell that opens it, and the original
+Colab appendix — which is intentional published content and is pinned at the notebook end.
+PRE_TAIL begins immediately after SECTION and TAIL immediately after PRE_TAIL.
 
 The value-flow and publication-lanes code cells run unmodified, in notebook order, in one
 namespace inside one fresh isolated interpreter (sys.executable -I -B) whose working
@@ -42,10 +42,16 @@ PRE_TAIL = (("artifact-inventory-00-section", "markdown"), ("artifact-inventory-
             ("combinations-table-00-input-unavailable", "markdown"),
             ("combinations-table-01-render", "code"))
 TAIL = (("vf-external-reference-section", "markdown"), ("vf-external-reference-demo", "code"),
-        ("synthetic-demo-scope", "markdown"), ("synthetic-demo-run", "code"),
+        ("synthetic-demo-scope", "markdown"),
+        ("synthetic-demo-00-kernel-bootstrap", "code"), ("synthetic-demo-run", "code"),
         ("synthetic-demo-declarations", "code"), ("synthetic-demo-priority-disclaimer", "markdown"),
         ("synthetic-demo-priority", "code"), ("synthetic-demo-comparison", "code"),
         ("synthetic-demo-conclusion-nonclaim", "markdown"), ("synthetic-demo-conclusion", "code"),
+        ("triage-profile-00-disclaimer", "markdown"),
+        ("triage-profile-00-assignment", "code"),
+        ("triage-profile-00-section", "markdown"), ("triage-profile-01-load", "code"),
+        ("triage-profile-02-inventory", "code"), ("triage-profile-03-top-candidates", "code"),
+        ("triage-profile-04-dimensions", "code"), ("triage-profile-05-sources", "code"),
         ("DKQXlWEjIOsf", "markdown"))
 EXECUTED_PREFIXES = ("vf-demo-", "pub-lanes-")
 CHECKS = ["repeated serialization", "reload and reserialize", "handoff linkage",
