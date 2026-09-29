@@ -1,0 +1,27 @@
+{
+  "name": "cassette_68b64c3dc77c_domain_2_target_3",
+  "modelSeeds": [
+    1,
+    2,
+    3
+  ],
+  "sequences": [
+    {
+      "protein": {
+        "id": "A",
+        "sequence": "SESESESESE",
+        "unpairedMsa": "",
+        "pairedMsa": "",
+        "templates": []
+      }
+    },
+    {
+      "protein": {
+        "id": "B",
+        "sequence": "DKDKDKDKDK"
+      }
+    }
+  ],
+  "dialect": "alphafold3",
+  "version": 1
+}

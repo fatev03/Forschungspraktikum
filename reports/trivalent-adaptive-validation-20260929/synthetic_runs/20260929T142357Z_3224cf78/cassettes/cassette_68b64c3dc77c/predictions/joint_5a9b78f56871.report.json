@@ -1,0 +1,1147 @@
+{
+  "status": "NO_LISTED_GEOMETRIC_DEFECT_DETECTED",
+  "reasons": [],
+  "role": "joint",
+  "source_path": "/Users/fatihyigitevyapan/Desktop/Forschungspraktikum/reports/trivalent-adaptive-validation-20260929/synthetic_fixtures/variant_0_joint.pdb",
+  "sha256": "5a9b78f5687121d1e314f47c98659c196dd4140d41d31a1650dc4fbf88693456",
+  "chain_map": {
+    "cassette": "A",
+    "R1": "B",
+    "R2": "C",
+    "R3": "D"
+  },
+  "missing_junction_positions": [],
+  "peptide_bond_outliers": [],
+  "missing_heavy_atoms": {
+    "cassette": [],
+    "R1": [],
+    "R2": [],
+    "R3": []
+  },
+  "domain_comparison": [
+    {
+      "target_id": "R1",
+      "binder_CA_RMSD_to_pair_A": 0.0
+    },
+    {
+      "target_id": "R2",
+      "binder_CA_RMSD_to_pair_A": 6.67572021484375e-06
+    },
+    {
+      "target_id": "R3",
+      "binder_CA_RMSD_to_pair_A": 6.67572021484375e-06
+    }
+  ],
+  "interface_contact_matrix": [
+    {
+      "binder_target_id": "R1",
+      "receptor_id": "R1",
+      "intended": true,
+      "contact_atom_pairs": 330,
+      "severe_close_atom_pairs": 0
+    },
+    {
+      "binder_target_id": "R1",
+      "receptor_id": "R2",
+      "intended": false,
+      "contact_atom_pairs": 0,
+      "severe_close_atom_pairs": 0
+    },
+    {
+      "binder_target_id": "R1",
+      "receptor_id": "R3",
+      "intended": false,
+      "contact_atom_pairs": 0,
+      "severe_close_atom_pairs": 0
+    },
+    {
+      "binder_target_id": "R2",
+      "receptor_id": "R1",
+      "intended": false,
+      "contact_atom_pairs": 0,
+      "severe_close_atom_pairs": 0
+    },
+    {
+      "binder_target_id": "R2",
+      "receptor_id": "R2",
+      "intended": true,
+      "contact_atom_pairs": 501,
+      "severe_close_atom_pairs": 0
+    },
+    {
+      "binder_target_id": "R2",
+      "receptor_id": "R3",
+      "intended": false,
+      "contact_atom_pairs": 0,
+      "severe_close_atom_pairs": 0
+    },
+    {
+      "binder_target_id": "R3",
+      "receptor_id": "R1",
+      "intended": false,
+      "contact_atom_pairs": 0,
+      "severe_close_atom_pairs": 0
+    },
+    {
+      "binder_target_id": "R3",
+      "receptor_id": "R2",
+      "intended": false,
+      "contact_atom_pairs": 0,
+      "severe_close_atom_pairs": 0
+    },
+    {
+      "binder_target_id": "R3",
+      "receptor_id": "R3",
+      "intended": true,
+      "contact_atom_pairs": 621,
+      "severe_close_atom_pairs": 0
+    }
+  ],
+  "nonlocal_intrachain_close_pairs": 0,
+  "whole_cassette_receptor_close_pairs": [
+    {
+      "receptor_id": "R1",
+      "severe_close_atom_pairs": 0
+    },
+    {
+      "receptor_id": "R2",
+      "severe_close_atom_pairs": 0
+    },
+    {
+      "receptor_id": "R3",
+      "severe_close_atom_pairs": 0
+    }
+  ],
+  "domain_rmsd_review_threshold_A": 3.0,
+  "receptor_close_pairs": [
+    {
+      "receptors": [
+        "R1",
+        "R2"
+      ],
+      "severe_close_atom_pairs": 0
+    },
+    {
+      "receptors": [
+        "R1",
+        "R3"
+      ],
+      "severe_close_atom_pairs": 0
+    },
+    {
+      "receptors": [
+        "R2",
+        "R3"
+      ],
+      "severe_close_atom_pairs": 0
+    }
+  ],
+  "membrane": {
+    "status": "NOT_ASSESSED"
+  },
+  "heteroatom_close_pairs": null,
+  "scope": "structure plausibility only; does not establish simultaneous biological binding, selectivity or activation",
+  "provider_declaration": "SYNTHETIC_SOFTWARE_TEST_ONLY",
+  "residue_mapping": [
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        1,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 1
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        2,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 2
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        3,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 3
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        4,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 4
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        5,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 5
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        6,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 6
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        7,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 7
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        8,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 8
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        9,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 9
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        10,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 10
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        11,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 11
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        12,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 12
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        13,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 13
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        14,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 14
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        15,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 15
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        16,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 16
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        17,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 17
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        18,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 18
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        19,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 19
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        20,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 20
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        21,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 21
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        22,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 22
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        23,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 23
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        24,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 24
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        25,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 25
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        26,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 26
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        27,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 27
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        28,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 28
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        29,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 29
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        30,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 30
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        31,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 31
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        32,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 32
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        33,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 33
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        34,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 34
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        35,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 35
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        36,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 36
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        37,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 37
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        38,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 38
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        39,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 39
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        40,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 40
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        41,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 41
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        42,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 42
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        43,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 43
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        44,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 44
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        45,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 45
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        46,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 46
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        47,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 47
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        48,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 48
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        49,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 49
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        50,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 50
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        51,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 51
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        52,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 52
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        53,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 53
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        54,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 54
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        55,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 55
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        56,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 56
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        57,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 57
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        58,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 58
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        59,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 59
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        60,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 60
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        61,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 61
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        62,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 62
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        63,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 63
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        64,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 64
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        65,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 65
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        66,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 66
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        67,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 67
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        68,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 68
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        69,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 69
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        70,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 70
+    },
+    {
+      "input_chain": "B",
+      "input_residue": [
+        " ",
+        1,
+        " "
+      ],
+      "output_chain": "B",
+      "output_position": 1
+    },
+    {
+      "input_chain": "B",
+      "input_residue": [
+        " ",
+        2,
+        " "
+      ],
+      "output_chain": "B",
+      "output_position": 2
+    },
+    {
+      "input_chain": "B",
+      "input_residue": [
+        " ",
+        3,
+        " "
+      ],
+      "output_chain": "B",
+      "output_position": 3
+    },
+    {
+      "input_chain": "B",
+      "input_residue": [
+        " ",
+        4,
+        " "
+      ],
+      "output_chain": "B",
+      "output_position": 4
+    },
+    {
+      "input_chain": "B",
+      "input_residue": [
+        " ",
+        5,
+        " "
+      ],
+      "output_chain": "B",
+      "output_position": 5
+    },
+    {
+      "input_chain": "B",
+      "input_residue": [
+        " ",
+        6,
+        " "
+      ],
+      "output_chain": "B",
+      "output_position": 6
+    },
+    {
+      "input_chain": "B",
+      "input_residue": [
+        " ",
+        7,
+        " "
+      ],
+      "output_chain": "B",
+      "output_position": 7
+    },
+    {
+      "input_chain": "B",
+      "input_residue": [
+        " ",
+        8,
+        " "
+      ],
+      "output_chain": "B",
+      "output_position": 8
+    },
+    {
+      "input_chain": "B",
+      "input_residue": [
+        " ",
+        9,
+        " "
+      ],
+      "output_chain": "B",
+      "output_position": 9
+    },
+    {
+      "input_chain": "B",
+      "input_residue": [
+        " ",
+        10,
+        " "
+      ],
+      "output_chain": "B",
+      "output_position": 10
+    },
+    {
+      "input_chain": "C",
+      "input_residue": [
+        " ",
+        1,
+        " "
+      ],
+      "output_chain": "C",
+      "output_position": 1
+    },
+    {
+      "input_chain": "C",
+      "input_residue": [
+        " ",
+        2,
+        " "
+      ],
+      "output_chain": "C",
+      "output_position": 2
+    },
+    {
+      "input_chain": "C",
+      "input_residue": [
+        " ",
+        3,
+        " "
+      ],
+      "output_chain": "C",
+      "output_position": 3
+    },
+    {
+      "input_chain": "C",
+      "input_residue": [
+        " ",
+        4,
+        " "
+      ],
+      "output_chain": "C",
+      "output_position": 4
+    },
+    {
+      "input_chain": "C",
+      "input_residue": [
+        " ",
+        5,
+        " "
+      ],
+      "output_chain": "C",
+      "output_position": 5
+    },
+    {
+      "input_chain": "C",
+      "input_residue": [
+        " ",
+        6,
+        " "
+      ],
+      "output_chain": "C",
+      "output_position": 6
+    },
+    {
+      "input_chain": "C",
+      "input_residue": [
+        " ",
+        7,
+        " "
+      ],
+      "output_chain": "C",
+      "output_position": 7
+    },
+    {
+      "input_chain": "C",
+      "input_residue": [
+        " ",
+        8,
+        " "
+      ],
+      "output_chain": "C",
+      "output_position": 8
+    },
+    {
+      "input_chain": "C",
+      "input_residue": [
+        " ",
+        9,
+        " "
+      ],
+      "output_chain": "C",
+      "output_position": 9
+    },
+    {
+      "input_chain": "C",
+      "input_residue": [
+        " ",
+        10,
+        " "
+      ],
+      "output_chain": "C",
+      "output_position": 10
+    },
+    {
+      "input_chain": "D",
+      "input_residue": [
+        " ",
+        1,
+        " "
+      ],
+      "output_chain": "D",
+      "output_position": 1
+    },
+    {
+      "input_chain": "D",
+      "input_residue": [
+        " ",
+        2,
+        " "
+      ],
+      "output_chain": "D",
+      "output_position": 2
+    },
+    {
+      "input_chain": "D",
+      "input_residue": [
+        " ",
+        3,
+        " "
+      ],
+      "output_chain": "D",
+      "output_position": 3
+    },
+    {
+      "input_chain": "D",
+      "input_residue": [
+        " ",
+        4,
+        " "
+      ],
+      "output_chain": "D",
+      "output_position": 4
+    },
+    {
+      "input_chain": "D",
+      "input_residue": [
+        " ",
+        5,
+        " "
+      ],
+      "output_chain": "D",
+      "output_position": 5
+    },
+    {
+      "input_chain": "D",
+      "input_residue": [
+        " ",
+        6,
+        " "
+      ],
+      "output_chain": "D",
+      "output_position": 6
+    },
+    {
+      "input_chain": "D",
+      "input_residue": [
+        " ",
+        7,
+        " "
+      ],
+      "output_chain": "D",
+      "output_position": 7
+    },
+    {
+      "input_chain": "D",
+      "input_residue": [
+        " ",
+        8,
+        " "
+      ],
+      "output_chain": "D",
+      "output_position": 8
+    },
+    {
+      "input_chain": "D",
+      "input_residue": [
+        " ",
+        9,
+        " "
+      ],
+      "output_chain": "D",
+      "output_position": 9
+    },
+    {
+      "input_chain": "D",
+      "input_residue": [
+        " ",
+        10,
+        " "
+      ],
+      "output_chain": "D",
+      "output_position": 10
+    }
+  ]
+}

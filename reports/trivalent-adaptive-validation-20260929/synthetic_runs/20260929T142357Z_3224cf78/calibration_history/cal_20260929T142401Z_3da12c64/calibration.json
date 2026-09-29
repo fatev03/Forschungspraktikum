@@ -1,0 +1,479 @@
+{
+  "calibration_id": "cal_20260929T142401Z_3da12c64",
+  "status": "CALIBRATED_CONDITIONAL_MODEL",
+  "eligible_for_auto_use": true,
+  "warnings": [],
+  "variant_id": "cassette_68b64c3dc77c",
+  "metadata": {
+    "variant_id": "cassette_68b64c3dc77c",
+    "target_order": [
+      "R1",
+      "R2",
+      "R3"
+    ],
+    "condition_id": "test",
+    "conditions": {
+      "temperature_K": 298.15,
+      "pH": 7.4,
+      "ionic_strength_M": 0.15,
+      "construct_note": "synthetic three-domain cassette and three fixed receptors",
+      "geometry_id": "synthetic_patch"
+    },
+    "source_note": "synthetic data, no experiment",
+    "sources": {
+      "S1": "synthetic fixture"
+    },
+    "data_independence_note": "separate artificial observations",
+    "affinity_transfer_assumption": "assumed for this software test",
+    "error_model": "independent_gaussian_known_sd",
+    "equilibrium_confirmed": true,
+    "concentration_basis": "free",
+    "system": "fixed_patch_one_receptor_each",
+    "evidence_kind": "synthetic_test"
+  },
+  "baseline": {
+    "variant_id": "cassette_68b64c3dc77c",
+    "target_order": [
+      "R1",
+      "R2",
+      "R3"
+    ],
+    "kd_M": [
+      1e-06,
+      2e-06,
+      3e-06
+    ],
+    "closure_factors": {
+      "12": 0.0001,
+      "13": 8e-05,
+      "23": 0.0002,
+      "123": 3e-09
+    },
+    "temperature_K": 298.15,
+    "kd_temperature_K": 298.15,
+    "calibration_context": {
+      "temperature_K": 298.15,
+      "pH": 7.4,
+      "ionic_strength_M": 0.15,
+      "construct_note": "synthetic three-domain cassette and three fixed receptors",
+      "geometry_id": "synthetic_patch"
+    },
+    "source_note": "theory for software testing only",
+    "evidence_kind": "model_scenario",
+    "concentrations_M": [
+      1e-09,
+      1e-06,
+      0.001
+    ]
+  },
+  "candidate_scenario": {
+    "variant_id": "cassette_68b64c3dc77c",
+    "target_order": [
+      "R1",
+      "R2",
+      "R3"
+    ],
+    "kd_M": [
+      1e-06,
+      2e-06,
+      3e-06
+    ],
+    "closure_factors": {
+      "12": 0.0001,
+      "13": 8e-05,
+      "23": 0.0002,
+      "123": 2.0000000000000004e-08
+    },
+    "temperature_K": 298.15,
+    "kd_temperature_K": 298.15,
+    "calibration_context": {
+      "temperature_K": 298.15,
+      "pH": 7.4,
+      "ionic_strength_M": 0.15,
+      "construct_note": "synthetic three-domain cassette and three fixed receptors",
+      "geometry_id": "synthetic_patch"
+    },
+    "source_note": "Calibrated conditional model cal_20260929T142401Z_3da12c64; synthetic data, no experiment",
+    "evidence_kind": "model_scenario",
+    "concentrations_M": [
+      1e-09,
+      1e-06,
+      0.001
+    ],
+    "calibration_id": "cal_20260929T142401Z_3da12c64"
+  },
+  "fit_parameters": [
+    "J123_M2"
+  ],
+  "fixed_parameters": {
+    "kd_1_M": 1e-06,
+    "kd_2_M": 2e-06,
+    "kd_3_M": 3e-06,
+    "J12_M": 0.0001,
+    "J13_M": 8e-05,
+    "J23_M": 0.0002
+  },
+  "bounds": {
+    "J123_M2": [
+      1e-12,
+      1e-05
+    ]
+  },
+  "initial_parameters": {
+    "kd_1_M": 1e-06,
+    "kd_2_M": 2e-06,
+    "kd_3_M": 3e-06,
+    "J12_M": 0.0001,
+    "J13_M": 8e-05,
+    "J23_M": 0.0002,
+    "J123_M2": 3e-09
+  },
+  "fitted_parameters": {
+    "kd_1_M": 1e-06,
+    "kd_2_M": 2e-06,
+    "kd_3_M": 3e-06,
+    "J12_M": 0.0001,
+    "J13_M": 8e-05,
+    "J23_M": 0.0002,
+    "J123_M2": 2.0000000000000004e-08
+  },
+  "intervals": {
+    "J123_M2": {
+      "estimate": 2.0000000000000004e-08,
+      "log10_standard_error": 0.00907542970445189,
+      "approx_95_interval": [
+        1.9197388481997588e-08,
+        2.0836167397201e-08
+      ]
+    }
+  },
+  "interval_scope": "local Gaussian/Wald 95% intervals in log10 space; conditional on fixed parameters, known independent errors and model; not profile-likelihood or global intervals",
+  "log10_covariance": [
+    [
+      8.236342432044773e-05
+    ]
+  ],
+  "training": {
+    "n": 12,
+    "dof": 11,
+    "chi2": 0.0,
+    "conditional_residual_pvalue": 1.0,
+    "weighted_RMSE": 0.0,
+    "local_jacobian_rank": 1,
+    "jacobian_singular_values": [
+      110.18762004287872
+    ],
+    "jacobian_condition_number": 1.0
+  },
+  "validation": {
+    "n": 7,
+    "status": "EVALUATED_ONLY",
+    "chi2": 0.0,
+    "baseline_chi2": 5889.261749501367,
+    "weighted_RMSE": 0.0,
+    "conditional_residual_pvalue": 1.0,
+    "local_sensitivity_rank": 1,
+    "scope": "conditional residual diagnostic, ignores fitted-parameter uncertainty"
+  },
+  "predictions": [
+    {
+      "measurement_id": "train_0",
+      "experiment_id": "train_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "train",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 1e-10,
+      "value": 0.2479204476239073,
+      "sd": 0.01,
+      "predicted": 0.2479204476239073,
+      "baseline_predicted": 0.04711718335311592,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "train_1",
+      "experiment_id": "train_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "train",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 4.3287612810830617e-10,
+      "value": 0.5791738586266905,
+      "sd": 0.01,
+      "predicted": 0.5791738586266905,
+      "baseline_predicted": 0.17111620816898035,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "train_2",
+      "experiment_id": "train_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "train",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 1.873817422860387e-09,
+      "value": 0.8377404472181144,
+      "sd": 0.01,
+      "predicted": 0.8377404472181144,
+      "baseline_predicted": 0.4364434445223488,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "train_3",
+      "experiment_id": "train_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "train",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 8.11130830789689e-09,
+      "value": 0.9339754506630563,
+      "sd": 0.01,
+      "predicted": 0.9339754506630563,
+      "baseline_predicted": 0.6796804209186874,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "train_4",
+      "experiment_id": "train_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "train",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 3.5111917342151277e-08,
+      "value": 0.9589825616184757,
+      "sd": 0.01,
+      "predicted": 0.9589825616184757,
+      "baseline_predicted": 0.7781219931447684,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "train_5",
+      "experiment_id": "train_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "train",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 1.519911082952933e-07,
+      "value": 0.9629658889044309,
+      "sd": 0.01,
+      "predicted": 0.9629658889044309,
+      "baseline_predicted": 0.795931693297968,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "train_6",
+      "experiment_id": "train_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "train",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 6.579332246575682e-07,
+      "value": 0.9553601033194519,
+      "sd": 0.01,
+      "predicted": 0.9553601033194519,
+      "baseline_predicted": 0.7624828803278325,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "train_7",
+      "experiment_id": "train_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "train",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 2.848035868435799e-06,
+      "value": 0.9182500413529551,
+      "sd": 0.01,
+      "predicted": 0.9182500413529551,
+      "baseline_predicted": 0.627541560503612,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "train_8",
+      "experiment_id": "train_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "train",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 1.2328467394420658e-05,
+      "value": 0.7817915677535572,
+      "sd": 0.01,
+      "predicted": 0.7817915677535572,
+      "baseline_predicted": 0.3495580222897787,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "train_9",
+      "experiment_id": "train_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "train",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 5.3366992312063123e-05,
+      "value": 0.45332141121658764,
+      "sd": 0.01,
+      "predicted": 0.45332141121658764,
+      "baseline_predicted": 0.11062433400926791,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "train_10",
+      "experiment_id": "train_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "train",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 0.0002310129700083158,
+      "value": 0.12254224321113294,
+      "sd": 0.01,
+      "predicted": 0.12254224321113294,
+      "baseline_predicted": 0.02051856926065059,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "train_11",
+      "experiment_id": "train_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "train",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 0.001,
+      "value": 0.01421796561860747,
+      "sd": 0.01,
+      "predicted": 0.01421796561860747,
+      "baseline_predicted": 0.0021587843360387376,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "validation_0",
+      "experiment_id": "validation_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "validation",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 3.1622776601683795e-10,
+      "value": 0.5044799328318738,
+      "sd": 0.01,
+      "predicted": 0.5044799328318738,
+      "baseline_predicted": 0.13248081618976804,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "validation_1",
+      "experiment_id": "validation_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "validation",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 3.1622776601683795e-09,
+      "value": 0.8861482393385159,
+      "sd": 0.01,
+      "predicted": 0.8861482393385159,
+      "baseline_predicted": 0.5386395558384567,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "validation_2",
+      "experiment_id": "validation_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "validation",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 3.162277660168379e-08,
+      "value": 0.9581782019235228,
+      "sd": 0.01,
+      "predicted": 0.9581782019235228,
+      "baseline_predicted": 0.7746045282870329,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "validation_3",
+      "experiment_id": "validation_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "validation",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 3.162277660168379e-07,
+      "value": 0.9609776948485207,
+      "sd": 0.01,
+      "predicted": 0.9609776948485207,
+      "baseline_predicted": 0.7869600543463863,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "validation_4",
+      "experiment_id": "validation_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "validation",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 3.162277660168379e-06,
+      "value": 0.9130945571438861,
+      "sd": 0.01,
+      "predicted": 0.9130945571438861,
+      "baseline_predicted": 0.6118033328465747,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "validation_5",
+      "experiment_id": "validation_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "validation",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 3.1622776601683795e-05,
+      "value": 0.5903609145505735,
+      "sd": 0.01,
+      "predicted": 0.5903609145505735,
+      "baseline_predicted": 0.17775058583644343,
+      "standardized_residual": 0.0
+    },
+    {
+      "measurement_id": "validation_6",
+      "experiment_id": "validation_run",
+      "source_id": "S1",
+      "condition_id": "test",
+      "split": "validation",
+      "observable": "p_one_cassette_bridges_all_three",
+      "concentration_M": 0.00031622776601683794,
+      "value": 0.08239440220478042,
+      "sd": 0.01,
+      "predicted": 0.08239440220478042,
+      "baseline_predicted": 0.013289923325291577,
+      "standardized_residual": 0.0
+    }
+  ],
+  "optimization": {
+    "successful_starts": 5,
+    "n_starts": 5,
+    "seed": 0,
+    "costs": [
+      2.433824754111993e-26,
+      0.0,
+      2.433824754111993e-26,
+      0.0,
+      2.433824754111993e-26
+    ]
+  },
+  "diagnostic_rules": {
+    "residual_pvalue_min": 0.01,
+    "relative_jacobian_rank_cutoff": 1e-06,
+    "absolute_jacobian_rank_cutoff": 1e-10,
+    "bound_distance_log10": 0.001,
+    "max_local_95_halfwidth_log10": 1.0,
+    "minimum_validation_rows": 3,
+    "validation_requires_full_local_sensitivity_rank": true,
+    "validation_must_not_worsen_chi2": true
+  },
+  "software": {
+    "python": "3.11.4",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "calibration_source_sha256": "b36eccfec51b6ddceb8d37d5cd669de50b4ecb33fc2ed1c98650a9a9d55d7322"
+  },
+  "scope": "updates declared equilibrium parameters only; no receptor-density, kinetic, functional or in-vivo inference",
+  "source_hashes": {
+    "csv": "7b7f8b53e87957d4e5576f220a47b87def69865e714e9315e084a40e7579ff7a",
+    "metadata": "454ec6eb622579935c74c3323bda51e98471904235b84fb9f2880f28b80829b5"
+  }
+}

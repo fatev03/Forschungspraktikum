@@ -1,0 +1,29 @@
+{
+  "object": "cassette_alone_3895b364b489",
+  "binder_regions": [
+    {
+      "kind": "binder",
+      "target_id": "R1",
+      "candidate_id": "R1_external",
+      "start": 1,
+      "end": 10,
+      "color": "cyan"
+    },
+    {
+      "kind": "binder",
+      "target_id": "R2",
+      "candidate_id": "R2_external",
+      "start": 31,
+      "end": 40,
+      "color": "orange"
+    },
+    {
+      "kind": "binder",
+      "target_id": "R3",
+      "candidate_id": "R3_external",
+      "start": 61,
+      "end": 70,
+      "color": "violet"
+    }
+  ]
+}

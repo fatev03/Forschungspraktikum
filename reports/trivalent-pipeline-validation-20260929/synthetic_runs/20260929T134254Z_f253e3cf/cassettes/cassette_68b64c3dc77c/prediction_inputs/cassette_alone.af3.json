@@ -1,0 +1,21 @@
+{
+  "name": "cassette_68b64c3dc77c_cassette_alone",
+  "modelSeeds": [
+    1,
+    2,
+    3
+  ],
+  "sequences": [
+    {
+      "protein": {
+        "id": "A",
+        "sequence": "KAKAKAKAKAGGGGSGGGGSGGGGSGGGGSSESESESESEGGGGSGGGGSGGGGSGGGGSRTRTRTRTRT",
+        "unpairedMsa": "",
+        "pairedMsa": "",
+        "templates": []
+      }
+    }
+  ],
+  "dialect": "alphafold3",
+  "version": 1
+}

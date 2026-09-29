@@ -1,0 +1,39 @@
+{
+  "name": "cassette_b0531e09c255_joint",
+  "modelSeeds": [
+    1,
+    2,
+    3
+  ],
+  "sequences": [
+    {
+      "protein": {
+        "id": "A",
+        "sequence": "KAKAKAKAKASESESESESERTRTRTRTRT",
+        "unpairedMsa": "",
+        "pairedMsa": "",
+        "templates": []
+      }
+    },
+    {
+      "protein": {
+        "id": "B",
+        "sequence": "AGSTAGSTAG"
+      }
+    },
+    {
+      "protein": {
+        "id": "C",
+        "sequence": "VLVLVLVLVL"
+      }
+    },
+    {
+      "protein": {
+        "id": "D",
+        "sequence": "DKDKDKDKDK"
+      }
+    }
+  ],
+  "dialect": "alphafold3",
+  "version": 1
+}

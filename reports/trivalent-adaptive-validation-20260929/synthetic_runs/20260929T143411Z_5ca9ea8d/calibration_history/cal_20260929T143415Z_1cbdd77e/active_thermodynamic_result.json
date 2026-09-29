@@ -1,0 +1,669 @@
+{
+  "status": "CONDITIONAL_MODEL_RESULT",
+  "scenario": {
+    "variant_id": "cassette_68b64c3dc77c",
+    "target_order": [
+      "R1",
+      "R2",
+      "R3"
+    ],
+    "kd_M": [
+      1e-06,
+      2e-06,
+      3e-06
+    ],
+    "closure_factors": {
+      "12": 0.0001,
+      "13": 8e-05,
+      "23": 0.0002,
+      "123": 2.0000000000000004e-08
+    },
+    "temperature_K": 298.15,
+    "kd_temperature_K": 298.15,
+    "calibration_context": {
+      "temperature_K": 298.15,
+      "pH": 7.4,
+      "ionic_strength_M": 0.15,
+      "construct_note": "synthetic three-domain cassette and three fixed receptors",
+      "geometry_id": "synthetic_patch"
+    },
+    "source_note": "Calibrated conditional model cal_20260929T143415Z_1cbdd77e; synthetic data, no experiment",
+    "evidence_kind": "model_scenario",
+    "concentrations_M": [
+      1e-09,
+      1e-06,
+      0.001
+    ],
+    "calibration_id": "cal_20260929T143415Z_1cbdd77e"
+  },
+  "rows": [
+    {
+      "concentration_M": 1e-09,
+      "temperature_K": 298.15,
+      "partition_logZ": 1.4918318361569822,
+      "configurations": [
+        {
+          "configuration": [],
+          "probability": 0.22496018766235248,
+          "ligands_bound": 0,
+          "receptors_occupied": 0
+        },
+        {
+          "configuration": [
+            [
+              1
+            ]
+          ],
+          "probability": 0.00022496018766235233,
+          "ligands_bound": 1,
+          "receptors_occupied": 1
+        },
+        {
+          "configuration": [
+            [
+              2
+            ]
+          ],
+          "probability": 0.00011248009383117636,
+          "ligands_bound": 1,
+          "receptors_occupied": 1
+        },
+        {
+          "configuration": [
+            [
+              1,
+              2
+            ]
+          ],
+          "probability": 0.01124800938311761,
+          "ligands_bound": 1,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              3
+            ]
+          ],
+          "probability": 7.498672922078429e-05,
+          "ligands_bound": 1,
+          "receptors_occupied": 1
+        },
+        {
+          "configuration": [
+            [
+              1,
+              3
+            ]
+          ],
+          "probability": 0.0059989383376627455,
+          "ligands_bound": 1,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              2,
+              3
+            ]
+          ],
+          "probability": 0.0074986729220784115,
+          "ligands_bound": 1,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "probability": 0.7498672922078415,
+          "ligands_bound": 1,
+          "receptors_occupied": 3
+        },
+        {
+          "configuration": [
+            [
+              1
+            ],
+            [
+              2
+            ]
+          ],
+          "probability": 1.1248009383117638e-07,
+          "ligands_bound": 2,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              1
+            ],
+            [
+              3
+            ]
+          ],
+          "probability": 7.49867292207843e-08,
+          "ligands_bound": 2,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              1
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "probability": 7.4986729220784206e-06,
+          "ligands_bound": 2,
+          "receptors_occupied": 3
+        },
+        {
+          "configuration": [
+            [
+              2
+            ],
+            [
+              3
+            ]
+          ],
+          "probability": 3.749336461039208e-08,
+          "ligands_bound": 2,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              2
+            ],
+            [
+              1,
+              3
+            ]
+          ],
+          "probability": 2.999469168831376e-06,
+          "ligands_bound": 2,
+          "receptors_occupied": 3
+        },
+        {
+          "configuration": [
+            [
+              1,
+              2
+            ],
+            [
+              3
+            ]
+          ],
+          "probability": 3.749336461039203e-06,
+          "ligands_bound": 2,
+          "receptors_occupied": 3
+        },
+        {
+          "configuration": [
+            [
+              1
+            ],
+            [
+              2
+            ],
+            [
+              3
+            ]
+          ],
+          "probability": 3.749336461039209e-11,
+          "ligands_bound": 3,
+          "receptors_occupied": 3
+        }
+      ],
+      "p_any_ligand_bound": 0.7750398123376475,
+      "p_one_cassette_bridges_all_three": 0.7498672922078415,
+      "receptor_occupancy": [
+        0.7673536350991526,
+        0.7687408520963724,
+        0.7634542501929427
+      ],
+      "mean_cassettes_bound": 0.7750542848513741,
+      "monovalent_standard_dG_kJ_mol": [
+        -34.24805701458034,
+        -32.52977493881385,
+        -31.524644358829153
+      ],
+      "scope": "fixed patch with one of each receptor; free ligand reservoir; no lateral mobility or tissue selectivity",
+      "assumptions": [
+        "all three domains remain binding-competent in the fused cassette",
+        "one binding site per target; intended specificity only, cross-binding excluded",
+        "supplied Kd values apply to the fused domains under the declared conditions",
+        "ideal free ligand activity approximated by molar concentration; no ligand depletion",
+        "closure factors encode a single declared equilibrium model; not kinetic rates"
+      ],
+      "reference_state": "Kd/1 M; Kd values apply at supplied temperature/pH/assay conditions"
+    },
+    {
+      "concentration_M": 1e-06,
+      "temperature_K": 298.15,
+      "partition_logZ": 8.16356123194809,
+      "configurations": [
+        {
+          "configuration": [],
+          "probability": 0.0002848461830611469,
+          "ligands_bound": 0,
+          "receptors_occupied": 0
+        },
+        {
+          "configuration": [
+            [
+              1
+            ]
+          ],
+          "probability": 0.0002848461830611469,
+          "ligands_bound": 1,
+          "receptors_occupied": 1
+        },
+        {
+          "configuration": [
+            [
+              2
+            ]
+          ],
+          "probability": 0.00014242309153057343,
+          "ligands_bound": 1,
+          "receptors_occupied": 1
+        },
+        {
+          "configuration": [
+            [
+              1,
+              2
+            ]
+          ],
+          "probability": 0.014242309153057325,
+          "ligands_bound": 1,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              3
+            ]
+          ],
+          "probability": 9.494872768704902e-05,
+          "ligands_bound": 1,
+          "receptors_occupied": 1
+        },
+        {
+          "configuration": [
+            [
+              1,
+              3
+            ]
+          ],
+          "probability": 0.007595898214963932,
+          "ligands_bound": 1,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              2,
+              3
+            ]
+          ],
+          "probability": 0.00949487276870489,
+          "ligands_bound": 1,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "probability": 0.9494872768704894,
+          "ligands_bound": 1,
+          "receptors_occupied": 3
+        },
+        {
+          "configuration": [
+            [
+              1
+            ],
+            [
+              2
+            ]
+          ],
+          "probability": 0.00014242309153057343,
+          "ligands_bound": 2,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              1
+            ],
+            [
+              3
+            ]
+          ],
+          "probability": 9.494872768704902e-05,
+          "ligands_bound": 2,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              1
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "probability": 0.00949487276870489,
+          "ligands_bound": 2,
+          "receptors_occupied": 3
+        },
+        {
+          "configuration": [
+            [
+              2
+            ],
+            [
+              3
+            ]
+          ],
+          "probability": 4.747436384352451e-05,
+          "ligands_bound": 2,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              2
+            ],
+            [
+              1,
+              3
+            ]
+          ],
+          "probability": 0.0037979491074819657,
+          "ligands_bound": 2,
+          "receptors_occupied": 3
+        },
+        {
+          "configuration": [
+            [
+              1,
+              2
+            ],
+            [
+              3
+            ]
+          ],
+          "probability": 0.004747436384352445,
+          "ligands_bound": 2,
+          "receptors_occupied": 3
+        },
+        {
+          "configuration": [
+            [
+              1
+            ],
+            [
+              2
+            ],
+            [
+              3
+            ]
+          ],
+          "probability": 4.747436384352451e-05,
+          "ligands_bound": 3,
+          "receptors_occupied": 3
+        }
+      ],
+      "p_any_ligand_bound": 0.9997151538169389,
+      "p_one_cassette_bridges_all_three": 0.9494872768704894,
+      "receptor_occupancy": [
+        0.9899354348651722,
+        0.9916445119635392,
+        0.9849031522977587
+      ],
+      "mean_cassettes_bound": 1.018135206988226,
+      "monovalent_standard_dG_kJ_mol": [
+        -34.24805701458034,
+        -32.52977493881385,
+        -31.524644358829153
+      ],
+      "scope": "fixed patch with one of each receptor; free ligand reservoir; no lateral mobility or tissue selectivity",
+      "assumptions": [
+        "all three domains remain binding-competent in the fused cassette",
+        "one binding site per target; intended specificity only, cross-binding excluded",
+        "supplied Kd values apply to the fused domains under the declared conditions",
+        "ideal free ligand activity approximated by molar concentration; no ligand depletion",
+        "closure factors encode a single declared equilibrium model; not kinetic rates"
+      ],
+      "reference_state": "Kd/1 M; Kd values apply at supplied temperature/pH/assay conditions"
+    },
+    {
+      "concentration_M": 0.001,
+      "temperature_K": 298.15,
+      "partition_logZ": 19.272732291927532,
+      "configurations": [
+        {
+          "configuration": [],
+          "probability": 4.265389685582243e-09,
+          "ligands_bound": 0,
+          "receptors_occupied": 0
+        },
+        {
+          "configuration": [
+            [
+              1
+            ]
+          ],
+          "probability": 4.2653896855822424e-06,
+          "ligands_bound": 1,
+          "receptors_occupied": 1
+        },
+        {
+          "configuration": [
+            [
+              2
+            ]
+          ],
+          "probability": 2.1326948427911212e-06,
+          "ligands_bound": 1,
+          "receptors_occupied": 1
+        },
+        {
+          "configuration": [
+            [
+              1,
+              2
+            ]
+          ],
+          "probability": 0.00021326948427911183,
+          "ligands_bound": 1,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              3
+            ]
+          ],
+          "probability": 1.4217965618607483e-06,
+          "ligands_bound": 1,
+          "receptors_occupied": 1
+        },
+        {
+          "configuration": [
+            [
+              1,
+              3
+            ]
+          ],
+          "probability": 0.00011374372494886001,
+          "ligands_bound": 1,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              2,
+              3
+            ]
+          ],
+          "probability": 0.00014217965618607464,
+          "ligands_bound": 1,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "probability": 0.01421796561860747,
+          "ligands_bound": 1,
+          "receptors_occupied": 3
+        },
+        {
+          "configuration": [
+            [
+              1
+            ],
+            [
+              2
+            ]
+          ],
+          "probability": 0.0021326948427911204,
+          "ligands_bound": 2,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              1
+            ],
+            [
+              3
+            ]
+          ],
+          "probability": 0.001421796561860748,
+          "ligands_bound": 2,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              1
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "probability": 0.14217965618607437,
+          "ligands_bound": 2,
+          "receptors_occupied": 3
+        },
+        {
+          "configuration": [
+            [
+              2
+            ],
+            [
+              3
+            ]
+          ],
+          "probability": 0.000710898280930374,
+          "ligands_bound": 2,
+          "receptors_occupied": 2
+        },
+        {
+          "configuration": [
+            [
+              2
+            ],
+            [
+              1,
+              3
+            ]
+          ],
+          "probability": 0.056871862474430095,
+          "ligands_bound": 2,
+          "receptors_occupied": 3
+        },
+        {
+          "configuration": [
+            [
+              1,
+              2
+            ],
+            [
+              3
+            ]
+          ],
+          "probability": 0.0710898280930373,
+          "ligands_bound": 2,
+          "receptors_occupied": 3
+        },
+        {
+          "configuration": [
+            [
+              1
+            ],
+            [
+              2
+            ],
+            [
+              3
+            ]
+          ],
+          "probability": 0.7108982809303738,
+          "ligands_bound": 3,
+          "receptors_occupied": 3
+        }
+      ],
+      "p_any_ligand_bound": 0.9999999957346103,
+      "p_one_cassette_bridges_all_three": 0.01421796561860747,
+      "receptor_occupancy": [
+        0.9991433633060884,
+        0.9984587682615524,
+        0.9976476333230109
+      ],
+      "mean_cassettes_bound": 2.696203294034481,
+      "monovalent_standard_dG_kJ_mol": [
+        -34.24805701458034,
+        -32.52977493881385,
+        -31.524644358829153
+      ],
+      "scope": "fixed patch with one of each receptor; free ligand reservoir; no lateral mobility or tissue selectivity",
+      "assumptions": [
+        "all three domains remain binding-competent in the fused cassette",
+        "one binding site per target; intended specificity only, cross-binding excluded",
+        "supplied Kd values apply to the fused domains under the declared conditions",
+        "ideal free ligand activity approximated by molar concentration; no ligand depletion",
+        "closure factors encode a single declared equilibrium model; not kinetic rates"
+      ],
+      "reference_state": "Kd/1 M; Kd values apply at supplied temperature/pH/assay conditions"
+    }
+  ],
+  "biological_claims_not_established": [
+    "cell_selectivity",
+    "activation",
+    "inhibition",
+    "toxicity",
+    "in_vivo_efficacy"
+  ]
+}

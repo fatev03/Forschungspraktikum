@@ -1,0 +1,28 @@
+{
+  "notebook_execution": [
+    {
+      "case": "empty_inputs",
+      "status": "PASS",
+      "executed_code_cells": 17
+    },
+    {
+      "case": "synthetic_import",
+      "status": "PASS",
+      "executed_code_cells": 17
+    },
+    {
+      "case": "standalone_calibration",
+      "status": "PASS",
+      "executed_code_cells": 5
+    }
+  ],
+  "gpu_inference": "NOT_RUN",
+  "real_targets": "NOT_SUPPLIED",
+  "biological_validation": "NOT_ESTABLISHED",
+  "unit_tests": {
+    "passed": 38,
+    "failed": 0
+  },
+  "notebook_sha256": "a9e07ef9a119237e67656855ec08a193252784a0aaed176ed222e305237420c7",
+  "calibration_data": "SYNTHETIC_ONLY"
+}

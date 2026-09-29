@@ -1,0 +1,373 @@
+[
+  {
+    "name": "cassette_68b64c3dc77c_cassette_alone",
+    "modelSeeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "sequences": [
+      {
+        "proteinChain": {
+          "sequence": "KAKAKAKAKAGGGGSGGGGSGGGGSGGGGSSESESESESEGGGGSGGGGSGGGGSGGGGSRTRTRTRTRT",
+          "count": 1,
+          "useStructureTemplate": false
+        }
+      }
+    ],
+    "dialect": "alphafoldserver",
+    "version": 1
+  },
+  {
+    "name": "cassette_68b64c3dc77c_joint",
+    "modelSeeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "sequences": [
+      {
+        "proteinChain": {
+          "sequence": "KAKAKAKAKAGGGGSGGGGSGGGGSGGGGSSESESESESEGGGGSGGGGSGGGGSGGGGSRTRTRTRTRT",
+          "count": 1,
+          "useStructureTemplate": false
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "AGSTAGSTAG",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "VLVLVLVLVL",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "DKDKDKDKDK",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      }
+    ],
+    "dialect": "alphafoldserver",
+    "version": 1
+  },
+  {
+    "name": "cassette_68b64c3dc77c_cassette_target_1",
+    "modelSeeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "sequences": [
+      {
+        "proteinChain": {
+          "sequence": "KAKAKAKAKAGGGGSGGGGSGGGGSGGGGSSESESESESEGGGGSGGGGSGGGGSGGGGSRTRTRTRTRT",
+          "count": 1,
+          "useStructureTemplate": false
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "AGSTAGSTAG",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      }
+    ],
+    "dialect": "alphafoldserver",
+    "version": 1
+  },
+  {
+    "name": "cassette_68b64c3dc77c_cassette_target_2",
+    "modelSeeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "sequences": [
+      {
+        "proteinChain": {
+          "sequence": "KAKAKAKAKAGGGGSGGGGSGGGGSGGGGSSESESESESEGGGGSGGGGSGGGGSGGGGSRTRTRTRTRT",
+          "count": 1,
+          "useStructureTemplate": false
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "VLVLVLVLVL",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      }
+    ],
+    "dialect": "alphafoldserver",
+    "version": 1
+  },
+  {
+    "name": "cassette_68b64c3dc77c_cassette_target_3",
+    "modelSeeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "sequences": [
+      {
+        "proteinChain": {
+          "sequence": "KAKAKAKAKAGGGGSGGGGSGGGGSGGGGSSESESESESEGGGGSGGGGSGGGGSGGGGSRTRTRTRTRT",
+          "count": 1,
+          "useStructureTemplate": false
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "DKDKDKDKDK",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      }
+    ],
+    "dialect": "alphafoldserver",
+    "version": 1
+  },
+  {
+    "name": "cassette_68b64c3dc77c_domain_1_target_1",
+    "modelSeeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "sequences": [
+      {
+        "proteinChain": {
+          "sequence": "KAKAKAKAKA",
+          "count": 1,
+          "useStructureTemplate": false
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "AGSTAGSTAG",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      }
+    ],
+    "dialect": "alphafoldserver",
+    "version": 1
+  },
+  {
+    "name": "cassette_68b64c3dc77c_domain_1_target_2",
+    "modelSeeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "sequences": [
+      {
+        "proteinChain": {
+          "sequence": "KAKAKAKAKA",
+          "count": 1,
+          "useStructureTemplate": false
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "VLVLVLVLVL",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      }
+    ],
+    "dialect": "alphafoldserver",
+    "version": 1
+  },
+  {
+    "name": "cassette_68b64c3dc77c_domain_1_target_3",
+    "modelSeeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "sequences": [
+      {
+        "proteinChain": {
+          "sequence": "KAKAKAKAKA",
+          "count": 1,
+          "useStructureTemplate": false
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "DKDKDKDKDK",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      }
+    ],
+    "dialect": "alphafoldserver",
+    "version": 1
+  },
+  {
+    "name": "cassette_68b64c3dc77c_domain_2_target_1",
+    "modelSeeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "sequences": [
+      {
+        "proteinChain": {
+          "sequence": "SESESESESE",
+          "count": 1,
+          "useStructureTemplate": false
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "AGSTAGSTAG",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      }
+    ],
+    "dialect": "alphafoldserver",
+    "version": 1
+  },
+  {
+    "name": "cassette_68b64c3dc77c_domain_2_target_2",
+    "modelSeeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "sequences": [
+      {
+        "proteinChain": {
+          "sequence": "SESESESESE",
+          "count": 1,
+          "useStructureTemplate": false
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "VLVLVLVLVL",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      }
+    ],
+    "dialect": "alphafoldserver",
+    "version": 1
+  },
+  {
+    "name": "cassette_68b64c3dc77c_domain_2_target_3",
+    "modelSeeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "sequences": [
+      {
+        "proteinChain": {
+          "sequence": "SESESESESE",
+          "count": 1,
+          "useStructureTemplate": false
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "DKDKDKDKDK",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      }
+    ],
+    "dialect": "alphafoldserver",
+    "version": 1
+  },
+  {
+    "name": "cassette_68b64c3dc77c_domain_3_target_1",
+    "modelSeeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "sequences": [
+      {
+        "proteinChain": {
+          "sequence": "RTRTRTRTRT",
+          "count": 1,
+          "useStructureTemplate": false
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "AGSTAGSTAG",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      }
+    ],
+    "dialect": "alphafoldserver",
+    "version": 1
+  },
+  {
+    "name": "cassette_68b64c3dc77c_domain_3_target_2",
+    "modelSeeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "sequences": [
+      {
+        "proteinChain": {
+          "sequence": "RTRTRTRTRT",
+          "count": 1,
+          "useStructureTemplate": false
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "VLVLVLVLVL",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      }
+    ],
+    "dialect": "alphafoldserver",
+    "version": 1
+  },
+  {
+    "name": "cassette_68b64c3dc77c_domain_3_target_3",
+    "modelSeeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "sequences": [
+      {
+        "proteinChain": {
+          "sequence": "RTRTRTRTRT",
+          "count": 1,
+          "useStructureTemplate": false
+        }
+      },
+      {
+        "proteinChain": {
+          "sequence": "DKDKDKDKDK",
+          "count": 1,
+          "useStructureTemplate": true
+        }
+      }
+    ],
+    "dialect": "alphafoldserver",
+    "version": 1
+  }
+]

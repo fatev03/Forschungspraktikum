@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "sequences": [
+    {
+      "protein": {
+        "id": "A",
+        "sequence": "SESESESESE",
+        "msa": "empty"
+      }
+    },
+    {
+      "protein": {
+        "id": "B",
+        "sequence": "DKDKDKDKDK"
+      }
+    }
+  ]
+}

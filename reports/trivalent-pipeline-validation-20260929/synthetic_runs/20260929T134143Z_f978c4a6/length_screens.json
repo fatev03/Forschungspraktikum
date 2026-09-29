@@ -1,0 +1,242 @@
+[
+  {
+    "variant_id": "cassette_68b64c3dc77c",
+    "status": "COARSE_ENVELOPE_ONLY",
+    "rows": [
+      {
+        "spacing_nm": 5.0,
+        "junction": 1,
+        "gap_min_A": 15.799999237060547,
+        "gap_max_A": 84.20000076293945,
+        "inserted_residues": 20,
+        "CA_contour_A": 79.80000000000001,
+        "status": "ORIENTATION_DEPENDENT_LENGTH_SCREEN"
+      },
+      {
+        "spacing_nm": 5.0,
+        "junction": 2,
+        "gap_min_A": 15.799999237060547,
+        "gap_max_A": 84.20000076293945,
+        "inserted_residues": 20,
+        "CA_contour_A": 79.80000000000001,
+        "status": "ORIENTATION_DEPENDENT_LENGTH_SCREEN"
+      },
+      {
+        "spacing_nm": 8.0,
+        "junction": 1,
+        "gap_min_A": 45.79999923706055,
+        "gap_max_A": 114.20000076293945,
+        "inserted_residues": 20,
+        "CA_contour_A": 79.80000000000001,
+        "status": "ORIENTATION_DEPENDENT_LENGTH_SCREEN"
+      },
+      {
+        "spacing_nm": 8.0,
+        "junction": 2,
+        "gap_min_A": 45.79999923706055,
+        "gap_max_A": 114.20000076293945,
+        "inserted_residues": 20,
+        "CA_contour_A": 79.80000000000001,
+        "status": "ORIENTATION_DEPENDENT_LENGTH_SCREEN"
+      },
+      {
+        "spacing_nm": 10.0,
+        "junction": 1,
+        "gap_min_A": 65.79999923706055,
+        "gap_max_A": 134.20000076293945,
+        "inserted_residues": 20,
+        "CA_contour_A": 79.80000000000001,
+        "status": "ORIENTATION_DEPENDENT_LENGTH_SCREEN"
+      },
+      {
+        "spacing_nm": 10.0,
+        "junction": 2,
+        "gap_min_A": 65.79999923706055,
+        "gap_max_A": 134.20000076293945,
+        "inserted_residues": 20,
+        "CA_contour_A": 79.80000000000001,
+        "status": "ORIENTATION_DEPENDENT_LENGTH_SCREEN"
+      },
+      {
+        "spacing_nm": 15.0,
+        "junction": 1,
+        "gap_min_A": 115.79999923706055,
+        "gap_max_A": 184.20000076293945,
+        "inserted_residues": 20,
+        "CA_contour_A": 79.80000000000001,
+        "status": "OUTSIDE_LENGTH_ENVELOPE"
+      },
+      {
+        "spacing_nm": 15.0,
+        "junction": 2,
+        "gap_min_A": 115.79999923706055,
+        "gap_max_A": 184.20000076293945,
+        "inserted_residues": 20,
+        "CA_contour_A": 79.80000000000001,
+        "status": "OUTSIDE_LENGTH_ENVELOPE"
+      },
+      {
+        "spacing_nm": 20.0,
+        "junction": 1,
+        "gap_min_A": 165.79999923706055,
+        "gap_max_A": 234.20000076293945,
+        "inserted_residues": 20,
+        "CA_contour_A": 79.80000000000001,
+        "status": "OUTSIDE_LENGTH_ENVELOPE"
+      },
+      {
+        "spacing_nm": 20.0,
+        "junction": 2,
+        "gap_min_A": 165.79999923706055,
+        "gap_max_A": 234.20000076293945,
+        "inserted_residues": 20,
+        "CA_contour_A": 79.80000000000001,
+        "status": "OUTSIDE_LENGTH_ENVELOPE"
+      },
+      {
+        "spacing_nm": 30.0,
+        "junction": 1,
+        "gap_min_A": 265.79999923706055,
+        "gap_max_A": 334.20000076293945,
+        "inserted_residues": 20,
+        "CA_contour_A": 79.80000000000001,
+        "status": "OUTSIDE_LENGTH_ENVELOPE"
+      },
+      {
+        "spacing_nm": 30.0,
+        "junction": 2,
+        "gap_min_A": 265.79999923706055,
+        "gap_max_A": 334.20000076293945,
+        "inserted_residues": 20,
+        "CA_contour_A": 79.80000000000001,
+        "status": "OUTSIDE_LENGTH_ENVELOPE"
+      }
+    ],
+    "assumptions": [
+      "equally spaced collinear binder-interface centers, not receptor membrane anchors",
+      "free independent rotations give envelopes, not jointly attained extrema",
+      "no joint steric/membrane/glycan feasibility established"
+    ],
+    "Ceff_export": null
+  },
+  {
+    "variant_id": "cassette_b0531e09c255",
+    "status": "COARSE_ENVELOPE_ONLY",
+    "rows": [
+      {
+        "spacing_nm": 5.0,
+        "junction": 1,
+        "gap_min_A": 15.799999237060547,
+        "gap_max_A": 84.20000076293945,
+        "inserted_residues": 0,
+        "CA_contour_A": 3.8,
+        "status": "DIRECT_FUSION_REQUIRES_ATOMIC_JUNCTION_MODEL"
+      },
+      {
+        "spacing_nm": 5.0,
+        "junction": 2,
+        "gap_min_A": 15.799999237060547,
+        "gap_max_A": 84.20000076293945,
+        "inserted_residues": 0,
+        "CA_contour_A": 3.8,
+        "status": "DIRECT_FUSION_REQUIRES_ATOMIC_JUNCTION_MODEL"
+      },
+      {
+        "spacing_nm": 8.0,
+        "junction": 1,
+        "gap_min_A": 45.79999923706055,
+        "gap_max_A": 114.20000076293945,
+        "inserted_residues": 0,
+        "CA_contour_A": 3.8,
+        "status": "DIRECT_FUSION_REQUIRES_ATOMIC_JUNCTION_MODEL"
+      },
+      {
+        "spacing_nm": 8.0,
+        "junction": 2,
+        "gap_min_A": 45.79999923706055,
+        "gap_max_A": 114.20000076293945,
+        "inserted_residues": 0,
+        "CA_contour_A": 3.8,
+        "status": "DIRECT_FUSION_REQUIRES_ATOMIC_JUNCTION_MODEL"
+      },
+      {
+        "spacing_nm": 10.0,
+        "junction": 1,
+        "gap_min_A": 65.79999923706055,
+        "gap_max_A": 134.20000076293945,
+        "inserted_residues": 0,
+        "CA_contour_A": 3.8,
+        "status": "DIRECT_FUSION_REQUIRES_ATOMIC_JUNCTION_MODEL"
+      },
+      {
+        "spacing_nm": 10.0,
+        "junction": 2,
+        "gap_min_A": 65.79999923706055,
+        "gap_max_A": 134.20000076293945,
+        "inserted_residues": 0,
+        "CA_contour_A": 3.8,
+        "status": "DIRECT_FUSION_REQUIRES_ATOMIC_JUNCTION_MODEL"
+      },
+      {
+        "spacing_nm": 15.0,
+        "junction": 1,
+        "gap_min_A": 115.79999923706055,
+        "gap_max_A": 184.20000076293945,
+        "inserted_residues": 0,
+        "CA_contour_A": 3.8,
+        "status": "DIRECT_FUSION_REQUIRES_ATOMIC_JUNCTION_MODEL"
+      },
+      {
+        "spacing_nm": 15.0,
+        "junction": 2,
+        "gap_min_A": 115.79999923706055,
+        "gap_max_A": 184.20000076293945,
+        "inserted_residues": 0,
+        "CA_contour_A": 3.8,
+        "status": "DIRECT_FUSION_REQUIRES_ATOMIC_JUNCTION_MODEL"
+      },
+      {
+        "spacing_nm": 20.0,
+        "junction": 1,
+        "gap_min_A": 165.79999923706055,
+        "gap_max_A": 234.20000076293945,
+        "inserted_residues": 0,
+        "CA_contour_A": 3.8,
+        "status": "DIRECT_FUSION_REQUIRES_ATOMIC_JUNCTION_MODEL"
+      },
+      {
+        "spacing_nm": 20.0,
+        "junction": 2,
+        "gap_min_A": 165.79999923706055,
+        "gap_max_A": 234.20000076293945,
+        "inserted_residues": 0,
+        "CA_contour_A": 3.8,
+        "status": "DIRECT_FUSION_REQUIRES_ATOMIC_JUNCTION_MODEL"
+      },
+      {
+        "spacing_nm": 30.0,
+        "junction": 1,
+        "gap_min_A": 265.79999923706055,
+        "gap_max_A": 334.20000076293945,
+        "inserted_residues": 0,
+        "CA_contour_A": 3.8,
+        "status": "DIRECT_FUSION_REQUIRES_ATOMIC_JUNCTION_MODEL"
+      },
+      {
+        "spacing_nm": 30.0,
+        "junction": 2,
+        "gap_min_A": 265.79999923706055,
+        "gap_max_A": 334.20000076293945,
+        "inserted_residues": 0,
+        "CA_contour_A": 3.8,
+        "status": "DIRECT_FUSION_REQUIRES_ATOMIC_JUNCTION_MODEL"
+      }
+    ],
+    "assumptions": [
+      "equally spaced collinear binder-interface centers, not receptor membrane anchors",
+      "free independent rotations give envelopes, not jointly attained extrema",
+      "no joint steric/membrane/glycan feasibility established"
+    ],
+    "Ceff_export": null
+  }
+]

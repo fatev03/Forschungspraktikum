@@ -1,0 +1,120 @@
+{
+  "baseline_geometry": {
+    "name": "t",
+    "pdb": "/var/folders/32/gmf_h11d13vdtbynzy_s7_km0000gn/T/tmp404v9ubl/pair.pdb",
+    "nres": 10,
+    "n_off": 3.0,
+    "c_off": 20.518284528683193,
+    "n_to_tgt": 6.0,
+    "c_to_tgt": 25.65151067676132,
+    "n_outward": -0.963853919869303,
+    "c_outward": 0.9611187418421194,
+    "body_span": 21.307275752662516,
+    "iface_res": 4,
+    "clash_atoms": 0
+  },
+  "rows": [
+    {
+      "spacing (nm)": 5.0,
+      "all linkers reach (worst case)": "yes",
+      "trivalent gain, best": 3506750.4,
+      "trivalent gain, worst": 4.9,
+      "_detail": [
+        {
+          "spacing (nm)": 5.0,
+          "linker": "L1 GIPR->GLP1R",
+          "residues": 25,
+          "gap best (A)": 26.5,
+          "gap worst (A)": 73.5,
+          "RMS span (A)": 32.4,
+          "max span (A)": 87.5,
+          "optimal res (best gap)": 18,
+          "length assessment": "suitable",
+          "Ceff best (uM)": 5921.78,
+          "Ceff worst (uM)": 7.0,
+          "worst case reachable": "yes"
+        },
+        {
+          "spacing (nm)": 5.0,
+          "linker": "L2 GLP1R->GCGR",
+          "residues": 25,
+          "gap best (A)": 26.5,
+          "gap worst (A)": 73.5,
+          "RMS span (A)": 32.4,
+          "max span (A)": 87.5,
+          "optimal res (best gap)": 18,
+          "length assessment": "suitable",
+          "Ceff best (uM)": 5921.78,
+          "Ceff worst (uM)": 7.0,
+          "worst case reachable": "yes"
+        }
+      ]
+    },
+    {
+      "spacing (nm)": 10.0,
+      "all linkers reach (worst case)": "NO",
+      "trivalent gain, best": 1.4,
+      "trivalent gain, worst": 0.0,
+      "_detail": [
+        {
+          "spacing (nm)": 10.0,
+          "linker": "L1 GIPR->GLP1R",
+          "residues": 25,
+          "gap best (A)": 76.5,
+          "gap worst (A)": 123.5,
+          "RMS span (A)": 32.4,
+          "max span (A)": 87.5,
+          "optimal res (best gap)": 105,
+          "length assessment": "too short",
+          "Ceff best (uM)": 3.7,
+          "Ceff worst (uM)": 0.0,
+          "worst case reachable": "NO"
+        },
+        {
+          "spacing (nm)": 10.0,
+          "linker": "L2 GLP1R->GCGR",
+          "residues": 25,
+          "gap best (A)": 76.5,
+          "gap worst (A)": 123.5,
+          "RMS span (A)": 32.4,
+          "max span (A)": 87.5,
+          "optimal res (best gap)": 105,
+          "length assessment": "too short",
+          "Ceff best (uM)": 3.7,
+          "Ceff worst (uM)": 0.0,
+          "worst case reachable": "NO"
+        }
+      ]
+    }
+  ],
+  "export_best_Ceff_uM": 5921.782152806672,
+  "actual_worst_Ceff_uM": 7.0016325663835595,
+  "export_over_worst_factor": 845.7716249262355,
+  "first_Kd_1000x_change_leaves_gain_identical": true,
+  "unreachable_best_gap_export": {
+    "gap_A": 96.5,
+    "contour_A": 87.5,
+    "Ceff_M": 2.6045700656913534e-08
+  },
+  "no_interface_still_scored": {
+    "iface_res": [
+      0,
+      0,
+      0
+    ],
+    "gain": 2700794.2
+  },
+  "two_model_binder_CA_count": 20,
+  "distance_min_counterexample": {
+    "spacing_A": 5.0,
+    "offsets_A": [
+      30.0,
+      2.0
+    ],
+    "implemented_min_A": 0.0,
+    "exact_free_rotation_min_A": 23.0
+  },
+  "baseline_checks_and_four_error_guards": "passed",
+  "fractional_linker_silently_truncated_to": 25,
+  "negative_spacing_accepted": -5.0
+}

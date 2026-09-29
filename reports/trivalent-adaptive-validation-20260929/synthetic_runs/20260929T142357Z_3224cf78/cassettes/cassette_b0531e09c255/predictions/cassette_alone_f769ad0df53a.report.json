@@ -1,0 +1,342 @@
+{
+  "status": "NO_LISTED_GEOMETRIC_DEFECT_DETECTED",
+  "reasons": [],
+  "role": "cassette_alone",
+  "source_path": "/Users/fatihyigitevyapan/Desktop/Forschungspraktikum/reports/trivalent-adaptive-validation-20260929/synthetic_fixtures/variant_1_cassette_alone.pdb",
+  "sha256": "f769ad0df53ae038eda3d3f607642980253dbf0d65be7534806168a5d6ac2118",
+  "chain_map": {
+    "cassette": "A"
+  },
+  "missing_junction_positions": [],
+  "peptide_bond_outliers": [],
+  "missing_heavy_atoms": {
+    "cassette": []
+  },
+  "domain_comparison": [
+    {
+      "target_id": "R1",
+      "binder_CA_RMSD_to_pair_A": 0.0
+    },
+    {
+      "target_id": "R2",
+      "binder_CA_RMSD_to_pair_A": 2.2967519726080354e-06
+    },
+    {
+      "target_id": "R3",
+      "binder_CA_RMSD_to_pair_A": 3.1049387416715035e-06
+    }
+  ],
+  "interface_contact_matrix": [],
+  "nonlocal_intrachain_close_pairs": 0,
+  "whole_cassette_receptor_close_pairs": [],
+  "domain_rmsd_review_threshold_A": 3.0,
+  "receptor_close_pairs": [],
+  "membrane": {
+    "status": "NOT_ASSESSED"
+  },
+  "heteroatom_close_pairs": null,
+  "scope": "structure plausibility only; does not establish simultaneous biological binding, selectivity or activation",
+  "provider_declaration": "SYNTHETIC_SOFTWARE_TEST_ONLY",
+  "residue_mapping": [
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        1,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 1
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        2,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 2
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        3,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 3
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        4,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 4
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        5,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 5
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        6,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 6
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        7,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 7
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        8,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 8
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        9,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 9
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        10,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 10
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        11,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 11
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        12,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 12
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        13,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 13
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        14,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 14
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        15,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 15
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        16,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 16
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        17,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 17
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        18,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 18
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        19,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 19
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        20,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 20
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        21,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 21
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        22,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 22
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        23,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 23
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        24,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 24
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        25,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 25
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        26,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 26
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        27,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 27
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        28,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 28
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        29,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 29
+    },
+    {
+      "input_chain": "A",
+      "input_residue": [
+        " ",
+        30,
+        " "
+      ],
+      "output_chain": "A",
+      "output_position": 30
+    }
+  ]
+}

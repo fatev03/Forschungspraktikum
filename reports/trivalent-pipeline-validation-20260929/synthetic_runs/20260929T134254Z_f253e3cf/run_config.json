@@ -1,0 +1,71 @@
+{
+  "targets": [
+    {
+      "target_id": "R1",
+      "mode": "import",
+      "pair_path": "/Users/fatihyigitevyapan/Desktop/Forschungspraktikum/reports/trivalent-pipeline-validation-20260929/synthetic_fixtures/pair1.pdb",
+      "target_chain": "A",
+      "binder_chain": "B",
+      "target_sequence": "AGSTAGSTAG",
+      "binder_sequence": "KAKAKAKAKA",
+      "provider": "SYNTHETIC_SOFTWARE_TEST_ONLY"
+    },
+    {
+      "target_id": "R2",
+      "mode": "import",
+      "pair_path": "/Users/fatihyigitevyapan/Desktop/Forschungspraktikum/reports/trivalent-pipeline-validation-20260929/synthetic_fixtures/pair2.pdb",
+      "target_chain": "A",
+      "binder_chain": "B",
+      "target_sequence": "VLVLVLVLVL",
+      "binder_sequence": "SESESESESE",
+      "provider": "SYNTHETIC_SOFTWARE_TEST_ONLY"
+    },
+    {
+      "target_id": "R3",
+      "mode": "import",
+      "pair_path": "/Users/fatihyigitevyapan/Desktop/Forschungspraktikum/reports/trivalent-pipeline-validation-20260929/synthetic_fixtures/pair3.pdb",
+      "target_chain": "A",
+      "binder_chain": "B",
+      "target_sequence": "DKDKDKDKDK",
+      "binder_sequence": "RTRTRTRTRT",
+      "provider": "SYNTHETIC_SOFTWARE_TEST_ONLY"
+    }
+  ],
+  "connections": [
+    {
+      "name": "GS20",
+      "linkers": [
+        "GGGGSGGGGSGGGGSGGGGS",
+        "GGGGSGGGGSGGGGSGGGGS"
+      ]
+    },
+    {
+      "name": "direct",
+      "linkers": [
+        "",
+        ""
+      ]
+    }
+  ],
+  "settings": {
+    "num_designs": 2,
+    "num_sequences": 8,
+    "diffusion_steps": 50,
+    "af_recycles": 3,
+    "mpnn_temperature": 0.1,
+    "exclude_amino_acids": "",
+    "screens": {
+      "min_plddt": 0.8,
+      "min_iptm": 0.6,
+      "max_ipae_A": 10.0,
+      "max_rmsd_A": 2.5
+    }
+  },
+  "all_domain_orders": false,
+  "source_bundle_sha256": "f7780ac1bd7e328cb6a77b54d468b41bd77a042e686844d9eabf95299d84c285",
+  "boltz_samples": 1,
+  "fold_variant_indices": [
+    0,
+    1
+  ]
+}

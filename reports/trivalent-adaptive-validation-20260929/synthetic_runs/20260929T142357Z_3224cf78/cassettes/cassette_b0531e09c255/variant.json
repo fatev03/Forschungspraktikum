@@ -1,0 +1,608 @@
+{
+  "id": "cassette_b0531e09c255",
+  "connection": "direct",
+  "order": [
+    "R1",
+    "R2",
+    "R3"
+  ],
+  "sequence": "KAKAKAKAKASESESESESERTRTRTRTRT",
+  "regions": [
+    {
+      "kind": "binder",
+      "target_id": "R1",
+      "candidate_id": "R1_external",
+      "start": 1,
+      "end": 10
+    },
+    {
+      "kind": "linker",
+      "name": "L1",
+      "start": 11,
+      "end": 10,
+      "sequence": ""
+    },
+    {
+      "kind": "binder",
+      "target_id": "R2",
+      "candidate_id": "R2_external",
+      "start": 11,
+      "end": 20
+    },
+    {
+      "kind": "linker",
+      "name": "L2",
+      "start": 21,
+      "end": 20,
+      "sequence": ""
+    },
+    {
+      "kind": "binder",
+      "target_id": "R3",
+      "candidate_id": "R3_external",
+      "start": 21,
+      "end": 30
+    }
+  ],
+  "linkers": [
+    "",
+    ""
+  ],
+  "valency_by_target": {
+    "R1": 1,
+    "R2": 1,
+    "R3": 1
+  },
+  "arms": [
+    {
+      "target_id": "R1",
+      "candidate_id": "R1_external",
+      "source": {
+        "path": "/Users/fatihyigitevyapan/Desktop/Forschungspraktikum/reports/trivalent-adaptive-validation-20260929/synthetic_fixtures/pair1.pdb",
+        "sha256": "e805b876e42cf69c931fbedc3b271dda82e0aa75d6e3fecccabd8f7af7c5e91c",
+        "provider": "SYNTHETIC_SOFTWARE_TEST_ONLY",
+        "model_index": null,
+        "target_chain": "A",
+        "binder_chain": "B"
+      },
+      "target_sequence": "AGSTAGSTAG",
+      "binder_sequence": "KAKAKAKAKA",
+      "target_residue_map": [
+        {
+          "chain": "A",
+          "resnum": 1,
+          "icode": "",
+          "aa": "A"
+        },
+        {
+          "chain": "A",
+          "resnum": 2,
+          "icode": "",
+          "aa": "G"
+        },
+        {
+          "chain": "A",
+          "resnum": 3,
+          "icode": "",
+          "aa": "S"
+        },
+        {
+          "chain": "A",
+          "resnum": 4,
+          "icode": "",
+          "aa": "T"
+        },
+        {
+          "chain": "A",
+          "resnum": 5,
+          "icode": "",
+          "aa": "A"
+        },
+        {
+          "chain": "A",
+          "resnum": 6,
+          "icode": "",
+          "aa": "G"
+        },
+        {
+          "chain": "A",
+          "resnum": 7,
+          "icode": "",
+          "aa": "S"
+        },
+        {
+          "chain": "A",
+          "resnum": 8,
+          "icode": "",
+          "aa": "T"
+        },
+        {
+          "chain": "A",
+          "resnum": 9,
+          "icode": "",
+          "aa": "A"
+        },
+        {
+          "chain": "A",
+          "resnum": 10,
+          "icode": "",
+          "aa": "G"
+        }
+      ],
+      "binder_residue_map": [
+        {
+          "chain": "B",
+          "resnum": 1,
+          "icode": "",
+          "aa": "K"
+        },
+        {
+          "chain": "B",
+          "resnum": 2,
+          "icode": "",
+          "aa": "A"
+        },
+        {
+          "chain": "B",
+          "resnum": 3,
+          "icode": "",
+          "aa": "K"
+        },
+        {
+          "chain": "B",
+          "resnum": 4,
+          "icode": "",
+          "aa": "A"
+        },
+        {
+          "chain": "B",
+          "resnum": 5,
+          "icode": "",
+          "aa": "K"
+        },
+        {
+          "chain": "B",
+          "resnum": 6,
+          "icode": "",
+          "aa": "A"
+        },
+        {
+          "chain": "B",
+          "resnum": 7,
+          "icode": "",
+          "aa": "K"
+        },
+        {
+          "chain": "B",
+          "resnum": 8,
+          "icode": "",
+          "aa": "A"
+        },
+        {
+          "chain": "B",
+          "resnum": 9,
+          "icode": "",
+          "aa": "K"
+        },
+        {
+          "chain": "B",
+          "resnum": 10,
+          "icode": "",
+          "aa": "A"
+        }
+      ],
+      "interface_CA_count": 10,
+      "heavy_atom_contact_pairs": 330,
+      "missing_heavy_atoms": {
+        "target": [],
+        "binder": []
+      },
+      "severe_close_atom_pairs": 0,
+      "geometry": {
+        "n_offset_A": 17.100000381469727,
+        "c_offset_A": 17.100000381469727,
+        "N_to_target_A": 4.5,
+        "C_to_target_A": 4.5,
+        "body_span_A": 34.20000076293945,
+        "N_outward_proxy": null,
+        "C_outward_proxy": null,
+        "scope": "CA based endpoint proxy; not peptide exit orientation"
+      },
+      "screen_state": "GEOMETRY_CANDIDATE",
+      "hetero_residues_present": [],
+      "sequence_properties": {
+        "length": 10,
+        "molecular_weight_Da": 1014.2663,
+        "theoretical_pI": 10.602486610412598,
+        "charge_at_pH": 4.5449249042305215,
+        "pH": 7.4,
+        "gravy": -1.0499999999999998,
+        "cysteine_positions": [],
+        "N_glycosylation_sequon_positions": [],
+        "hydrophobic_runs_8plus": [],
+        "scope": "sequence descriptors and flags, not expression/solubility/glycosylation predictions"
+      },
+      "confidence": null,
+      "biological_context": {},
+      "unresolved": [
+        "binding_experiment",
+        "cross_reactivity",
+        "activation_or_inhibition",
+        "expression_and_aggregation",
+        "membrane_context_unless_explicitly_supplied",
+        "glycans_not_listed_are_unknown_not_absent"
+      ]
+    },
+    {
+      "target_id": "R2",
+      "candidate_id": "R2_external",
+      "source": {
+        "path": "/Users/fatihyigitevyapan/Desktop/Forschungspraktikum/reports/trivalent-adaptive-validation-20260929/synthetic_fixtures/pair2.pdb",
+        "sha256": "2d305006f633560bd76bdeea75d4bbf2af7ff99d057da9a7fd8f801f155e3214",
+        "provider": "SYNTHETIC_SOFTWARE_TEST_ONLY",
+        "model_index": null,
+        "target_chain": "A",
+        "binder_chain": "B"
+      },
+      "target_sequence": "VLVLVLVLVL",
+      "binder_sequence": "SESESESESE",
+      "target_residue_map": [
+        {
+          "chain": "A",
+          "resnum": 1,
+          "icode": "",
+          "aa": "V"
+        },
+        {
+          "chain": "A",
+          "resnum": 2,
+          "icode": "",
+          "aa": "L"
+        },
+        {
+          "chain": "A",
+          "resnum": 3,
+          "icode": "",
+          "aa": "V"
+        },
+        {
+          "chain": "A",
+          "resnum": 4,
+          "icode": "",
+          "aa": "L"
+        },
+        {
+          "chain": "A",
+          "resnum": 5,
+          "icode": "",
+          "aa": "V"
+        },
+        {
+          "chain": "A",
+          "resnum": 6,
+          "icode": "",
+          "aa": "L"
+        },
+        {
+          "chain": "A",
+          "resnum": 7,
+          "icode": "",
+          "aa": "V"
+        },
+        {
+          "chain": "A",
+          "resnum": 8,
+          "icode": "",
+          "aa": "L"
+        },
+        {
+          "chain": "A",
+          "resnum": 9,
+          "icode": "",
+          "aa": "V"
+        },
+        {
+          "chain": "A",
+          "resnum": 10,
+          "icode": "",
+          "aa": "L"
+        }
+      ],
+      "binder_residue_map": [
+        {
+          "chain": "B",
+          "resnum": 1,
+          "icode": "",
+          "aa": "S"
+        },
+        {
+          "chain": "B",
+          "resnum": 2,
+          "icode": "",
+          "aa": "E"
+        },
+        {
+          "chain": "B",
+          "resnum": 3,
+          "icode": "",
+          "aa": "S"
+        },
+        {
+          "chain": "B",
+          "resnum": 4,
+          "icode": "",
+          "aa": "E"
+        },
+        {
+          "chain": "B",
+          "resnum": 5,
+          "icode": "",
+          "aa": "S"
+        },
+        {
+          "chain": "B",
+          "resnum": 6,
+          "icode": "",
+          "aa": "E"
+        },
+        {
+          "chain": "B",
+          "resnum": 7,
+          "icode": "",
+          "aa": "S"
+        },
+        {
+          "chain": "B",
+          "resnum": 8,
+          "icode": "",
+          "aa": "E"
+        },
+        {
+          "chain": "B",
+          "resnum": 9,
+          "icode": "",
+          "aa": "S"
+        },
+        {
+          "chain": "B",
+          "resnum": 10,
+          "icode": "",
+          "aa": "E"
+        }
+      ],
+      "interface_CA_count": 10,
+      "heavy_atom_contact_pairs": 501,
+      "missing_heavy_atoms": {
+        "target": [],
+        "binder": []
+      },
+      "severe_close_atom_pairs": 0,
+      "geometry": {
+        "n_offset_A": 17.100000381469727,
+        "c_offset_A": 17.100000381469727,
+        "N_to_target_A": 4.5,
+        "C_to_target_A": 4.5,
+        "body_span_A": 34.20000076293945,
+        "N_outward_proxy": null,
+        "C_outward_proxy": null,
+        "scope": "CA based endpoint proxy; not peptide exit orientation"
+      },
+      "screen_state": "GEOMETRY_CANDIDATE",
+      "hetero_residues_present": [],
+      "sequence_properties": {
+        "length": 10,
+        "molecular_weight_Da": 1098.9718,
+        "theoretical_pI": 4.0500284194946286,
+        "charge_at_pH": -5.739075396268367,
+        "pH": 7.4,
+        "gravy": -2.1500000000000004,
+        "cysteine_positions": [],
+        "N_glycosylation_sequon_positions": [],
+        "hydrophobic_runs_8plus": [],
+        "scope": "sequence descriptors and flags, not expression/solubility/glycosylation predictions"
+      },
+      "confidence": null,
+      "biological_context": {},
+      "unresolved": [
+        "binding_experiment",
+        "cross_reactivity",
+        "activation_or_inhibition",
+        "expression_and_aggregation",
+        "membrane_context_unless_explicitly_supplied",
+        "glycans_not_listed_are_unknown_not_absent"
+      ]
+    },
+    {
+      "target_id": "R3",
+      "candidate_id": "R3_external",
+      "source": {
+        "path": "/Users/fatihyigitevyapan/Desktop/Forschungspraktikum/reports/trivalent-adaptive-validation-20260929/synthetic_fixtures/pair3.pdb",
+        "sha256": "28616bda48cf2c281e8d219c2a63846b253b4dab40db5383f51b8df396447bd8",
+        "provider": "SYNTHETIC_SOFTWARE_TEST_ONLY",
+        "model_index": null,
+        "target_chain": "A",
+        "binder_chain": "B"
+      },
+      "target_sequence": "DKDKDKDKDK",
+      "binder_sequence": "RTRTRTRTRT",
+      "target_residue_map": [
+        {
+          "chain": "A",
+          "resnum": 1,
+          "icode": "",
+          "aa": "D"
+        },
+        {
+          "chain": "A",
+          "resnum": 2,
+          "icode": "",
+          "aa": "K"
+        },
+        {
+          "chain": "A",
+          "resnum": 3,
+          "icode": "",
+          "aa": "D"
+        },
+        {
+          "chain": "A",
+          "resnum": 4,
+          "icode": "",
+          "aa": "K"
+        },
+        {
+          "chain": "A",
+          "resnum": 5,
+          "icode": "",
+          "aa": "D"
+        },
+        {
+          "chain": "A",
+          "resnum": 6,
+          "icode": "",
+          "aa": "K"
+        },
+        {
+          "chain": "A",
+          "resnum": 7,
+          "icode": "",
+          "aa": "D"
+        },
+        {
+          "chain": "A",
+          "resnum": 8,
+          "icode": "",
+          "aa": "K"
+        },
+        {
+          "chain": "A",
+          "resnum": 9,
+          "icode": "",
+          "aa": "D"
+        },
+        {
+          "chain": "A",
+          "resnum": 10,
+          "icode": "",
+          "aa": "K"
+        }
+      ],
+      "binder_residue_map": [
+        {
+          "chain": "B",
+          "resnum": 1,
+          "icode": "",
+          "aa": "R"
+        },
+        {
+          "chain": "B",
+          "resnum": 2,
+          "icode": "",
+          "aa": "T"
+        },
+        {
+          "chain": "B",
+          "resnum": 3,
+          "icode": "",
+          "aa": "R"
+        },
+        {
+          "chain": "B",
+          "resnum": 4,
+          "icode": "",
+          "aa": "T"
+        },
+        {
+          "chain": "B",
+          "resnum": 5,
+          "icode": "",
+          "aa": "R"
+        },
+        {
+          "chain": "B",
+          "resnum": 6,
+          "icode": "",
+          "aa": "T"
+        },
+        {
+          "chain": "B",
+          "resnum": 7,
+          "icode": "",
+          "aa": "R"
+        },
+        {
+          "chain": "B",
+          "resnum": 8,
+          "icode": "",
+          "aa": "T"
+        },
+        {
+          "chain": "B",
+          "resnum": 9,
+          "icode": "",
+          "aa": "R"
+        },
+        {
+          "chain": "B",
+          "resnum": 10,
+          "icode": "",
+          "aa": "T"
+        }
+      ],
+      "interface_CA_count": 10,
+      "heavy_atom_contact_pairs": 621,
+      "missing_heavy_atoms": {
+        "target": [],
+        "binder": []
+      },
+      "severe_close_atom_pairs": 0,
+      "geometry": {
+        "n_offset_A": 17.100000381469727,
+        "c_offset_A": 17.100000381469727,
+        "N_to_target_A": 4.5,
+        "C_to_target_A": 4.5,
+        "body_span_A": 34.20000076293945,
+        "N_outward_proxy": null,
+        "C_outward_proxy": null,
+        "scope": "CA based endpoint proxy; not peptide exit orientation"
+      },
+      "screen_state": "GEOMETRY_CANDIDATE",
+      "hetero_residues_present": [],
+      "sequence_properties": {
+        "length": 10,
+        "molecular_weight_Da": 1304.4633000000001,
+        "theoretical_pI": 11.999967765808105,
+        "charge_at_pH": 4.557327276400082,
+        "pH": 7.4,
+        "gravy": -2.5999999999999996,
+        "cysteine_positions": [],
+        "N_glycosylation_sequon_positions": [],
+        "hydrophobic_runs_8plus": [],
+        "scope": "sequence descriptors and flags, not expression/solubility/glycosylation predictions"
+      },
+      "confidence": null,
+      "biological_context": {},
+      "unresolved": [
+        "binding_experiment",
+        "cross_reactivity",
+        "activation_or_inhibition",
+        "expression_and_aggregation",
+        "membrane_context_unless_explicitly_supplied",
+        "glycans_not_listed_are_unknown_not_absent"
+      ]
+    }
+  ],
+  "sequence_properties": {
+    "length": 30,
+    "molecular_weight_Da": 3381.670800000001,
+    "theoretical_pI": 10.520160484313966,
+    "charge_at_pH": 4.550403117762878,
+    "pH": 7.4,
+    "gravy": -1.9333333333333338,
+    "cysteine_positions": [],
+    "N_glycosylation_sequon_positions": [],
+    "hydrophobic_runs_8plus": [],
+    "scope": "sequence descriptors and flags, not expression/solubility/glycosylation predictions"
+  },
+  "status": "SEQUENCE_CANDIDATE_REQUIRES_FUSED_STRUCTURE_AND_EXPERIMENT"
+}

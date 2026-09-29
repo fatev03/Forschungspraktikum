@@ -1,0 +1,15 @@
+{
+  "adapter_version": "0.2",
+  "artifacts": [],
+  "diagnostics": [
+    "no_recognized_runs",
+    "no_structure_artifacts"
+  ],
+  "reader_profile": "af3_native_v1",
+  "root": "/Users/fatihyigitevyapan/Desktop/Forschungspraktikum/reports/trivalent-pipeline-validation-20260929/synthetic_fixtures",
+  "runs": [],
+  "schema": "af3red_external_inventory/0.2",
+  "scope": "external_conformer_inventory_and_admission_prep",
+  "status_scope": "admitted_means_mapping_preparation_only",
+  "manifest_sha256": "764e3833c92f04e46cd548e4071156d18cb63b58ff388309c5605d170ba5a92e"
+}

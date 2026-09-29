@@ -1,0 +1,22 @@
+{
+  "notebook_execution": [
+    {
+      "case": "empty_inputs",
+      "status": "PASS",
+      "executed_code_cells": 15
+    },
+    {
+      "case": "synthetic_import",
+      "status": "PASS",
+      "executed_code_cells": 15
+    }
+  ],
+  "gpu_inference": "NOT_RUN",
+  "real_targets": "NOT_SUPPLIED",
+  "biological_validation": "NOT_ESTABLISHED",
+  "unit_tests": {
+    "passed": 27,
+    "failed": 0
+  },
+  "notebook_sha256": "7fec6108fd28f7633d39cfef3434daf36918d0d561bf4858bf20939a085b2edc"
+}

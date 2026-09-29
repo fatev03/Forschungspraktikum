@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "sequences": [
+    {
+      "protein": {
+        "id": "A",
+        "sequence": "KAKAKAKAKAGGGGSGGGGSGGGGSGGGGSSESESESESEGGGGSGGGGSGGGGSGGGGSRTRTRTRTRT",
+        "msa": "empty"
+      }
+    },
+    {
+      "protein": {
+        "id": "B",
+        "sequence": "AGSTAGSTAG"
+      }
+    },
+    {
+      "protein": {
+        "id": "C",
+        "sequence": "VLVLVLVLVL"
+      }
+    },
+    {
+      "protein": {
+        "id": "D",
+        "sequence": "DKDKDKDKDK"
+      }
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "status": "IDEAL_CHAIN_SCENARIO_ONLY",
+  "variant_id": "cassette_68b64c3dc77c",
+  "target_order": [
+    "R1",
+    "R2",
+    "R3"
+  ],
+  "closure_factors": {
+    "12": 4.262439508453696e-14,
+    "23": 4.262439508453696e-14,
+    "13": 2.2050327217162816e-18,
+    "123": 1.816839056322699e-27
+  },
+  "source_sha256": "5a9b78f5687121d1e314f47c98659c196dd4140d41d31a1650dc4fbf88693456",
+  "details": {
+    "12": {
+      "distance_nm": 7.979999542236328,
+      "contour_nm": 7.98,
+      "Ceff_M": 4.262439508453696e-14,
+      "extension_fraction": 0.9999999426361313,
+      "normalization_diagnostic": {
+        "retained_mass_before_renormalization": 0.9999999999993872,
+        "normalized_mass": 1.0,
+        "regularization_nm": 0.15,
+        "near_contour_extension": true
+      }
+    },
+    "23": {
+      "distance_nm": 7.979999542236328,
+      "contour_nm": 7.98,
+      "Ceff_M": 4.262439508453696e-14,
+      "extension_fraction": 0.9999999426361313,
+      "normalization_diagnostic": {
+        "retained_mass_before_renormalization": 0.9999999999993872,
+        "normalized_mass": 1.0,
+        "regularization_nm": 0.15,
+        "near_contour_extension": true
+      }
+    },
+    "13": {
+      "distance_nm": 19.3799991607666,
+      "contour_nm": 19.380000076293946,
+      "Ceff_M": 2.2050327217162816e-18,
+      "extension_fraction": 0.9999999527591671,
+      "normalization_diagnostic": {
+        "retained_mass_before_renormalization": 1.0000000000000668,
+        "normalized_mass": 1.0,
+        "regularization_nm": 0.15,
+        "near_contour_extension": true
+      }
+    }
+  },
+  "parameters": {
+    "persistence_nm": 0.5,
+    "resolution_nm": 0.15,
+    "CA_step_nm": 0.38
+  },
+  "assumptions": [
+    "fixed predicted receptor patch, not a membrane population",
+    "independent freely jointed ideal segments; WLC first two moments only",
+    "unbound middle binder approximated as freely rotating N-C rod for J13",
+    "J123 factorized as J12*J23 only under this explicit ideal-chain assumption",
+    "binding orientation, excluded volume, membrane and glycans not integrated into Ceff",
+    "linker sequence affects real persistence; supplied lp is a scenario parameter",
+    "regularized density truncated at contour and renormalized; not exact WLC distribution",
+    "near-contour regularized density is not a calibrated stretching free energy"
+  ]
+}

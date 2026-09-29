@@ -1,0 +1,25 @@
+{
+  "variant_id": "cassette_68b64c3dc77c",
+  "target_order": [
+    "R1",
+    "R2",
+    "R3"
+  ],
+  "condition_id": "",
+  "conditions": {
+    "temperature_K": null,
+    "pH": null,
+    "ionic_strength_M": null,
+    "construct_note": "",
+    "geometry_id": ""
+  },
+  "source_note": "",
+  "sources": {},
+  "data_independence_note": "",
+  "affinity_transfer_assumption": "",
+  "error_model": "independent_gaussian_known_sd",
+  "equilibrium_confirmed": false,
+  "concentration_basis": "free",
+  "evidence_kind": "experimental",
+  "system": "fixed_patch_one_receptor_each"
+}

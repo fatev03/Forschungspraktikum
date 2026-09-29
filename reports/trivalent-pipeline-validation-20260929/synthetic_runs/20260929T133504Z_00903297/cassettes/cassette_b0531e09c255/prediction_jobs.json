@@ -1,0 +1,115 @@
+[
+  {
+    "role": "cassette_alone",
+    "chains": {
+      "A": "KAKAKAKAKASESESESESERTRTRTRTRT"
+    },
+    "status": "INPUT_ONLY_NOT_PREDICTED"
+  },
+  {
+    "role": "joint",
+    "chains": {
+      "A": "KAKAKAKAKASESESESESERTRTRTRTRT",
+      "B": "AGSTAGSTAG",
+      "C": "VLVLVLVLVL",
+      "D": "DKDKDKDKDK"
+    },
+    "status": "INPUT_ONLY_NOT_PREDICTED"
+  },
+  {
+    "role": "cassette_target_1",
+    "chains": {
+      "A": "KAKAKAKAKASESESESESERTRTRTRTRT",
+      "B": "AGSTAGSTAG"
+    },
+    "status": "INPUT_ONLY_NOT_PREDICTED"
+  },
+  {
+    "role": "cassette_target_2",
+    "chains": {
+      "A": "KAKAKAKAKASESESESESERTRTRTRTRT",
+      "B": "VLVLVLVLVL"
+    },
+    "status": "INPUT_ONLY_NOT_PREDICTED"
+  },
+  {
+    "role": "cassette_target_3",
+    "chains": {
+      "A": "KAKAKAKAKASESESESESERTRTRTRTRT",
+      "B": "DKDKDKDKDK"
+    },
+    "status": "INPUT_ONLY_NOT_PREDICTED"
+  },
+  {
+    "role": "domain_1_target_1",
+    "chains": {
+      "A": "KAKAKAKAKA",
+      "B": "AGSTAGSTAG"
+    },
+    "status": "INPUT_ONLY_NOT_PREDICTED"
+  },
+  {
+    "role": "domain_1_target_2",
+    "chains": {
+      "A": "KAKAKAKAKA",
+      "B": "VLVLVLVLVL"
+    },
+    "status": "INPUT_ONLY_NOT_PREDICTED"
+  },
+  {
+    "role": "domain_1_target_3",
+    "chains": {
+      "A": "KAKAKAKAKA",
+      "B": "DKDKDKDKDK"
+    },
+    "status": "INPUT_ONLY_NOT_PREDICTED"
+  },
+  {
+    "role": "domain_2_target_1",
+    "chains": {
+      "A": "SESESESESE",
+      "B": "AGSTAGSTAG"
+    },
+    "status": "INPUT_ONLY_NOT_PREDICTED"
+  },
+  {
+    "role": "domain_2_target_2",
+    "chains": {
+      "A": "SESESESESE",
+      "B": "VLVLVLVLVL"
+    },
+    "status": "INPUT_ONLY_NOT_PREDICTED"
+  },
+  {
+    "role": "domain_2_target_3",
+    "chains": {
+      "A": "SESESESESE",
+      "B": "DKDKDKDKDK"
+    },
+    "status": "INPUT_ONLY_NOT_PREDICTED"
+  },
+  {
+    "role": "domain_3_target_1",
+    "chains": {
+      "A": "RTRTRTRTRT",
+      "B": "AGSTAGSTAG"
+    },
+    "status": "INPUT_ONLY_NOT_PREDICTED"
+  },
+  {
+    "role": "domain_3_target_2",
+    "chains": {
+      "A": "RTRTRTRTRT",
+      "B": "VLVLVLVLVL"
+    },
+    "status": "INPUT_ONLY_NOT_PREDICTED"
+  },
+  {
+    "role": "domain_3_target_3",
+    "chains": {
+      "A": "RTRTRTRTRT",
+      "B": "DKDKDKDKDK"
+    },
+    "status": "INPUT_ONLY_NOT_PREDICTED"
+  }
+]
