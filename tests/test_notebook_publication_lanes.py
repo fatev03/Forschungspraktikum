@@ -248,5 +248,100 @@ class PublicationLanesHygiene(ExecutedSection):
                     self.assertNotIn(text, source, f"{cid}: environment path text")
 
 
+
+CHECKOUT_CELL_ID = "colab-repo-00-checkout-main"
+CHECKOUT_URL = "https://github.com/fatev03/Forschungspraktikum.git"
+CHECKOUT_BRANCH = "main"
+CHECKOUT_PATH = "/content/Forschungspraktikum"
+# The eight triage-profile cells are pinned by exact source hash: they must stay byte-for-byte.
+TRIAGE_CELL_SHA256 = {
+    "triage-profile-00-disclaimer": "5e4ca60827afcccb5e3958a206d6fdcade9ab048fe1babdbd170c715075f3f29",
+    "triage-profile-00-assignment": "6d471c6d11d0e632cb0a4c6608a5fdc148c65bf916d0cbc0545903b1d7df2a48",
+    "triage-profile-00-section": "6eca1ab992009618dd0b0160052b03317707bdc539f44f18737a4f017775c7a1",
+    "triage-profile-01-load": "a795d1279ad9e5bf23a77c0dc27c5500db21c223e0f5225d296e1410c0027306",
+    "triage-profile-02-inventory": "10f19ce41ec12b5e24bb206b5ff94a65b9719c60d3f479c460220e52c4579ed4",
+    "triage-profile-03-top-candidates": "90eaa4dc1cb35f0285b242970f467bf298202eb7e301cda40718457eab0df9c2",
+    "triage-profile-04-dimensions": "0089b53c92ffbf4bf01b9c807ec8ba35396712de68f6baf90abd6f8d73fe4233",
+    "triage-profile-05-sources": "02cec459151be899597c3bc34ee96421170cb402063248fe68cc966a8d9984ba",
+}
+# Operations the checkout cell must not contain. Git-history mutations are matched as quoted
+# subcommand arguments so the clone's --branch / --single-branch flags do not trip them.
+FORBIDDEN_CHECKOUT_OPS = (
+    ("package install", re.compile(r"""\b(?:pip3?|apt(?:-get)?|conda|mamba|poetry)\b|uv\s+pip|!\s*pip""")),
+    ("drive mount", re.compile(r"""drive\.mount|google\.colab\s+import\s+drive""")),
+    ("git history mutation",
+     re.compile(r"""['"](?:commit|push|branch|stash|tag|remote|rebase|reset|clean|cherry-pick|pull)['"]|--force|force-with-lease""")),
+    ("source edit", re.compile(r"""\bsed\s+-i\b|open\([^\n]*['"][wa]""")),
+    ("provider or docking",
+     re.compile(r"""(?i)\b(?:rfdiffusion|run_inference|run_diffusion|colabdesign|pyrosetta|rosetta|autodock|vina|boltz|alphafold|af3)\b""")),
+    ("artifact generation", re.compile(r"""files\.(?:download|upload)|\.pdb\b|\.cif\b|outputs/""")),
+)
+
+
+class ColabCheckoutCell(unittest.TestCase):
+    """Pins colab-repo-00-checkout-main: the portability cell that makes this repository
+    available on branch main before the Section 5 value-flow cells, and pins that the eight
+    triage-profile cells and the existing cell order are unchanged by its insertion."""
+
+    def cells(self):
+        return notebook_cells()
+
+    def checkout_cell(self, cells):
+        found = [c for c in cells if cell_id(c) == CHECKOUT_CELL_ID]
+        self.assertEqual(len(found), 1, f"{CHECKOUT_CELL_ID} must appear exactly once")
+        return found[0]
+
+    def test_checkout_cell_exists_once_is_code_and_precedes_vf_demo_01_load(self):
+        cells = self.cells()
+        cell = self.checkout_cell(cells)
+        self.assertEqual(cell["cell_type"], "code", "checkout cell must be a code cell")
+        ids = [cell_id(c) for c in cells]
+        self.assertLess(ids.index(CHECKOUT_CELL_ID), ids.index("vf-demo-01-load"),
+                        "checkout cell must precede vf-demo-01-load")
+
+    def test_checkout_cell_is_before_the_pinned_section_anchor(self):
+        # Sitting before the SECTION anchor keeps SECTION/PRE_TAIL/TAIL contiguous and in order.
+        cells = self.cells()
+        ids = [cell_id(c) for c in cells]
+        self.assertLess(ids.index(CHECKOUT_CELL_ID), ids.index(SECTION_ANCHOR),
+                        "checkout cell must sit before the value-flow section, not inside it")
+
+    def test_checkout_cell_targets_the_repository_url_and_branch_main(self):
+        source = source_of(self.checkout_cell(self.cells()))
+        self.assertIn(CHECKOUT_URL, source, "checkout cell must target the repository URL")
+        self.assertIn('"main"', source, "checkout cell must name branch main as a literal")
+        self.assertIn("--branch", source, "checkout cell must clone with an explicit --branch")
+        self.assertNotIn("--depth", source, "checkout cell must not pin history depth")
+
+    def test_checkout_cell_defines_the_checkout_location_and_vf_repo_root(self):
+        source = source_of(self.checkout_cell(self.cells()))
+        self.assertIn(CHECKOUT_PATH, source, "checkout cell must use the /content checkout path")
+        self.assertIn("VF_REPO_ROOT", source, "checkout cell must set VF_REPO_ROOT")
+        self.assertIn("os.chdir", source, "checkout cell must change into the checkout root")
+        self.assertIn("--ff-only", source, "checkout cell must update fast-forward-only")
+
+    def test_checkout_cell_pins_no_commit_sha(self):
+        source = source_of(self.checkout_cell(self.cells()))
+        self.assertIsNone(HEX64.search(source), "checkout cell must not pin a commit SHA")
+
+    def test_checkout_cell_contains_no_forbidden_operation(self):
+        source = source_of(self.checkout_cell(self.cells()))
+        for label, pattern in FORBIDDEN_CHECKOUT_OPS:
+            with self.subTest(op=label):
+                self.assertIsNone(pattern.search(source), f"checkout cell contains a {label} operation")
+
+    def test_checkout_cell_is_valid_python(self):
+        ast.parse(source_of(self.checkout_cell(self.cells())))
+
+    def test_triage_profile_cells_are_unchanged_byte_for_byte(self):
+        import hashlib
+        by_id = {cell_id(c): c for c in self.cells()}
+        for cid, expected in TRIAGE_CELL_SHA256.items():
+            with self.subTest(cell=cid):
+                self.assertIn(cid, by_id, f"{cid} missing from the notebook")
+                digest = hashlib.sha256(source_of(by_id[cid]).encode("utf-8")).hexdigest()
+                self.assertEqual(digest, expected, f"{cid} source changed")
+
+
 if __name__ == "__main__":
     unittest.main()
